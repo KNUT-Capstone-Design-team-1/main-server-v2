@@ -1,32 +1,17 @@
 {
-  'name': 'main-server-v2',
-  'version': '1.0.0',
-  'description': '이게뭐약 프로젝트 메인서버 리팩토링',
-  'main': 'index.js',
-  'scripts': {
-    'test': 'echo \'Error: no test specified\' && exit 1'
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
   },
-  'repository': {
-    'type': 'git',
-    'url': 'git+https://github.com/KNUT-Capstone-Design-team-1/main-server-v2.git'
-  },
-  'author': '2mukee',
-  'license': 'ISC',
-  'bugs': {
-    'url': 'https://github.com/KNUT-Capstone-Design-team-1/main-server-v2/issues'
-  },
-  'homepage': 'https://github.com/KNUT-Capstone-Design-team-1/main-server-v2#readme',
-  'devDependencies': {
-    'eslint': '^8.18.0',
-    'eslint-config-airbnb-base': '^15.0.0',
-    'eslint-plugin-import': '^2.26.0'
-  },
-  'dependencies': {
-    'axios': '^0.27.2',
-    'express': '^4.18.1',
-    'mongoose': '^6.4.2',
-    'prettier': '^2.7.1',
-    'winston': '^3.8.1',
-    'winston-daily-rotate-file': '^4.7.1'
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.4",
+    "winston": "^3.8.1",
+    "winston-daily-rotate-file": "^4.7.1"
   }
 }

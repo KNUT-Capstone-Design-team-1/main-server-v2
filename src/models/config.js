@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ConfigModel = mongoose.model(
-  'ConfigModel',
+  'Config',
   new mongoose.Schema(
     {
       name: {
