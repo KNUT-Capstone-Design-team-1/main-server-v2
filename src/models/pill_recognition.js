@@ -14,8 +14,8 @@ const PillRecognitionDataModel = mongoose.model(
         require: true,
       },
     },
-    { collection: "PillRecognitionData" },
-  ),
+    { collection: 'PillRecognitionData' }
+  )
 );
 
 module.exports = {

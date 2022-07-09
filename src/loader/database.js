@@ -3,7 +3,8 @@ const { logger } = require('../util/logger');
 
 async function connectOnDatabase() {
   try {
-    const dbUrl = process.env.MONGODB_CONNECTION || 'mongodb://localhost:27017/whatispill';
+    const dbUrl =
+      process.env.MONGODB_CONNECTION || 'mongodb://localhost:27017/whatispill';
 
     const connectOptions = {
       useNewUrlParser: true,

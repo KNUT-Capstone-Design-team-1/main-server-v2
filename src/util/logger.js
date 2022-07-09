@@ -6,7 +6,9 @@ const logDir = 'logs';
 const { combine, timestamp, printf } = winston.format;
 
 // 로그 포맷 정의
-const logFormat = printf((info) => `${info.timestamp} ${info.level}: ${info.message}`);
+const logFormat = printf(
+  (info) => `${info.timestamp} ${info.level}: ${info.message}`
+);
 
 /*
  * 로그레벨
@@ -17,7 +19,7 @@ const logger = winston.createLogger({
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    logFormat,
+    logFormat
   ),
   transports: [
     // info 레벨 로그를 저장할 파일 설정
@@ -46,8 +48,11 @@ const logger = winston.createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
-      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
-    }),
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
+    })
   );
 }
 

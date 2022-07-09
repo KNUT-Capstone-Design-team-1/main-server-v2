@@ -14,8 +14,8 @@ const ConfigModel = mongoose.model(
         require: true,
       },
     },
-    { collection: 'Config' },
-  ),
+    { collection: 'Config' }
+  )
 );
 
 module.exports = {

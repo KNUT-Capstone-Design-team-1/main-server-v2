@@ -17,7 +17,7 @@ async function updateConfig() {
       await ConfigModel.updateOne(
         { name },
         { name, value: config[name] },
-        { new: true, upsert: true },
+        { new: true, upsert: true }
       );
     });
   } catch (e) {
