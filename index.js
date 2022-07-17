@@ -17,6 +17,7 @@ async function main() {
   try {
     await db.connectOnDatabase();
     await loader.updateConfig();
+    await loader.updateRecognitionData();
   } catch (e) {
     logger.error(`[APP-INIT] ${e}`);
   }

@@ -1,4 +1,5 @@
 const xlsx = require('read-excel-file/node');
+const { Converter } = require('csvtojson');
 const path = require('path');
 const fs = require('fs');
 const { logger } = require('../util/logger');
@@ -37,28 +38,53 @@ async function updateRecognitionData() {
     EDI_CODE: { prop: 'EDI_CODE', type: String },
   };
 
-  // .xlsx 파일의 데이터를 DB에 저장 혹은 업데이트
-  const xlsxUpserter = (filePath) => {
-    xlsx(filePath, { schema }).then(({ rows }) => {
-      rows.forEach(async (row) => {
-        try {
-          console.log(row);
-          // await PillRecognitionModel.updateOne({ ITEM_SEQ: row.ITEM_SEQ }, row, {
-          //   new: true,
-          //   upsert: true,
-          // });
-        } catch (e) {
-          logger.error(`[QUERY] ${e.stack}`);
-        }
-      });
+  // DB에 저장 혹은 업데이트 수행
+  const upserter = async (data) => {
+    await PillRecognitionModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
+      new: true,
+      upsert: true,
     });
   };
 
+  // .xlsx 파일의 데이터를 DB에 저장 혹은 업데이트
+  const xlsxUpserter = (filePath) => {
+    xlsx(filePath, { schema })
+      .then(({ rows }) => {
+        rows.forEach(async (row) => {
+          try {
+            await upserter(row);
+          } catch (e) {
+            logger.error(`[QUERY] xlsx upsert fail\n${e.stack}`);
+          }
+        });
+      })
+      .catch((e) => {
+        logger.error(`[QUERY] xlsx file fail\n${e.stack}`);
+      });
+  };
+
   // .csv 파일의 데이터를 DB에 저장 혹은 업데이트
-  const csvUpserter = (filePath) => {};
+  const csvUpserter = (filePath) => {
+    const csv = new Converter();
+
+    csv
+      .fromFile(filePath)
+      .then((rows) => {
+        rows.forEach(async (row) => {
+          try {
+            await upserter(row);
+          } catch (e) {
+            logger.error(`[QUERY] csv upsert fail\n${e.stack}`);
+          }
+        });
+      })
+      .catch((e) => {
+        logger.error(`[QUERY] csv file fail\n${e.stack}`);
+      });
+  };
 
   // 디렉터리 내의 파일 확장자에 따라 분기
-  const pathReader = () => {
+  const distibuter = async () => {
     const dirPath = 'src/res/';
 
     fs.readdir(dirPath, (err, filelist) => {
@@ -77,18 +103,11 @@ async function updateRecognitionData() {
         }
       });
     });
+
+    logger.info(`[QUERY] Recognition complete`);
   };
-
-  // const filePath = 'src/res/의약품 낱알식별정보 데이터(2020년).xlsx';
-
-  pathReader();
+  distibuter();
 }
-
-function main() {
-  updateRecognitionData();
-}
-
-main();
 
 module.exports = {
   updateRecognitionData,

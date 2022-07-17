@@ -1,31 +1,21 @@
 const ConfigQuery = require('../queries/config');
 const PillrecognitionQuery = require('../queries/pill_recognition');
 
-const { logger } = require('../util/logger');
-
 /**
  * 설정 데이터 로드
  */
 async function updateConfig() {
-  try {
-    await ConfigQuery.updateConfig();
-  } catch (e) {
-    logger.error(`[LOADER] fail to update config\n${e}`);
-  }
+  await ConfigQuery.updateConfig();
 }
 
 /**
  * Pill Recognition Data 로드
  */
-async function readPillRecognitionData() {
-  try {
-    await PillrecognitionQuery.updateRecognitionData();
-  } catch (e) {
-    logger.error(`[LOADER] fail to update pill recognition data\n${e}`);
-  }
+async function updateRecognitionData() {
+  await PillrecognitionQuery.updateRecognitionData();
 }
 
 module.exports = {
   updateConfig,
-  readPillRecognitionData,
+  updateRecognitionData,
 };

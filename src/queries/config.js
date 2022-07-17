@@ -1,4 +1,5 @@
 const { ConfigModel } = require('../models/config');
+const { logger } = require('../util/logger');
 const config = require('../res/config.json');
 
 async function readConfig(name) {
@@ -21,11 +22,9 @@ async function updateConfig() {
       );
     });
   } catch (e) {
-    throw new Error(e);
+    logger.error(`[LOADER] fail to update config\n${e}`);
   }
 }
-
-updateConfig();
 
 module.exports = {
   readConfig,

@@ -4,46 +4,15 @@ const PillRecognitionModel = mongoose.model(
   'PillRecognitionData',
   new mongoose.Schema(
     {
-      // 품목 일련 번호
-      ITEM_SEQ: {
-        type: String,
-        require: true,
-        unique: true,
-      },
-      // 품목명
-      ITEM_NAME: {
-        type: String,
-        require: true,
-        unique: true,
-      },
-      // 업체 일련 번호
-      ENTP_SEQ: {
-        type: String,
-        require: true,
-      },
-      // 업체명
-      ENTP_NAME: {
-        type: String,
-        require: true,
-      },
-      // 성상 (전체적인 모양)
-      CHARTN: {
-        type: String,
-        require: true,
-      },
-      // 큰 제품 이미지
-      ITEM_IMAGE: {
-        type: String,
-        require: true,
-        unique: true,
-      },
+      ITEM_SEQ: { type: String, require: true, unique: true }, // 품목 일련 번호
+      ITEM_NAME: { type: String, require: true }, // 품목명
+      ENTP_SEQ: { type: String, require: true }, // 업체 일련 번호
+      ENTP_NAME: { type: String, require: true }, // 업체명
+      CHARTN: { type: String, require: true }, // 성상 (전체적인 모양)
+      ITEM_IMAGE: { type: String }, // 큰 제품 이미지
       PRINT_FRONT: String, // 글자 앞
       PRINT_BACK: String, // 글자 뒤
-      // 색깔 (앞)
-      COLOR_CLASS1: {
-        type: String,
-        require: true,
-      },
+      COLOR_CLASS1: { type: String, require: true }, // 색깔 (앞)
       COLOR_CLASS2: String, // 색깔 뒤
       LINE_FRONT: String, // 분할선 (앞)
       LINE_BACK: String, // 분할선 (뒤)
