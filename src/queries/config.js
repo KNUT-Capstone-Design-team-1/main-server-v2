@@ -2,14 +2,22 @@ const { ConfigModel } = require('../models/config');
 const { logger } = require('../util/logger');
 const config = require('../res/config.json');
 
-async function readConfig(name) {
-  try {
-    return name ? ConfigModel.findOne({ name }) : ConfigModel.find({});
-  } catch (e) {
-    throw new Error(e);
+/**
+ * 설정 데이터 조회
+ * @param {array} names 찾을 설정의 이름들
+ * @returns 설정 데이터
+ */
+async function readConfig(names) {
+  if (names) {
+    const wheres = names.map((v) => ({ name: v }));
+    return ConfigModel.find({ $or: wheres });
   }
+  return ConfigModel.find({});
 }
 
+/**
+ * 설정 업데이트
+ */
 async function updateConfig() {
   try {
     const names = Object.keys(config);

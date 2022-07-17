@@ -54,12 +54,12 @@ async function updateRecognitionData() {
           try {
             await upserter(row);
           } catch (e) {
-            logger.error(`[QUERY] xlsx upsert fail\n${e.stack}`);
+            logger.error(`[QUERY] xlsx upsert fail\n${e}`);
           }
         });
       })
       .catch((e) => {
-        logger.error(`[QUERY] xlsx file fail\n${e.stack}`);
+        logger.error(`[QUERY] xlsx file fail\n${e}`);
       });
   };
 
@@ -74,12 +74,12 @@ async function updateRecognitionData() {
           try {
             await upserter(row);
           } catch (e) {
-            logger.error(`[QUERY] csv upsert fail\n${e.stack}`);
+            logger.error(`[QUERY] csv upsert fail\n${e}`);
           }
         });
       })
       .catch((e) => {
-        logger.error(`[QUERY] csv file fail\n${e.stack}`);
+        logger.error(`[QUERY] csv file fail\n${e}`);
       });
   };
 
