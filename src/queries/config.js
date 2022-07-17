@@ -1,5 +1,5 @@
 const { ConfigModel } = require('../models/config');
-const config = require('../config/config.json');
+const config = require('../res/config.json');
 
 async function readConfig(name) {
   try {
