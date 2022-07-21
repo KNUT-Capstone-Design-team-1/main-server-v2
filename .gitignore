@@ -4,3 +4,4 @@ package-lock.json
 *.csv
 *.log
 node_modules
+logs
