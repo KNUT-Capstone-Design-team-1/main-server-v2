@@ -1,5 +1,11 @@
 const express = require('express');
 
+process.env.NODE_ENV =
+  process.env.NODE_ENV &&
+  process.env.NODE_ENV.trim().toLowerCase() === 'production'
+    ? 'production'
+    : 'development';
+
 const app = express();
 const db = require('./src/loader/database');
 const { logger } = require('./src/util/logger');
