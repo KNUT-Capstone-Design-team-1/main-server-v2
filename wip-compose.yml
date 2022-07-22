@@ -17,7 +17,7 @@ main:
     failure_action: rollback 
 
 dl:
-  image: 2mukee/wip-main
+  image: 2mukee/wip-dl
   environment:
    - TZ=Aisa/Seoul
   deploy: 
