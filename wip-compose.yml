@@ -11,10 +11,10 @@ services:
       mode: replicated 
       replicas: 10 
       update_config: 
-      parallelism: 10 
-      delay: 10s 
-      order: start-first 
-      failure_action: rollback 
+        parallelism: 10 
+        delay: 10s 
+        order: start-first 
+        failure_action: rollback 
 
   dl:
     image: 2mukee/wip-dl
@@ -23,11 +23,11 @@ services:
     deploy: 
       mode: replicated 
       replicas: 10 
-    update_config: 
-      parallelism: 10 
-      delay: 10s 
-      order: start-first 
-      failure_action: rollback 
+      update_config: 
+        parallelism: 10 
+        delay: 10s 
+        order: start-first 
+        failure_action: rollback 
 
   db: 
     image: mongo
