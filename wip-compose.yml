@@ -2,7 +2,7 @@ version: '3.8'
 
 services: 
 main: 
-  image: 2mukee/wip-main:0.1 
+  image: 2mukee/wip-main
   ports: 
    - 17260:17260 
   environment: 
@@ -16,8 +16,21 @@ main:
     order: start-first 
     failure_action: rollback 
 
+dl:
+  image: 2mukee/wip-main
+  environment:
+   - TZ=Aisa/Seoul
+  deploy: 
+   mode: replicated 
+   replicas: 10 
+   update_config: 
+    parallelism: 10 
+    delay: 10s 
+    order: start-first 
+    failure_action: rollback 
+
 db: 
-  image: 2mukee/wip-db:0.1 
+  image: 2mukee/wip-db 
   environment: 
    - TZ=Asia/Seoul 
   volumes: 
