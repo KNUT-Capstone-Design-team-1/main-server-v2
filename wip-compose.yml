@@ -1,39 +1,37 @@
 version: '3.8' 
 
 services: 
-main: 
-  image: 2mukee/wip-main
-  ports: 
-   - 17260:17260 
-  environment: 
-   - TZ=Asia/Seoul 
-  deploy: 
-    mode: replicated 
-    replicas: 10 
+  main: 
+    image: 2mukee/wip-main
+    ports: 
+     - 17260:17260 
+    environment: 
+     - TZ=Asia/Seoul 
+    deploy: 
+      mode: replicated 
+      replicas: 10 
+      update_config: 
+      parallelism: 10 
+      delay: 10s 
+      order: start-first 
+      failure_action: rollback 
+
+  dl:
+    image: 2mukee/wip-dl
+    environment:
+     - TZ=Aisa/Seoul
+    deploy: 
+      mode: replicated 
+      replicas: 10 
     update_config: 
-    parallelism: 10 
-    delay: 10s 
-    order: start-first 
-    failure_action: rollback 
+      parallelism: 10 
+      delay: 10s 
+      order: start-first 
+      failure_action: rollback 
 
-dl:
-  image: 2mukee/wip-dl
-  environment:
-   - TZ=Aisa/Seoul
-  deploy: 
-    mode: replicated 
-    replicas: 10 
-  update_config: 
-    parallelism: 10 
-    delay: 10s 
-    order: start-first 
-    failure_action: rollback 
-
-db: 
-  image: mongo
-  environment: 
-   - TZ=Asia/Seoul 
-  volumes: 
-   - /mnt/d/server/wip-main/data:/data/db 
-  environment: 
-   - TZ=Asia/Seoul 
+  db: 
+    image: mongo
+    environment: 
+     - TZ=Asia/Seoul 
+    volumes: 
+     - /mnt/d/server/wip-main/data:/data/db 
