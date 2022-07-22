@@ -30,7 +30,7 @@ dl:
     failure_action: rollback 
 
 db: 
-  image: 2mukee/wip-db 
+  image: mongo
   environment: 
    - TZ=Asia/Seoul 
   volumes: 
