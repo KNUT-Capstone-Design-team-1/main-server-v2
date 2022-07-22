@@ -8,9 +8,9 @@ main:
   environment: 
    - TZ=Asia/Seoul 
   deploy: 
-   mode: replicated 
-   replicas: 10 
-   update_config: 
+    mode: replicated 
+    replicas: 10 
+    update_config: 
     parallelism: 10 
     delay: 10s 
     order: start-first 
@@ -21,9 +21,9 @@ dl:
   environment:
    - TZ=Aisa/Seoul
   deploy: 
-   mode: replicated 
-   replicas: 10 
-   update_config: 
+    mode: replicated 
+    replicas: 10 
+  update_config: 
     parallelism: 10 
     delay: 10s 
     order: start-first 
