@@ -32,7 +32,8 @@ services:
 
   db: 
     image: mongo
-    environment: 
-     - TZ=Asia/Seoul 
+    environment:
+     - TZ=Asia/Seoul
+     - MONGO_INIT_DB_DATABASE=whatispill
     volumes: 
      - /mnt/d/server/wip-main/data:/data/db 
