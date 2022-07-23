@@ -8,7 +8,6 @@ services:
     ports: 
      - 17260:17260 
     networks:
-     - default
      - wip-router
     environment: 
      - TZ=Asia/Seoul 
@@ -33,27 +32,3 @@ services:
      - MONGO_INIT_DB_DATABASE=whatispill
     volumes: 
      - /mnt/d/server/wip-main/data:/data/db 
-
-  # DL 서버에 대해서는 따로 뺀다
-  wip-dl:
-    image: 2mukee/wip-dl
-    expose:
-     - 5000
-    networks:
-     - wip-router
-    environment:
-     - TZ=Aisa/Seoul
-    deploy: 
-      mode: replicated 
-      replicas: 10 
-      update_config: 
-        parallelism: 10 
-        delay: 10s 
-        order: start-first 
-        failure_action: rollback 
-
-# 네트워크도 shell에서 따로 만든다
-networks:
-  wip-router:
-    driver: bridge
-    external: true
