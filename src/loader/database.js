@@ -5,7 +5,7 @@ async function connectOnDatabase() {
   try {
     const dbUrl =
       process.env.NODE_ENV === 'production'
-        ? 'mongodb://db:27017/whatispill'
+        ? 'mongodb://wip-db:27017/whatispill'
         : 'mongodb://localhost:27017/whatispill';
 
     const connectOptions = {
