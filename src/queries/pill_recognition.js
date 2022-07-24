@@ -18,6 +18,7 @@ async function updateRecognitionData() {
     ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String, required: true },
     PRINT_FRONT: { prop: 'PRINT_FRONT', type: String },
     PRINT_BACK: { prop: 'PRINT_BACK', type: String },
+    DRUG_SHAPE: { prop: 'DRUG_SHAPE', type: String, required: true },
     COLOR_CLASS1: { prop: 'COLOR_CLASS1', type: String, required: true },
     COLOR_CLASS2: { prop: 'COLOR_CLASS2', type: String },
     LINE_FRONT: { prop: 'LINE_FRONT', type: String },
@@ -109,6 +110,12 @@ async function updateRecognitionData() {
   distibuter();
 }
 
+async function readRecognitionData(value) {
+  console.log(value);
+  return null;
+}
+
 module.exports = {
   updateRecognitionData,
+  readRecognitionData,
 };
