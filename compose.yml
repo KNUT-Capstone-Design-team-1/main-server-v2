@@ -6,7 +6,7 @@ services:
     depends_on:
      - wip-db
     ports: 
-     - 17260:17260 
+     - 17261:17261
     networks:
      - wip-router
     environment: 
