@@ -11,7 +11,7 @@ const { logger } = require('../util/logger');
 async function getOverview(value) {
   try {
     // 1. DB Select 쿼리
-    const queryResult = await RecognitionQuery.readRecognitionData(value);
+    // const queryResult = await RecognitionQuery.readRecognitionData(value);
 
     // 2. API 호출
     const configs = (await ConfigQuery.readConfig(['overview']))[0].value;
@@ -27,8 +27,8 @@ async function getOverview(value) {
     });
 
     // 3. 필요한 데이터 추출
-    console.log(result.data, queryResult);
-    return result;
+    console.log('e약은요: ', result.data.body, '쿼리: ');
+    return result.data.body;
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to get over view ${e}`);
     return {};
