@@ -4,33 +4,60 @@ const RecognitionQuery = require('../queries/pill_recognition');
 const { logger } = require('../util/logger');
 
 /**
+ * 알약 식별 검색을 위한 API 호출
+ * @param {string} searchType 검색타입 ex) 'overview', 'detail'
+ * @param {array} itemSeqs 모양정보를 통해 DB에서 조회된 약의 식별번호 배열 ex) ['12345678', ...]
+ * @returns
+ */
+async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
+  try {
+    // API URL 및 서비스키
+    const { url, encServiceKey } = (
+      await ConfigQuery.readConfig([searchType])
+    )[0];
+
+    // 검색 옵션
+    const { pageNo, numOfRows } = searchOption;
+
+    let apiUrl = `${url}`;
+    apiUrl += `?serviceKey=${encServiceKey}`;
+    apiUrl += `&type=json`;
+    apiUrl += `&pageNo=${pageNo}`;
+    apiUrl += `&numOfRows=${numOfRows}`;
+
+    if (itemSeqs.lengh === 0) {
+      throw new Error('식별된 정보가 없습니다.');
+    }
+
+    apiUrl += `&itemSeq=`;
+    console.log(apiUrl);
+    apiUrl += itemSeqs.join(' OR ');
+
+    const result = await axios({ method: 'get', url: apiUrl });
+    console.log('e약은요: ', result.data.body, '쿼리: ');
+
+    return result.data.body.items;
+  } catch (e) {
+    logger.error(`[RECOG-SERVICE] fail to call api.\n${e}`);
+    return [];
+  }
+}
+
+/**
  * e약은요 API를 호출하여 알약의 개요 정보를 반환
  * @param {object} value DB 쿼리를 위한 데이터
  * @returns 알약 개요 정보
  */
-async function getOverview(value) {
+async function getOverview(value, searchOption) {
   try {
     // 1. DB Select 쿼리
-    // const queryResult = await RecognitionQuery.readRecognitionData(value);
+    const queryResult = await RecognitionQuery.readRecognitionData(value);
+    const itemSeqs = queryResult.map(({ ITEM_SEQ }) => ITEM_SEQ);
 
     // 2. API 호출
-    const configs = (await ConfigQuery.readConfig(['overview']))[0].value;
-    const url = `${configs.url}?serviceKey=${
-      configs.encServiceKey
-    }&trustEntpName=${encodeURI(
-      '한미약품(주)'
-    )}&pageNo=1&startPage=1&numOfRows=3&type=json`;
-
-    const result = await axios({
-      method: 'get',
-      url,
-    });
-
-    // 3. 필요한 데이터 추출
-    console.log('e약은요: ', result.data.body, '쿼리: ');
-    return result.data.body;
+    return callApiForRecogSearch('overview', itemSeqs, searchOption);
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to get over view ${e}`);
+    logger.error(`[RECOG-SERVICE] fail to get over view\n${e.stack}`);
     return {};
   }
 }
@@ -40,25 +67,14 @@ async function getOverview(value) {
  * @param {object} value API 호출을 위한 데이터
  * @returns 알약 상세 정보
  */
-async function getDetail(value) {
+async function getDetail(value, searchOption) {
   try {
-    // 1. API 호출
-    const configs = (await ConfigQuery.readConfig(['detail']))[0].value;
+    // 1. DB Select 쿼리
+    const queryResult = await RecognitionQuery.readRecognitionData(value);
+    const itemSeqs = queryResult.map(({ ITEM_SEQ }) => ITEM_SEQ);
 
-    const url = `${configs.url}?serviceKey=${
-      configs.encServiceKey
-    }&trustEntpName=${encodeURI(
-      '한미약품(주)'
-    )}&pageNo=1&startPage=1&numOfRows=3&type=json`;
-
-    const result = await axios({
-      method: 'get',
-      url,
-    });
-
-    // 2. 필요한 데이터만 추출
-    console.log(value.itemSeq);
-    return result;
+    // 2. API 호출
+    return callApiForRecogSearch('overview', itemSeqs, searchOption);
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to get detail ${e}`);
     return {};
@@ -93,6 +109,7 @@ async function searchFromImage(imageId) {
   }
 
   console.log(recognizeResult?.data);
+
   // 2. API 호출
   return getOverview(recognizeResult?.data);
 }

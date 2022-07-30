@@ -88,8 +88,13 @@ async function updateRecognitionData() {
   const distibuter = async () => {
     const dirPath = 'src/res/';
 
-    fs.readdir(dirPath, (err, filelist) => {
-      filelist.forEach((file) => {
+    fs.readdir(dirPath, (err, fileList) => {
+      if (err) {
+        logger.error('[QUERY] Fail to read file [%s]', fileList);
+        return;
+      }
+
+      fileList.forEach((file) => {
         switch (path.extname(file)) {
           case '.xlsx':
             xlsxUpserter(`${dirPath}${file}`);
@@ -110,9 +115,14 @@ async function updateRecognitionData() {
   distibuter();
 }
 
+/**
+ * 알약 식별 정보를 검색하기 위한 데이터를 조회
+ * @param {object} value 알약의 모양, 제형 등 외형 정보 ex) { PRINT: "...", ... }
+ * @returns 쿼리 결과
+ */
 async function readRecognitionData(value) {
-  console.log(value);
-  return null;
+  const result = await PillRecognitionModel.find(value);
+  return result;
 }
 
 module.exports = {

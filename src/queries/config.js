@@ -4,15 +4,16 @@ const config = require('../res/config.json');
 
 /**
  * 설정 데이터 조회
- * @param {array} names 찾을 설정의 이름들
+ * @param {array} names 찾을 설정의 이름들 ex) ['url']
  * @returns 설정 데이터
  */
 async function readConfig(names) {
-  if (names) {
-    const wheres = names.map((v) => ({ name: v }));
-    return ConfigModel.find({ $or: wheres });
-  }
-  return ConfigModel.find({});
+  const wheres = names ? { $or: names.map((v) => ({ name: v })) } : {};
+  const result = (await ConfigModel.find(wheres)).map((v) => v?.value);
+
+  console.log('resss', result);
+
+  return result;
 }
 
 /**

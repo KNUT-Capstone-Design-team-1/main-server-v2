@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const db = require('./src/loader/database');
@@ -7,6 +8,8 @@ const PillRecogApi = require('./src/api/pill_recognition');
 const loader = require('./src/loader/loader');
 
 const port = 17261;
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use('/pill-recognition', PillRecogApi);
 
 async function main() {
