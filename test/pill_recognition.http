@@ -14,8 +14,8 @@ Content-Type: application/json
 GET {{serverUrl}}/pill-recognition/image-search?imageId={{imageId}}
 
 
-### API test
-GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20&entpName=알보젠코리아(주)&entpName=(주)유유제약
+### e약은요 API test
+GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20
 
 
 {
@@ -26,3 +26,6 @@ GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?ser
     "COLOR_CLASS1": "",
     "LINE_FRONT": ""
 }
+
+### 허가정보 API test
+GET http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDtlInq01?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20
