@@ -10,9 +10,6 @@ const config = require('../res/config.json');
 async function readConfig(names) {
   const wheres = names ? { $or: names.map((v) => ({ name: v })) } : {};
   const result = (await ConfigModel.find(wheres)).map((v) => v?.value);
-
-  console.log('resss', result);
-
   return result;
 }
 

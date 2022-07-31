@@ -25,16 +25,8 @@ async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
     apiUrl += `&pageNo=${pageNo}`;
     apiUrl += `&numOfRows=${numOfRows}`;
 
-    if (itemSeqs.lengh === 0) {
-      throw new Error('식별된 정보가 없습니다.');
-    }
-
-    apiUrl += `&itemSeq=`;
-    console.log(apiUrl);
-    apiUrl += itemSeqs.join(' OR ');
-
     const result = await axios({ method: 'get', url: apiUrl });
-    console.log('e약은요: ', result.data.body, '쿼리: ');
+    // console.log('e약은요: ', result.data.body, '쿼리: ');
 
     return result.data.body.items;
   } catch (e) {
@@ -45,13 +37,44 @@ async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
 
 /**
  * e약은요 API를 호출하여 알약의 개요 정보를 반환
- * @param {object} value DB 쿼리를 위한 데이터
+ * @param {object} whereData DB 쿼리를 위한 데이터
  * @returns 알약 개요 정보
  */
-async function getOverview(value, searchOption) {
+async function getOverview(whereData, searchOption) {
+  const entries = Object.entries(whereData);
+  const operator = {};
+
   try {
+    // DB 쿼리 조건
+    const { $and, $or } = entries.reduce((acc, [key, value]) => {
+      const condition = {};
+
+      switch (key) {
+        case 'ITEM_NAME':
+          condition[key] = `/^${value}/`; // LIKE 검색
+          acc.$and = [condition];
+          return acc;
+        default:
+          condition[key] = value;
+          acc.$or = [condition];
+          return acc;
+      }
+    }, {});
+
+    if (whereData.ITEM_NAME) {
+      $and.push({ $or });
+      operator.$and = $and;
+    } else {
+      operator.$or = $or;
+    }
+
     // 1. DB Select 쿼리
-    const queryResult = await RecognitionQuery.readRecognitionData(value);
+    const queryResult = await RecognitionQuery.readRecognitionData(operator);
+
+    if (queryResult.lengh === 0) {
+      throw new Error('식별된 정보가 없습니다.');
+    }
+
     const itemSeqs = queryResult.map(({ ITEM_SEQ }) => ITEM_SEQ);
 
     // 2. API 호출

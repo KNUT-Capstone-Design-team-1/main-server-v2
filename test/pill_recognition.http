@@ -6,11 +6,8 @@ GET {{serverUrl}}/pill-recognition/overview?pageNo=1&&numOfRows=5
 Content-Type: application/json
 
 {
-    "PRINT": "",
-    "CHARTIN": "",
-    "DRUG_SHAPE": "타원형",
     "COLOR_CLASS1": "갈색",
-    "LINE_FRONT": ""
+    "ITEM_NAME": ""
 }
 
 ### call image search
@@ -21,6 +18,11 @@ GET {{serverUrl}}/pill-recognition/image-search?imageId={{imageId}}
 GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20&entpName=알보젠코리아(주)&entpName=(주)유유제약
 
 
-202100203
-198401161
-200003092
+{
+    "ITEM_NAME": "머시론",
+    "PRINT": "",
+    "CHARTIN": "",
+    "DRUG_SHAPE": "원형",
+    "COLOR_CLASS1": "",
+    "LINE_FRONT": ""
+}
