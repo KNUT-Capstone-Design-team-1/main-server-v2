@@ -5,15 +5,15 @@ const { logger } = require('../util/logger');
 
 /**
  * 알약 식별 검색을 위한 API 호출
- * @param {string} searchType 검색타입 ex) 'overview', 'detail'
+ * @param {string} searchType 검색타입 ex)
  * @param {array} itemSeqs 모양정보를 통해 DB에서 조회된 약의 식별번호 배열 ex) ['12345678', ...]
  * @returns
  */
-async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
+async function callApiForRecogSearch(itemSeqs, searchOption) {
   try {
     // API URL 및 서비스키
     const { url, encServiceKey } = (
-      await ConfigQuery.readConfig([searchType])
+      await ConfigQuery.readConfig(['permit'])
     )[0];
 
     // 검색 옵션
@@ -26,7 +26,7 @@ async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
     apiUrl += `&numOfRows=${numOfRows}`;
 
     const result = await axios({ method: 'get', url: apiUrl });
-    // console.log('e약은요: ', result.data.body, '쿼리: ');
+    // console.log('허가정보: ', result.data.body, '쿼리: ');
 
     return result.data.body.items;
   } catch (e) {
@@ -36,11 +36,11 @@ async function callApiForRecogSearch(searchType, itemSeqs, searchOption) {
 }
 
 /**
- * e약은요 API를 호출하여 알약의 개요 정보를 반환
+ * 식별 검색
  * @param {object} whereData DB 쿼리를 위한 데이터
  * @returns 알약 개요 정보
  */
-async function getOverview(whereData, searchOption) {
+async function searchPillRecognition(whereData, searchOption) {
   const entries = Object.entries(whereData);
   const operator = {};
 
@@ -86,25 +86,6 @@ async function getOverview(whereData, searchOption) {
 }
 
 /**
- * 의약품 제품 허가 정보 API를 호출하여 알약의 상세 정보 반환
- * @param {object} value API 호출을 위한 데이터
- * @returns 알약 상세 정보
- */
-async function getDetail(value, searchOption) {
-  try {
-    // 1. DB Select 쿼리
-    const queryResult = await RecognitionQuery.readRecognitionData(value);
-    const itemSeqs = queryResult.map(({ ITEM_SEQ }) => ITEM_SEQ);
-
-    // 2. API 호출
-    return callApiForRecogSearch('overview', itemSeqs, searchOption);
-  } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to get detail ${e}`);
-    return {};
-  }
-}
-
-/**
  * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
  * @param {string} imageId base64 이미지 코드
  * @returns 알약 개요 정보
@@ -134,11 +115,22 @@ async function searchFromImage(imageId) {
   console.log(recognizeResult?.data);
 
   // 2. API 호출
-  return getOverview(recognizeResult?.data);
+  return searchPillRecognition(recognizeResult?.data);
+}
+
+/**
+ * 기존 앱과의 호환을 위해 유지하는 레거시 이미지 검색 함수
+ * @param {string} imageId base64 이미지 코드
+ * @returns 알약 개요 정보
+ */
+async function searchForLegacy(imageId) {
+  const data = await searchFromImage(imageId);
+  // data에 대해 레거시 형태로 반환
+  return data;
 }
 
 module.exports = {
-  getOverview,
-  getDetail,
+  searchPillRecognition,
   searchFromImage,
+  searchForLegacy,
 };
