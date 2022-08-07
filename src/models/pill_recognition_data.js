@@ -9,7 +9,7 @@ const PillRecognitionModel = mongoose.model(
       ENTP_SEQ: { type: String, require: true }, // 업체 일련 번호
       ENTP_NAME: { type: String, require: true }, // 업체명
       CHARTN: { type: String, require: true }, // 제형
-      ITEM_IMAGE: { type: String }, // 큰 제품 이미지
+      ITEM_IMAGE: String, // 큰 제품 이미지
       PRINT_FRONT: String, // 글자 앞
       PRINT_BACK: String, // 글자 뒤
       DRUG_SHAPE: { type: String, require: true }, // 모양

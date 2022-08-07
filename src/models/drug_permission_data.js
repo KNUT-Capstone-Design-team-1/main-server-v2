@@ -14,7 +14,7 @@ const DrugPermissionDataModel = mongoose.model(
       ITEM_PERMIT_DATE: String, // 허가 일자
       ETC_OTC_CODE: String, // 전문 일반
       CHART: String, // 성상
-      BAR_CODE: { type: String, require: true, unique: true }, // 표준 코드
+      BAR_CODE: String, // 표준 코드
       MATRIAL_NAME: String, // 원료 성분
       EE_DOC_ID: String, // 효능 효과 URL
       UD_DOC_ID: String, // 용법 용량 URL
@@ -23,7 +23,7 @@ const DrugPermissionDataModel = mongoose.model(
       STRAGE_METHOD: String, // 저장 방법 URL
       VALID_TERM: String, // 유효 기간
       REEXAM_TARGET: String, // 재심사 대상
-      REEXAM_DATA: String, // 재심사 기간
+      REEXAM_DATE: String, // 재심사 기간
       PACK_UNIT: String, // 포장 단위
       EDI_CODE: String, // 보험 코드
       NARCOTIC_KIND_CODE: String, // 마약류 분류

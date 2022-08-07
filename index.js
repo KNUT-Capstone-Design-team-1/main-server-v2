@@ -23,6 +23,7 @@ function main() {
     db.connectOnDatabase();
     loader.updateConfig();
     loader.updatePillRecognitionData();
+    loader.updateDrugPermissionData();
   } catch (e) {
     logger.error(`[APP-INIT] ${e}`);
     throw e;

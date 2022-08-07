@@ -16,7 +16,7 @@ function connectOnDatabase() {
   const db = mongoose.connection;
 
   db.on('error', (e) => {
-    logger.error(`[DATABASE] Database connection fail.\n%s`, e.stack);
+    logger.error(`[DATABASE] Database connection fail.\n${e.stack}`);
     throw new Error(`데이터베이스 연결 오류`);
   });
 

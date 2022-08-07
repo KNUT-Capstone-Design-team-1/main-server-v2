@@ -1,7 +1,9 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 const xlsx = require('read-excel-file/node');
 const { Converter } = require('csvtojson');
 const path = require('path');
-const fs = require('fs');
+const fs = require('node:fs/promises');
 const { logger } = require('./logger');
 
 /**
@@ -12,7 +14,12 @@ const { logger } = require('./logger');
  */
 async function xlsxToJson(filePath, schema) {
   try {
-    const rows = xlsx(filePath, { schema });
+    const { rows, err } = await xlsx(filePath, { schema });
+
+    if (err) {
+      logger.warn(`[UTIL] xlsx to json have error.[${filePath}]\n${err}`);
+    }
+
     return rows;
   } catch (e) {
     logger.error(`[UTIL] xlsx file fail\n${e}`);
@@ -27,7 +34,7 @@ async function xlsxToJson(filePath, schema) {
  */
 async function csvToJson(filePath) {
   try {
-    const rows = new Converter().fromFile(filePath);
+    const rows = await new Converter().fromFile(filePath);
     return rows;
   } catch (e) {
     logger.error(`[UTIL] csv file fail\n${e}`);
@@ -42,31 +49,34 @@ async function csvToJson(filePath) {
  */
 async function distributeFromExtension(schema, dirPath) {
   const result = { xlsx: [], csv: [] };
+  try {
+    const fileList = await fs.readdir(dirPath);
 
-  fs.readdir(dirPath, (err, fileList) => {
-    if (err) {
-      logger.error('[UTIL] Fail to read file [%s]', fileList);
-      return;
-    }
-
-    fileList.forEach((file) => {
+    for (const file of fileList) {
       switch (path.extname(file)) {
-        case '.xlsx':
-          result.xlsx.push(...xlsxToJson(`${dirPath}${file}`, schema));
+        case '.xlsx': {
+          const xlsxJson = await xlsxToJson(`${dirPath}${file}`, schema);
+          result.xlsx.push(...xlsxJson);
           break;
-        case '.csv':
-          result.csv.push(...csvToJson(`${dirPath}${file}`));
+        }
+        case '.csv': {
+          const csvJson = await csvToJson(`${dirPath}${file}`);
+          result.csv.push(...csvJson);
           break;
+        }
         default:
           logger.warn(
             `[UTIL] None execute function extension: ${path.extname(file)}`
           );
       }
-    });
-  });
+    }
 
-  logger.info(`[UTIL] File to json complete`);
-  return result;
+    logger.info(`[UTIL] File to json complete`);
+    return result;
+  } catch (e) {
+    logger.error(`[UTIL] Fail to read File.\n${e.stack}`);
+    return {};
+  }
 }
 
 /**

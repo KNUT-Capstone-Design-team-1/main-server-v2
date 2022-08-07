@@ -1,5 +1,5 @@
 const { logger } = require('../util/logger');
-const { DrugPermissionModel } = require('../models/drug_permission_data');
+const { DrugPermissionDataModel } = require('../models/drug_permission_data');
 const { distributeFromExtension } = require('../util/util');
 
 /**
@@ -7,42 +7,43 @@ const { distributeFromExtension } = require('../util/util');
  */
 async function updateDrugPermissionData() {
   const schema = {
-    ITEM_NAME: { prop: 'ITEM_NAME', type: String, required: true },
-    ITEM_SEQ: { prop: 'ITEM_SEQ', type: String, required: true },
-    PERMIT_KIND_NAME: { prop: 'PERMIT_KIND_NAME', type: String },
-    CANCEL_NAME: { prop: 'CANCEL_NAME', type: String },
-    CANCEL_DATE: { prop: 'CANCEL_DATE', type: String },
-    CHANGE_DATE: { prop: 'CHANGE_DATE', type: String },
-    ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
-    ITEM_PERMIT_DATE: { prop: 'ITEM_PERMIT_DATE', type: String },
-    ETC_OTC_CODE: { prop: 'ETC_OTC_CODE', type: String },
-    CHART: { prop: 'CHART', type: String },
-    BAR_CODE: { prop: 'BAR_CODE', type: String, required: true },
-    MATRIAL_NAME: { prop: 'MATRIAL_NAME', type: String },
-    EE_DOC_ID: { prop: 'EE_DOC_ID', type: String },
-    UD_DOC_ID: { prop: 'UD_DOC_ID', type: String },
-    NB_DOC_ID: { prop: 'NB_DOC_ID', type: String },
-    INSERT_FILE: { prop: 'INSERT_FILE', type: String },
-    STRAGE_METHOD: { prop: 'STRAGE_METHOD', type: String },
-    VALID_TERM: { prop: 'VALID_TERM', type: String },
-    REEXAM_TARGET: { prop: 'REEXAM_TARGET', type: String },
-    REEXAM_DATA: { prop: 'REEXAM_DATA', type: String },
-    PACK_UNIT: { prop: 'PACK_UNIT', type: String },
-    EDI_CODE: { prop: 'EDI_CODE', type: String },
-    NARCOTIC_KIND_CODE: { prop: 'NARCOTIC_KIND_CODE', type: String },
-    MAKE_MATRIAL_FLAG: { prop: 'MAKE_MATRIAL_FLAG', type: String },
-    NEWDRUG_CLASS_NAME: { prop: 'NEWDRUG_CLASS_NAME', type: String },
-    GBN_NAME: { prop: 'GBN_NAME', type: String },
-    TOTAL_CONTENT: { prop: 'TOTAL_CONTENT', type: String },
-    MAIN_ITEM_INGR: { prop: 'MAIN_ITEM_INGR', type: String },
-    INGR_NAME: { prop: 'INGR_NAME', type: String },
-    ATC_CODE: { prop: 'ATC_CODE', type: String },
-    REGESTRANT_ID: { prop: 'REGESTRANT_ID', type: String },
+    품목명: { prop: 'ITEM_NAME', type: String, required: true },
+    품목일련번호: { prop: 'ITEM_SEQ', type: String, required: true },
+    '허가/신고구분': { prop: 'PERMIT_KIND_NAME', type: String },
+    취소상태: { prop: 'CANCEL_NAME', type: String },
+    취소일자: { prop: 'CANCEL_DATE', type: String },
+    변경일자: { prop: 'CHANGE_DATE', type: String },
+    업체명: { prop: 'ENTP_NAME', type: String, required: true },
+    허가일자: { prop: 'ITEM_PERMIT_DATE', type: String },
+    전문일반: { prop: 'ETC_OTC_CODE', type: String },
+    성상: { prop: 'CHART', type: String },
+    표준코드: { prop: 'BAR_CODE', type: String, required: true },
+    원료성분: { prop: 'MATRIAL_NAME', type: String },
+    효능효과: { prop: 'EE_DOC_ID', type: String },
+    용법용량: { prop: 'UD_DOC_ID', type: String },
+    주의사항: { prop: 'NB_DOC_ID', type: String },
+    첨부문서: { prop: 'INSERT_FILE', type: String },
+    저장방법: { prop: 'STRAGE_METHOD', type: String },
+    유효기간: { prop: 'VALID_TERM', type: String },
+    재심사대상: { prop: 'REEXAM_TARGET', type: String },
+    재심사기간: { prop: 'REEXAM_DATE', type: String },
+    포장단위: { prop: 'PACK_UNIT', type: String },
+    보험코드: { prop: 'EDI_CODE', type: String },
+    마약류분류: { prop: 'NARCOTIC_KIND_CODE', type: String },
+    완제원료구분: { prop: 'MAKE_MATRIAL_FLAG', type: String },
+    신약여부: { prop: 'NEWDRUG_CLASS_NAME', type: String },
+    변경내용: { prop: 'GBN_NAME', type: String },
+    총량: { prop: 'TOTAL_CONTENT', type: String },
+    주성분명: { prop: 'MAIN_ITEM_INGR', type: String },
+    첨가제명: { prop: 'INGR_NAME', type: String },
+    ATC코드: { prop: 'ATC_CODE', type: String },
+    등록자ID: { prop: 'REGESTRANT_ID', type: String },
   };
 
-  const result = await distributeFromExtension(schema, 'res/drug_permission');
+  const result = await distributeFromExtension(schema, 'res/drug_permission/');
+
   const upsert = async (data) => {
-    await DrugPermissionModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
+    await DrugPermissionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
       new: true,
       upsert: true,
     });
@@ -61,10 +62,7 @@ async function updateDrugPermissionData() {
       });
     }
   } catch (e) {
-    logger.error(
-      `[PERMISSION-QUERY] Fail to change file to json.\n%s`,
-      e.stack
-    );
+    logger.error(`[PERMISSION-QUERY] Fail to change file to json.\n${e.stack}`);
   }
 }
 
@@ -76,7 +74,7 @@ async function updateDrugPermissionData() {
 async function readDrugPermissionData(value) {
   const fileds =
     'ITEM_SEQ ITEM_PERMIT_DATE ETC_OTC_CODE CHART MATRIAL_NAME STORAGE_NAME PACK_UNIT NARCOTIC_KIND_CODE NEWDRUG_CLASS_NAME TOTAL_CONTENT MAIN_ITEM_INGR INGR_NAME';
-  const result = await DrugPermissionModel.find(value).select(fileds);
+  const result = await DrugPermissionDataModel.find(value).select(fileds);
   return result;
 }
 

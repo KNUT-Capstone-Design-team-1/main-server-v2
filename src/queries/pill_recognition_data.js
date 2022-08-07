@@ -12,7 +12,7 @@ async function updatePillRecognitionData() {
     ENTP_SEQ: { prop: 'ENTP_SEQ', type: String, required: true },
     ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
     CHARTN: { prop: 'CHARTN', type: String, required: true },
-    ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String, required: true },
+    ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String },
     PRINT_FRONT: { prop: 'PRINT_FRONT', type: String },
     PRINT_BACK: { prop: 'PRINT_BACK', type: String },
     DRUG_SHAPE: { prop: 'DRUG_SHAPE', type: String, required: true },
@@ -36,7 +36,8 @@ async function updatePillRecognitionData() {
     EDI_CODE: { prop: 'EDI_CODE', type: String },
   };
 
-  const result = await distributeFromExtension(schema, 'res/pill_recognition');
+  const result = await distributeFromExtension(schema, 'res/pill_recognition/');
+
   const upsert = async (data) => {
     await PillRecognitionModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
       new: true,
@@ -57,7 +58,7 @@ async function updatePillRecognitionData() {
       });
     }
   } catch (e) {
-    logger.error(`[QUERY] Fail to change file to json.\n%s`, e.stack);
+    logger.error(`[QUERY] Fail to change file to json.\n${e.stack}`);
   }
 }
 
