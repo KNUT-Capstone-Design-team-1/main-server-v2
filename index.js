@@ -4,15 +4,15 @@ const bodyParser = require('body-parser');
 const app = express();
 const db = require('./src/loader/database');
 const { logger } = require('./src/util/logger');
-const PillRecogApi = require('./src/api/pill_recognition');
+const PillSearchApi = require('./src/api/pill_search');
 const loader = require('./src/loader/loader');
 
 const port = 17261;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/pill-recognition', PillRecogApi);
+app.use('/pill-search', PillSearchApi);
 
-async function main() {
+function main() {
   app.listen(port, () => {
     logger.info(
       `[APP-INIT] Server Running on ${port} port. env: ${process.env.NODE_ENV}`
@@ -20,11 +20,12 @@ async function main() {
   });
 
   try {
-    await db.connectOnDatabase();
-    await loader.updateConfig();
-    await loader.updateRecognitionData();
+    db.connectOnDatabase();
+    loader.updateConfig();
+    loader.updatePillRecognitionData();
   } catch (e) {
     logger.error(`[APP-INIT] ${e}`);
+    throw e;
   }
 }
 

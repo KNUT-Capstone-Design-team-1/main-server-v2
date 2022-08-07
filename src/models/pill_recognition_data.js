@@ -20,17 +20,17 @@ const PillRecognitionModel = mongoose.model(
       LENG_LONG: String, // 크기 (장축)
       LENG_SHORT: String, // 크기 (단축)
       THICK: String, // 두께
-      IMG_REGIST_TS: String, // 약학정보원 이미지 생성일
-      CLASS_NO: String, // 분류번호
+      IMG_REGIST_TS: String, // 약학 정보원 이미지 생성일
+      CLASS_NO: String, // 분류 번호
       ETC_OTC_CODE: String, // 전문/일반
-      ITEM_PERMIT_DATE: String, // 품목허가일자
-      SHAPE_CODE: String, // 제형코드
-      MARK_CODE_FRONT_ANAL: String, // 마크내용 (앞)
-      MARK_CODE_BACK_ANAL: String, // 마크내용 (뒤)
-      MARK_CODE_FRONT_IMG: String, // 마크이미지 (앞)
-      MARK_CODE_BACK_IMG: String, // 마크이미지 (뒤)
+      ITEM_PERMIT_DATE: String, // 품목 허가 일자
+      SHAPE_CODE: String, // 제형 코드
+      MARK_CODE_FRONT_ANAL: String, // 마크 내용 (앞)
+      MARK_CODE_BACK_ANAL: String, // 마크 내용 (뒤)
+      MARK_CODE_FRONT_IMG: String, // 마크 이미지 (앞)
+      MARK_CODE_BACK_IMG: String, // 마크 이미지 (뒤)
       ITEM_ENG_NAME: String, // 제품 영문명
-      EDI_CODE: String, // 보험코드
+      EDI_CODE: String, // 보험 코드
     },
     { collection: 'PillRecognition' }
   )

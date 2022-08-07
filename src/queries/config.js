@@ -1,6 +1,6 @@
 const { ConfigModel } = require('../models/config');
 const { logger } = require('../util/logger');
-const config = require('../res/config.json');
+const config = require('../../res/config.json');
 
 /**
  * 설정 데이터 조회

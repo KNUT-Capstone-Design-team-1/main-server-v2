@@ -4,15 +4,8 @@ const ConfigModel = mongoose.model(
   'Config',
   new mongoose.Schema(
     {
-      name: {
-        type: String,
-        require: true,
-        unique: true,
-      },
-      value: {
-        type: Object,
-        require: true,
-      },
+      name: { type: String, require: true, unique: true },
+      value: { type: Object, require: true },
     },
     { collection: 'Config' }
   )
