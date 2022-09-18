@@ -23,10 +23,4 @@ router.get('/detail', async (req, res) => {
   res.json(data);
 });
 
-// 이미지 검색 - 레거시
-router.get('/image', async (req, res) => {
-  const data = await PillRecognitionService.searchLegacy(req.query.imageId);
-  res.json(data);
-});
-
 module.exports = router;

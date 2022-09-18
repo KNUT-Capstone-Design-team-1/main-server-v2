@@ -58,14 +58,17 @@ async function searchRecognition(whereData) {
  */
 async function searchFromImage(imageId) {
   let recognizeResult;
+
   try {
     // 1. DL 서버 API 호출
     const configs = (await ConfigQuery.readConfig(['image-search']))[0].value;
+
     const url =
       process.env.NODE_ENV === 'production'
         ? configs['prod-url']
         : configs['dev-url'];
 
+    // { PRINT, DRUG_SHAPE }
     recognizeResult = await axios({
       method: 'post',
       url,
@@ -105,20 +108,8 @@ async function searchDetail(itemSeq) {
   }
 }
 
-/**
- * 기존 앱과의 호환을 위해 유지하는 레거시 이미지 검색 함수
- * @param {string} imageId base64 이미지 코드
- * @returns 알약 개요 정보
- */
-async function searchLegacy(imageId) {
-  const data = await searchFromImage(imageId);
-  // data에 대해 레거시 형태로 반환
-  return data;
-}
-
 module.exports = {
   searchRecognition,
   searchFromImage,
   searchDetail,
-  searchLegacy,
 };
