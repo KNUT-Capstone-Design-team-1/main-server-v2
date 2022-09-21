@@ -44,10 +44,10 @@ async function searchRecognition(whereData) {
       };
     });
 
-    return result;
+    return { isSuccess: true, data: result };
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to get over view\n${e.stack}`);
-    return {};
+    return { isSuccess: false, message: '식별 검색 중 오류가 발생 했습니다.' };
   }
 }
 
@@ -61,7 +61,7 @@ async function searchFromImage(imageId) {
 
   try {
     // 1. DL 서버 API 호출
-    const configs = (await ConfigQuery.readConfig(['image-search']))[0].value;
+    const configs = (await ConfigQuery.readConfig(['image-search']))[0];
 
     const url =
       process.env.NODE_ENV === 'production'
@@ -76,7 +76,10 @@ async function searchFromImage(imageId) {
     });
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to image Search ${e}`);
-    return {};
+    return {
+      isSuccess: false,
+      message: '이미지 검색 중 오류가 발생 했습니다.',
+    };
   }
 
   // 2. 식별 검색 호출
@@ -101,10 +104,11 @@ async function searchDetail(itemSeq) {
     apiUrl += `&item_seq=${itemSeq}`;
 
     const result = await axios({ method: 'get', url: apiUrl });
-    return result.data.body.items;
+
+    return { isSuccess: true, data: result.data.body.items };
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to call api.\n${e}`);
-    return [];
+    return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };
   }
 }
 

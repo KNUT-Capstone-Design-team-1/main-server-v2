@@ -108,23 +108,25 @@ async function generateOrOperator(data) {
     }
   }, {});
 
-  const likeSelectFields = [
-    'COLOR_CLASS1',
-    'COLOR_CLASS2',
-    'PRINT_FRONT',
-    'PRINT_BACK',
-    'DRUG_SHAPE',
-  ];
+  if (data.isSuccess) {
+    const likeSelectFields = [
+      'COLOR_CLASS1',
+      'COLOR_CLASS2',
+      'PRINT_FRONT',
+      'PRINT_BACK',
+      'DRUG_SHAPE',
+    ];
 
-  const hasLikeSelectField = Number(
-    Object.keys(data).find((v) => likeSelectFields.includes(v)).length
-  );
+    const hasLikeSelectField = Number(
+      Object.keys(data).find((v) => likeSelectFields.includes(v)).length
+    );
 
-  if (hasLikeSelectField) {
-    $and.push({ $or });
-    operator.$and = $and;
-  } else {
-    operator.$or = $or;
+    if (hasLikeSelectField) {
+      $and.push({ $or });
+      operator.$and = $and;
+    } else {
+      operator.$or = $or;
+    }
   }
 
   return operator;
