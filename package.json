@@ -13,6 +13,7 @@
     "cross-env": "^7.0.3",
     "csvtojson": "^2.0.10",
     "express": "^4.18.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.4.4",
     "read-excel-file": "^5.4.2",
     "winston": "^3.8.1",
@@ -20,13 +21,13 @@
     "yarn": "^1.22.19"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development node index.js",
-    "start-prod": "cross-env NODE_ENV=production node index.js"
+    "start": "nodemon --watch src/ cross-env NODE_ENV=development src/index.js",
+    "start-prod": "nodemon --watch src/ cross-env NODE_ENV=production src/index.js"
   },
   "name": "main-server-v2",
   "version": "1.0.0",
   "description": "what is pill",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/KNUT-Capstone-Design-team-1/main-server-v2.git",
   "author": "YongSiHun <tlgns1537@naver.com>",
   "license": "MIT"

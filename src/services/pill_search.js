@@ -1,52 +1,55 @@
 const axios = require('axios');
+const _ = require('lodash');
 const ConfigQuery = require('../queries/config');
 const PillRecognitionQuery = require('../queries/pill_recognition_data');
 const DrugPermissionQuery = require('../queries/drug_permission_data');
 const { logger } = require('../util/logger');
-const { generateOrOperator } = require('../util/util');
+const { generateOperatorForRecognition } = require('../util/util');
 
 /**
  * 식별 검색
- * @param {object} whereData DB 쿼리를 위한 데이터
- * @returns 알약 개요 정보
+ * @param {Object} whereData DB 쿼리를 위한 데이터 ex) { PRINT: '~~', CHRTIN: '~~', ... }
+ * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
+ * @returns {Object}
  */
-async function searchRecognition(whereData) {
+async function searchRecognition(whereData, func) {
   try {
     // DB 쿼리 조건
-    const operatorForRecognition = await generateOrOperator(whereData);
+    const operatorForRecognition = await generateOperatorForRecognition(
+      whereData
+    );
 
     // 1. 알약 식별 정보 DB 쿼리
     const recognitionDatas = await PillRecognitionQuery.readPillRecognitionData(
-      operatorForRecognition
+      operatorForRecognition,
+      func
     );
 
     if (recognitionDatas.lengh === 0) {
       throw new Error('식별된 정보가 없습니다.');
     }
 
-    const itemSeqs = recognitionDatas.map(({ ITEM_SEQ }) => ({ ITEM_SEQ }));
-    const operatorForPermission = await generateOrOperator(itemSeqs);
+    const operatorForPermission = {
+      ITEM_SEQ: { $in: recognitionDatas.map(({ ITEM_SEQ }) => ITEM_SEQ) },
+    };
 
     // 2. 알약 허가 정보 DB 쿼리
     const permissionDatas = await DrugPermissionQuery.readDrugPermissionData(
-      operatorForPermission
+      operatorForPermission,
+      func
     );
 
-    // 3. 데이터 정제
-    const result = recognitionDatas.map((v) => {
+    // 3. 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
+    const result = recognitionDatas.map((recognitionData) => {
       const permissionData = permissionDatas.find(
-        (v1) => v1.ITEM_SEQ === v.ITEM_SEQ
+        (v) => v.ITEM_SEQ === recognitionData.ITEM_SEQ
       );
-
-      return {
-        ...v,
-        ...permissionData,
-      };
+      return _.merge(recognitionData, permissionData);
     });
 
     return { isSuccess: true, data: result };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to get over view\n${e.stack}`);
+    logger.error(`[RECOG-SERVICE] fail to recognition search\n${e.stack}`);
     return { isSuccess: false, message: '식별 검색 중 오류가 발생 했습니다.' };
   }
 }
@@ -54,7 +57,7 @@ async function searchRecognition(whereData) {
 /**
  * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
  * @param {string} imageId base64 이미지 코드
- * @returns 알약 개요 정보
+ * @returns {Object}
  */
 async function searchFromImage(imageId) {
   let recognizeResult;
@@ -75,7 +78,7 @@ async function searchFromImage(imageId) {
       data: { img_base64: imageId },
     });
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to image Search ${e}`);
+    logger.error(`[RECOG-SERVICE] fail to image search ${e}`);
     return {
       isSuccess: false,
       message: '이미지 검색 중 오류가 발생 했습니다.',

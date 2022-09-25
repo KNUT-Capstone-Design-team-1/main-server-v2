@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const db = require('./src/loader/database');
-const { logger } = require('./src/util/logger');
-const PillSearchApi = require('./src/api/pill_search');
-const loader = require('./src/loader/loader');
+const db = require('./loader/database');
+const { logger } = require('./util/logger');
+const PillSearchApi = require('./api/pill_search');
+const loader = require('./loader/loader');
 
 const port = 17261;
 app.use(bodyParser.urlencoded({ extended: false }));

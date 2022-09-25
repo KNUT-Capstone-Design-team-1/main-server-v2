@@ -7,7 +7,10 @@ const PillRecognitionService = require('../services/pill_search');
 
 // 식별 정보 검색
 router.get('/recognition', async (req, res) => {
-  const data = await PillRecognitionService.searchRecognition(req.body);
+  const data = await PillRecognitionService.searchRecognition(
+    req.body,
+    req.query
+  );
   res.json(data);
 });
 
