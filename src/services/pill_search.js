@@ -77,6 +77,10 @@ async function searchFromImage(imageId) {
       url,
       data: { img_base64: imageId },
     });
+
+    if (!recognizeResult.isSuccess) {
+      throw new Error(recognizeResult?.message);
+    }
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to image search ${e}`);
     return {
@@ -104,11 +108,17 @@ async function searchDetail(itemSeq) {
     let apiUrl = `${url}`;
     apiUrl += `?serviceKey=${encServiceKey}`;
     apiUrl += `&type=json`;
-    apiUrl += `&item_seq=${itemSeq}`;
+    apiUrl += `&item_seq=${itemSeq.ITEM_SEQ}`;
+    apiUrl += `&pageNo=1&numOfRows=20`;
 
     const result = await axios({ method: 'get', url: apiUrl });
+    const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } =
+      result.data.body.items[0];
 
-    return { isSuccess: true, data: result.data.body.items };
+    return {
+      isSuccess: true,
+      data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }],
+    };
   } catch (e) {
     logger.error(`[RECOG-SERVICE] fail to call api.\n${e}`);
     return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };

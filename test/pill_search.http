@@ -13,21 +13,21 @@ Content-Type: application/json
     "CHARTIN": "필름코팅"
 }
 
-### call image search
+### 이미지 검색 테스트
 GET {{serverUrl}}/pill-search/image?imageId={{imageId}}
 
+### 상세 정보 테스트
+GET {{serverUrl}}/pill-search/detail
+Content-Type: application/json
+
+{
+    "ITEM_SEQ": "199400752"
+}
+
+
+### 허가정보 API test
+GET http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDtlInq01?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&item_seq=199400752&pageNo=1&numOfRows=20
 
 ### e약은요 API test
 GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20
 
-{
-    "ITEM_NAME": "머시론",
-    "PRINT": "",
-    "CHARTIN": "",
-    "DRUG_SHAPE": "원형",
-    "COLOR_CLASS": "",
-    "LINE_FRONT": ""
-}
-
-### 허가정보 API test
-GET http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDtlInq01?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20
