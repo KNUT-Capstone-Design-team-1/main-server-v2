@@ -1,6 +1,5 @@
-const { logger } = require('../util/logger');
-const { PillRecognitionModel } = require('../models/pill_recognition_data');
-const { distributeFromExtension } = require('../util/util');
+const { logger, distributeFromExtension } = require('../util');
+const { PillRecognitionDataModel } = require('../models');
 
 /**
  * 엑셀파일을 읽어 알약 식별 정보 업데이트
@@ -39,10 +38,14 @@ async function updatePillRecognitionData() {
   const result = await distributeFromExtension(schema, 'res/pill_recognition/');
 
   const upsert = async (data) => {
-    await PillRecognitionModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
-      new: true,
-      upsert: true,
-    });
+    await PillRecognitionDataModel.updateOne(
+      { ITEM_SEQ: data.ITEM_SEQ },
+      data,
+      {
+        new: true,
+        upsert: true,
+      }
+    );
   };
 
   try {
@@ -83,7 +86,7 @@ async function readPillRecognitionData(value, func) {
   };
 
   const { skip, limit } = func;
-  const result = await PillRecognitionModel.find(value, fileds)
+  const result = await PillRecognitionDataModel.find(value, fileds)
     .skip(skip || 0)
     .limit(limit || 10);
   return result;

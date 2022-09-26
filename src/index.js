@@ -2,16 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const db = require('./loader/database');
-const { logger } = require('./util/logger');
-const PillSearchApi = require('./api/pill_search');
-const loader = require('./loader/loader');
+const { logger } = require('./util');
+const { PillSearchApi } = require('./api');
+const { Loader, Database } = require('./loader');
 
 const port = 17261;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/pill-search', PillSearchApi);
 
+/**
+ * 서버 시작
+ */
 function main() {
   app.listen(port, () => {
     logger.info(
@@ -19,15 +21,10 @@ function main() {
     );
   });
 
-  try {
-    db.connectOnDatabase();
-    loader.updateConfig();
-    loader.updatePillRecognitionData();
-    loader.updateDrugPermissionData();
-  } catch (e) {
-    logger.error(`[APP-INIT] ${e}`);
-    throw e;
-  }
+  Database.connectOnDatabase();
+  Loader.updateConfig();
+  Loader.updatePillRecognitionData();
+  Loader.updateDrugPermissionData();
 }
 
 main();

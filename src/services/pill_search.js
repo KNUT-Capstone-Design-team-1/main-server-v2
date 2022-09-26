@@ -1,10 +1,12 @@
 const axios = require('axios');
 const _ = require('lodash');
-const ConfigQuery = require('../queries/config');
-const PillRecognitionQuery = require('../queries/pill_recognition_data');
-const DrugPermissionQuery = require('../queries/drug_permission_data');
-const { logger } = require('../util/logger');
-const { generateOperatorForRecognition } = require('../util/util');
+const {
+  ConfigQuery,
+  PillRecognitionDataQuery,
+  DrugPermissionDataQuery,
+} = require('../queries');
+const { logger } = require('../util');
+const { generateOperatorForRecognition } = require('../util');
 
 /**
  * 식별 검색
@@ -20,10 +22,11 @@ async function searchRecognition(whereData, func) {
     );
 
     // 1. 알약 식별 정보 DB 쿼리
-    const recognitionDatas = await PillRecognitionQuery.readPillRecognitionData(
-      operatorForRecognition,
-      func
-    );
+    const recognitionDatas =
+      await PillRecognitionDataQuery.readPillRecognitionData(
+        operatorForRecognition,
+        func
+      );
 
     if (recognitionDatas.lengh === 0) {
       throw new Error('식별된 정보가 없습니다.');
@@ -34,10 +37,11 @@ async function searchRecognition(whereData, func) {
     };
 
     // 2. 알약 허가 정보 DB 쿼리
-    const permissionDatas = await DrugPermissionQuery.readDrugPermissionData(
-      operatorForPermission,
-      func
-    );
+    const permissionDatas =
+      await DrugPermissionDataQuery.readDrugPermissionData(
+        operatorForPermission,
+        func
+      );
 
     // 3. 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
     const result = recognitionDatas.map((recognitionData) => {
@@ -49,7 +53,7 @@ async function searchRecognition(whereData, func) {
 
     return { isSuccess: true, data: result };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to recognition search\n${e.stack}`);
+    logger.error(`[RECOG-SERVICE] Fail to recognition search\n${e.stack}`);
     return { isSuccess: false, message: '식별 검색 중 오류가 발생 했습니다.' };
   }
 }
@@ -65,6 +69,10 @@ async function searchFromImage(imageId) {
   try {
     // 1. DL 서버 API 호출
     const configs = (await ConfigQuery.readConfig(['image-search']))[0];
+
+    if (!configs.length) {
+      throw new Error('구성 값을 읽어오는데 실패하였습니다.');
+    }
 
     const url =
       process.env.NODE_ENV === 'production'
@@ -82,7 +90,7 @@ async function searchFromImage(imageId) {
       throw new Error(recognizeResult?.message);
     }
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to image search ${e}`);
+    logger.error(`[RECOG-SERVICE] Fail to image search ${e}`);
     return {
       isSuccess: false,
       message: '이미지 검색 중 오류가 발생 했습니다.',
@@ -120,7 +128,7 @@ async function searchDetail(itemSeq) {
       data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }],
     };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] fail to call api.\n${e}`);
+    logger.error(`[RECOG-SERVICE] Fail to call api.\n${e}`);
     return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };
   }
 }

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+/**
+ * 의약품 허가 정보 모델
+ */
 const DrugPermissionDataModel = mongoose.model(
   'DrugPermissionData',
   new mongoose.Schema(

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
-const { logger } = require('../util/logger');
+const { logger } = require('../util');
 
+/**
+ * 데이터베이스 연결
+ */
 function connectOnDatabase() {
   const dbUrl =
     process.env.NODE_ENV === 'production'

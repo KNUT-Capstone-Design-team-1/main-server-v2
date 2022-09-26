@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-const PillRecognitionModel = mongoose.model(
+/**
+ * 알약 식별 정보 모델
+ */
+const PillRecognitionDataModel = mongoose.model(
   'PillRecognitionData',
   new mongoose.Schema(
     {
@@ -32,10 +35,10 @@ const PillRecognitionModel = mongoose.model(
       ITEM_ENG_NAME: String, // 제품 영문명
       EDI_CODE: String, // 보험 코드
     },
-    { collection: 'PillRecognition' }
+    { collection: 'PillRecognitionData' }
   )
 );
 
 module.exports = {
-  PillRecognitionModel,
+  PillRecognitionDataModel,
 };

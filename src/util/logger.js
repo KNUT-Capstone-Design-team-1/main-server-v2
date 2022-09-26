@@ -1,9 +1,9 @@
-const winston = require('winston');
+const Winston = require('winston');
 const WinstonDaily = require('winston-daily-rotate-file');
 
 // logs 디렉터리 하위에 로그 파일 저장
 const logDir = 'logs';
-const { combine, timestamp, printf } = winston.format;
+const { combine, timestamp, printf } = Winston.format;
 
 // 로그 포맷 정의
 const logFormat = printf(
@@ -14,7 +14,7 @@ const logFormat = printf(
  * 로그레벨
  * error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
  */
-const logger = winston.createLogger({
+const logger = Winston.createLogger({
   format: combine(
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
@@ -47,10 +47,10 @@ const logger = winston.createLogger({
 // Production 환경이 아닌 경우(dev 등)
 if (process.env.NODE_ENV !== 'production') {
   logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
+    new Winston.transports.Console({
+      format: Winston.format.combine(
+        Winston.format.colorize(),
+        Winston.format.simple()
       ),
     })
   );

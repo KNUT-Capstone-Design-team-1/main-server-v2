@@ -1,6 +1,5 @@
-const { logger } = require('../util/logger');
-const { DrugPermissionDataModel } = require('../models/drug_permission_data');
-const { distributeFromExtension } = require('../util/util');
+const { logger, distributeFromExtension } = require('../util');
+const { DrugPermissionDataModel } = require('../models');
 
 /**
  * 엑셀파일을 읽어 의약품 허가 정보 업데이트
