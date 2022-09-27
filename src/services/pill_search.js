@@ -61,9 +61,10 @@ async function searchRecognition(whereData, func) {
 /**
  * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
  * @param {string} imageId base64 이미지 코드
+ * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
  * @returns {Object}
  */
-async function searchFromImage(imageId) {
+async function searchFromImage(imageId, func) {
   let recognizeResult;
 
   try {
@@ -80,15 +81,23 @@ async function searchFromImage(imageId) {
         : configs['dev-url'];
 
     // { PRINT, DRUG_SHAPE }
-    recognizeResult = await axios({
+    const result = await axios({
       method: 'post',
       url,
       data: { img_base64: imageId },
     });
 
-    if (!recognizeResult.isSuccess) {
-      throw new Error(recognizeResult?.message);
+    if (!result.is_success) {
+      throw new Error(result?.message);
     }
+
+    recognizeResult = {
+      PRINT: result.data[0].print,
+      CHARTIN: result.data[0].chartin,
+      DRUG_SHAPE: result.data[0].durg_shape,
+      COLOR_CLASS: result.data[0].color_class,
+      LINE: result.data[0].line,
+    };
   } catch (e) {
     logger.error(`[RECOG-SERVICE] Fail to image search ${e}`);
     return {
@@ -98,7 +107,7 @@ async function searchFromImage(imageId) {
   }
 
   // 2. 식별 검색 호출
-  return searchRecognition(recognizeResult?.data);
+  return searchRecognition(recognizeResult?.data, func);
 }
 
 /**

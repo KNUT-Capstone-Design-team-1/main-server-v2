@@ -31,7 +31,12 @@ router.get('/image', async (req, res) => {
     );
   });
 
-  const data = await PillSearchService.searchFromImage(req.query.imageId);
+  const func = {
+    skip: req?.query?.skip,
+    limit: req?.query?.limit,
+  };
+
+  const data = await PillSearchService.searchFromImage(req.query.imageId, func);
   res.json(data);
 });
 
