@@ -22,7 +22,7 @@ router.get('/recognition', async (req, res) => {
 });
 
 // 이미지 검색
-router.get('/image', async (req, res) => {
+router.post('/image', async (req, res) => {
   SearchHistoryQuery.insertSearchHistory('image', req.body).catch((e) => {
     logger.error(
       `[IMAGE-SEARCH-API] Fail to insert search history.\ndata: ${JSON.stringify(
@@ -31,12 +31,7 @@ router.get('/image', async (req, res) => {
     );
   });
 
-  const func = {
-    skip: req?.query?.skip,
-    limit: req?.query?.limit,
-  };
-
-  const data = await PillSearchService.searchFromImage(req.query.imageId, func);
+  const data = await PillSearchService.searchFromImage(req.body, req.query);
   res.json(data);
 });
 

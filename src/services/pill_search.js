@@ -60,12 +60,13 @@ async function searchRecognition(whereData, func) {
 
 /**
  * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
- * @param {string} imageId base64 이미지 코드
+ * @param {Object} imageData base64 이미지 코드 ex) { base64Url }
  * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
  * @returns {Object}
  */
-async function searchFromImage(imageId, func) {
+async function searchFromImage(imageData, func) {
   let recognizeResult;
+  const { base64Url } = imageData;
 
   try {
     // 1. DL 서버 API 호출
@@ -84,7 +85,7 @@ async function searchFromImage(imageId, func) {
     const result = await axios({
       method: 'post',
       url,
-      data: { img_base64: imageId },
+      data: { img_base64: base64Url },
     });
 
     if (!result.is_success) {
