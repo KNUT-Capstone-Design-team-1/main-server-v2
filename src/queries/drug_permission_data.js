@@ -76,7 +76,6 @@ async function readDrugPermissionData(value, func) {
     ITEM_SEQ: 1,
     ITEM_PERMIT_DATE: 1,
     ETC_OTC_CODE: 1,
-    CHART: 1,
     MATRIAL_NAME: 1,
     STORAGE_NAME: 1,
     PACK_UNIT: 1,

@@ -76,7 +76,7 @@ async function readPillRecognitionData(value, func) {
     ITEM_SEQ: 1,
     ITEM_NAME: 1,
     ENTP_NAME: 1,
-    CHARTN: 1,
+    CHARTIN: 1,
     ITEM_IMAGE: 1,
     DRUG_SHAPE: 1,
     COLOR_CLASS1: 1,
