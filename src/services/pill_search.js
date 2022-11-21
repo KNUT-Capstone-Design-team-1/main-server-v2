@@ -28,8 +28,8 @@ async function searchRecognition(whereData, func) {
         func
       );
 
-    if (recognitionDatas.lengh === 0) {
-      throw new Error('식별된 정보가 없습니다.');
+    if (recognitionDatas.length === 0) {
+      return { isSuccess: false, message: '식별된 정보가 없습니다.' };
     }
 
     const operatorForPermission = {
@@ -72,8 +72,11 @@ async function searchFromImage(imageData, func) {
     // 1. DL 서버 API 호출
     const configs = (await ConfigQuery.readConfig(['image-search']))[0];
 
-    if (!configs.length) {
-      throw new Error('구성 값을 읽어오는데 실패하였습니다.');
+    if (!configs) {
+      return {
+        isSuccess: false,
+        message: '서버 구성 값을 읽어오지 못했습니다.',
+      };
     }
 
     const url =
@@ -88,27 +91,29 @@ async function searchFromImage(imageData, func) {
       data: { img_base64: base64Url },
     });
 
-    if (!result.is_success) {
-      throw new Error(result?.message);
+    const resultData = JSON.parse(result.data);
+
+    if (!resultData.is_success) {
+      return { isSuccess: false, message: resultData?.message };
     }
 
     recognizeResult = {
-      PRINT: result.data[0].print,
-      CHARTIN: result.data[0].chartin,
-      DRUG_SHAPE: result.data[0].durg_shape,
-      COLOR_CLASS: result.data[0].color_class,
-      LINE: result.data[0].line,
+      PRINT: resultData.data[0].print || '',
+      CHARTIN: resultData.data[0].chartin || '',
+      DRUG_SHAPE: resultData.data[0].durg_shape || '',
+      COLOR_CLASS: resultData.data[0].color_class || '',
+      LINE: resultData.data[0].line || '',
     };
+
+    // 2. 식별 검색 호출
+    return searchRecognition(recognizeResult, func);
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] Fail to image search ${e}`);
+    logger.error(`[RECOG-SERVICE] Fail to image search ${e.stack}`);
     return {
       isSuccess: false,
       message: '이미지 검색 중 오류가 발생 했습니다.',
     };
   }
-
-  // 2. 식별 검색 호출
-  return searchRecognition(recognizeResult?.data, func);
 }
 
 /**
@@ -138,7 +143,7 @@ async function searchDetail(itemSeq) {
       data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }],
     };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] Fail to call api.\n${e}`);
+    logger.error(`[RECOG-SERVICE] Fail to call api.\n${e.stack}`);
     return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };
   }
 }

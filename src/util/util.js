@@ -22,7 +22,7 @@ async function xlsxToJson(filePath, schema) {
 
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] xlsx file fail\n${e}`);
+    logger.error(`[UTIL] xlsx file fail\n${e.stack}`);
     return [];
   }
 }
@@ -37,7 +37,7 @@ async function csvToJson(filePath) {
     const rows = await new Converter().fromFile(filePath);
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] csv file fail\n${e}`);
+    logger.error(`[UTIL] csv file fail\n${e.stack}`);
     return [];
   }
 }

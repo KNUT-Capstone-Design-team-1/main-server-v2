@@ -5,7 +5,7 @@
     "decServiceKey": "YeLMbr6z+nBjLdTjwT+F2C3gQFCPmC7WEr0C7auKL+3YBkv3JcxZGrxr1Ma7qd/gUe0srIPBj4TQ7Jc0THb5Gg=="
   },
   "image-search": {
-    "dev-url": "http://localhost:5001/data",
+    "dev-url": "http://localhost:5000/data",
     "prod-url": "http://wip-dl:5000/data"
   }
 }
