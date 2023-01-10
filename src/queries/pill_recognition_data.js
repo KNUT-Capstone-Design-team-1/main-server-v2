@@ -1,4 +1,4 @@
-const { logger, distributeFromExtension } = require('../util');
+const { updatePillData, getJsonFromExcelFile } = require('../util');
 const { PillRecognitionDataModel } = require('../models');
 
 /**
@@ -35,34 +35,17 @@ async function updatePillRecognitionData() {
     EDI_CODE: { prop: 'EDI_CODE', type: String },
   };
 
-  const result = await distributeFromExtension(schema, 'res/pill_recognition/');
+  const excelJson = await getJsonFromExcelFile(schema, 'res/pill_recognition/');
 
-  const upsert = async (data) => {
+  const recognitionDataUpsertFunc = async (data) => {
     await PillRecognitionDataModel.updateOne(
       { ITEM_SEQ: data.ITEM_SEQ },
       data,
-      {
-        new: true,
-        upsert: true,
-      }
+      { new: true, upsert: true }
     );
   };
 
-  try {
-    if (result.xlsx.length > 0) {
-      result.xlsx.forEach(async (data) => {
-        await upsert(data);
-      });
-    }
-
-    if (result.csv.length > 0) {
-      result.csv.forEach(async (data) => {
-        await upsert(data);
-      });
-    }
-  } catch (e) {
-    logger.error(`[QUERY] Fail to change file to json.\n${e.stack}`);
-  }
+  await updatePillData(excelJson, recognitionDataUpsertFunc);
 }
 
 /**

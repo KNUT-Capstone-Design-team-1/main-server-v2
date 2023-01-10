@@ -36,3 +36,7 @@ GET http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDt
 ### e약은요 API test
 GET http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=YeLMbr6z%2BnBjLdTjwT%2BF2C3gQFCPmC7WEr0C7auKL%2B3YBkv3JcxZGrxr1Ma7qd%2FgUe0srIPBj4TQ7Jc0THb5Gg%3D%3D&type=json&pageNo=1&numOfRows=20
 
+
+### 이미지 다운
+POST https://nedrug.mfds.go.kr/pbp/cmn/itemImageDownload/1NTofcj34bb
+Content-Type: application/octet-stream

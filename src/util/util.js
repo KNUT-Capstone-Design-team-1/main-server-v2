@@ -1,20 +1,25 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const xlsx = require('read-excel-file/node');
-const { Converter } = require('csvtojson');
+const xlsxParser = require('read-excel-file/node');
+const csvParser = require('csvtojson');
+const xlsParser = require('simple-excel-to-json');
 const path = require('path');
-const fs = require('node:fs/promises');
+const iconvLite = require('iconv-lite');
+const promiseFs = require('node:fs/promises');
+const fs = require('fs');
+const { default: axios } = require('axios');
 const { logger } = require('./logger');
 
 /**
  * xlsx 파일의 데이터를 json 데이터로 변경
  * @param {string} filePath 파일명을 포함한 파일 경로
  * @param {object} schema json으로 바꿀 스키마
- * @returns json 배열
+ * @returns {object}
  */
-async function xlsxToJson(filePath, schema) {
+async function convertXlsxToJson(filePath, schema) {
   try {
-    const { rows, err } = await xlsx(filePath, { schema });
+    const { rows, err } = await xlsxParser(filePath, { schema });
 
     if (err) {
       logger.warn(`[UTIL] xlsx to json have error.[${filePath}]\n${err}`);
@@ -22,7 +27,7 @@ async function xlsxToJson(filePath, schema) {
 
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] xlsx file fail\n${e.stack}`);
+    logger.error(`[UTIL] Convert xlsx file fail\n${e.stack}`);
     return [];
   }
 }
@@ -30,14 +35,32 @@ async function xlsxToJson(filePath, schema) {
 /**
  * csv 파일의 데이터를 json 데이터로 변경
  * @param {string} filePath 파일명을 포함한 파일 경로
- * @returns json 배열
+ * @returns {object}
  */
-async function csvToJson(filePath) {
+async function convertCsvToJson(filePath) {
+  const { Converter } = csvParser;
   try {
-    const rows = await new Converter().fromFile(filePath);
+    const csvString = iconvLite.decode(fs.readFileSync(filePath), 'euc-kr');
+    const rows = await new Converter().fromString(csvString);
+
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] csv file fail\n${e.stack}`);
+    logger.error(`[UTIL] Convert csv file fail\n${e.stack}`);
+    return [];
+  }
+}
+
+/**
+ * xls 파일의 데이터를 json 데이터로 변경
+ * @param {string} filePath 파일명을 포함한 파일 경로
+ * @returns {object}
+ */
+async function convertXlsToJson(filePath) {
+  try {
+    const doc = xlsParser.parseXls2Json(filePath);
+    return doc.flat();
+  } catch (e) {
+    logger.error(`[UTIL] Convert xls file fail\n${e.stack}`);
     return [];
   }
 }
@@ -45,25 +68,33 @@ async function csvToJson(filePath) {
 /**
  * 디렉터리 내의 파일 확장자에 따라 분기
  * @param {object} schema json으로 바꿀 스키마
- * @returns json으로 변경된 확장자 별 데이터
+ * @returns {object[]}
  */
-async function distributeFromExtension(schema, dirPath) {
-  const result = { xlsx: [], csv: [] };
+async function getJsonFromExcelFile(schema, dirPath) {
+  const result = { xlsx: [], csv: [], xls: [] };
   try {
-    const fileList = await fs.readdir(dirPath);
+    const fileList = await promiseFs.readdir(dirPath);
 
     for (const file of fileList) {
       switch (path.extname(file)) {
         case '.xlsx': {
-          const xlsxJson = await xlsxToJson(`${dirPath}${file}`, schema);
+          const xlsxJson = await convertXlsxToJson(`${dirPath}${file}`, schema);
           result.xlsx.push(...xlsxJson);
           break;
         }
+
         case '.csv': {
-          const csvJson = await csvToJson(`${dirPath}${file}`);
+          const csvJson = await convertCsvToJson(`${dirPath}${file}`);
           result.csv.push(...csvJson);
           break;
         }
+
+        case '.xls': {
+          const xlsJson = await convertXlsToJson(`${dirPath}${file}`, schema);
+          result.xls.push(...xlsJson);
+          break;
+        }
+
         default:
           logger.warn(
             `[UTIL] None execute function extension: ${path.extname(file)}`
@@ -76,6 +107,47 @@ async function distributeFromExtension(schema, dirPath) {
   } catch (e) {
     logger.error(`[UTIL] Fail to read File.\n${e.stack}`);
     return {};
+  }
+}
+
+// 작업중
+async function convertOctetStreamUrlToBase64() {
+  const res = await axios({
+    method: 'post',
+    url: 'https://nedrug.mfds.go.kr/pbp/cmn/itemImageDownload/1NTofcj34bb',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+    },
+  });
+
+  fs.writeFileSync(
+    './test.txt',
+    Buffer.from(res.data, 'binary').toString('base64url')
+  );
+}
+
+/**
+ * 알약 정보 관련 DB 업데이트
+ * @param {Object} excelJson 엑셀 파일에서 추출한 Json객체
+ * @param {Function} upsertFunc DB에 업데이트 하기 위한 upsert 쿼리 함수
+ */
+async function updatePillData(excelJson, upsertFunc) {
+  let excelJsonVar = excelJson;
+
+  try {
+    // 식별정보의 ITEM_IMAGE를 base64로 변환
+    if (upsertFunc.name === 'recognitionDataUpsertFunc') {
+      excelJsonVar =
+        (await convertOctetStreamUrlToBase64(excelJsonVar)) || excelJsonVar;
+    }
+
+    for (const key of Object.keys(excelJsonVar)) {
+      for (const value of excelJsonVar[key]) {
+        await upsertFunc(value);
+      }
+    }
+  } catch (e) {
+    logger.error(`[QUERY] Fail to change file to json.\n${e.stack}`);
   }
 }
 
@@ -142,6 +214,7 @@ async function generateOperatorForRecognition(data) {
 }
 
 module.exports = {
-  distributeFromExtension,
+  getJsonFromExcelFile,
   generateOperatorForRecognition,
+  updatePillData,
 };
