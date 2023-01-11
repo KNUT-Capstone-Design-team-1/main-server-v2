@@ -27,7 +27,7 @@ async function convertXlsxToJson(filePath, schema) {
 
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] Convert xlsx file fail\n${e.stack}`);
+    logger.error(`[UTIL] Convert xlsx file fail(${filePath})\n${e.stack}`);
     return [];
   }
 }
@@ -42,10 +42,9 @@ async function convertCsvToJson(filePath) {
   try {
     const csvString = iconvLite.decode(fs.readFileSync(filePath), 'euc-kr');
     const rows = await new Converter().fromString(csvString);
-
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] Convert csv file fail\n${e.stack}`);
+    logger.error(`[UTIL] Convert csv file fail(${filePath})\n${e.stack}`);
     return [];
   }
 }
@@ -60,7 +59,7 @@ async function convertXlsToJson(filePath) {
     const doc = xlsParser.parseXls2Json(filePath);
     return doc.flat();
   } catch (e) {
-    logger.error(`[UTIL] Convert xls file fail\n${e.stack}`);
+    logger.error(`[UTIL] Convert xls file fail(${filePath})\n${e.stack}`);
     return [];
   }
 }
@@ -102,10 +101,10 @@ async function getJsonFromExcelFile(schema, dirPath) {
       }
     }
 
-    logger.info(`[UTIL] File to json complete`);
+    logger.info(`[UTIL] File to json complete(${dirPath})`);
     return result;
   } catch (e) {
-    logger.error(`[UTIL] Fail to read File.\n${e.stack}`);
+    logger.error(`[UTIL] Fail to read File(${dirPath}).\n${e.stack}`);
     return {};
   }
 }

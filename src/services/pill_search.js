@@ -53,7 +53,9 @@ async function searchRecognition(whereData, func) {
 
     return { isSuccess: true, data: result };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] Fail to recognition search\n${e.stack}`);
+    logger.error(
+      `[RECOG-SERVICE] Fail to recognition search.\nwhereData: ${whereData}\n${e.stack}`
+    );
     return { isSuccess: false, message: '식별 검색 중 오류가 발생 했습니다.' };
   }
 }
@@ -96,7 +98,9 @@ async function searchFromImage(imageData, func) {
     // 2. 식별 검색 호출
     return searchRecognition(recognizeResult, func);
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] Fail to image search ${e.stack}`);
+    logger.error(
+      `[RECOG-SERVICE] Fail to image search.\nimageData: ${imageData} \n${e.stack}`
+    );
     return {
       isSuccess: false,
       message: '이미지 검색 중 오류가 발생 했습니다.',
@@ -129,7 +133,9 @@ async function searchDetail(itemSeq) {
       data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }],
     };
   } catch (e) {
-    logger.error(`[RECOG-SERVICE] Fail to call api.\n${e.stack}`);
+    logger.error(
+      `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e.stack}`
+    );
     return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };
   }
 }

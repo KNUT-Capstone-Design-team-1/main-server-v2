@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -5,6 +6,7 @@ const app = express();
 const { logger } = require('./util');
 const { PillSearchApi } = require('./api');
 const { Loader, Database } = require('./loader');
+const { DatabaseQuery } = require('./queries');
 
 const port = 17261;
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
@@ -22,8 +24,27 @@ async function main() {
   });
 
   Database.connectOnDatabase();
-  Loader.updatePillRecognitionData();
-  Loader.updateDrugPermissionData();
+
+  const documentsCount = await DatabaseQuery.countDocuments();
+  const noneDataCollections = documentsCount.filter((v) => v.documets === 0);
+
+  if (process.env.NODE_ENV === 'init' || noneDataCollections.length > 0) {
+    logger.info('[APP-INIT] Has no essential datas. do collection update');
+
+    for (const collection of noneDataCollections) {
+      switch (collection.model) {
+        case 'PillRecognitionDataModel':
+          Loader.updatePillRecognitionData();
+          break;
+
+        case 'DrugPermissionDataModel':
+          Loader.updateDrugPermissionData();
+          break;
+
+        default:
+      }
+    }
+  }
 }
 
 main();
