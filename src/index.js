@@ -14,7 +14,7 @@ app.use('/pill-search', PillSearchApi);
 /**
  * 서버 시작
  */
-function main() {
+async function main() {
   app.listen(port, () => {
     logger.info(
       `[APP-INIT] Server Running on ${port} port. env: ${process.env.NODE_ENV}`
@@ -22,7 +22,6 @@ function main() {
   });
 
   Database.connectOnDatabase();
-  Loader.updateConfig();
   Loader.updatePillRecognitionData();
   Loader.updateDrugPermissionData();
 }

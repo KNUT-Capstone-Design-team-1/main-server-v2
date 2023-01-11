@@ -1,12 +1,12 @@
 const axios = require('axios');
 const _ = require('lodash');
 const {
-  ConfigQuery,
   PillRecognitionDataQuery,
   DrugPermissionDataQuery,
 } = require('../queries');
 const { logger } = require('../util');
 const { generateOperatorForRecognition } = require('../util');
+const { imageSearch, detailSearch } = require('../../res/config.json');
 
 /**
  * 식별 검색
@@ -70,19 +70,8 @@ async function searchFromImage(imageData, func) {
 
   try {
     // 1. DL 서버 API 호출
-    const configs = (await ConfigQuery.readConfig(['image-search']))[0];
-
-    if (!configs) {
-      return {
-        isSuccess: false,
-        message: '서버 구성 값을 읽어오지 못했습니다.',
-      };
-    }
-
-    const url =
-      process.env.NODE_ENV === 'production'
-        ? configs['prod-url']
-        : configs['dev-url'];
+    const { devUrl, prodUrl } = imageSearch;
+    const url = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
 
     // { PRINT, DRUG_SHAPE }
     const result = await axios({
@@ -92,7 +81,6 @@ async function searchFromImage(imageData, func) {
     });
 
     const resultData = JSON.parse(result.data);
-
     if (!resultData.is_success) {
       return { isSuccess: false, message: resultData?.message };
     }
@@ -124,9 +112,7 @@ async function searchFromImage(imageData, func) {
 async function searchDetail(itemSeq) {
   try {
     // API URL 및 서비스키
-    const { url, encServiceKey } = (
-      await ConfigQuery.readConfig(['detail-search'])
-    )[0];
+    const { url, encServiceKey } = detailSearch;
 
     let apiUrl = `${url}`;
     apiUrl += `?serviceKey=${encServiceKey}`;
