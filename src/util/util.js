@@ -94,6 +94,9 @@ async function getJsonFromExcelFile(schema, dirPath) {
           break;
         }
 
+        case '.md':
+          break;
+
         default:
           logger.warn(
             `[UTIL] None execute function extension: ${path.extname(file)}`
@@ -119,10 +122,12 @@ async function convertOctetStreamUrlToBase64() {
     },
   });
 
-  fs.writeFileSync(
-    './test.txt',
-    Buffer.from(res.data, 'binary').toString('base64url')
-  );
+  console.log(res);
+
+  // fs.writeFileSync(
+  //   './test.txt',
+  //   Buffer.from(res.data, 'binary').toString('base64url')
+  // );
 }
 
 /**

@@ -24,9 +24,9 @@
     "yarn": "^1.22.19"
   },
   "scripts": {
-    "start": "nodemon --watch src/ cross-env NODE_ENV=development src/index.js",
-    "start-prod": "nodemon --watch src/ cross-env NODE_ENV=production src/index.js",
-    "start-init": "nodemon --watch src/ cross-env NODE_ENV=init src/index.js"
+    "start": "cross-env NODE_ENV=development nodemon --watch src/ src/app.js",
+    "start-prod": "cross-env NODE_ENV=production nodemon --watch src/ src/app.js",
+    "start-init": "cross-env NODE_ENV=init nodemon --watch src/ src/app.js"
   },
   "name": "main-server-v2",
   "version": "1.0.0",

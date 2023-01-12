@@ -14,6 +14,15 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/pill-search', PillSearchApi);
 
 /**
+ * 데이터베이스 세팅
+ */
+function initDatabase() {
+  logger.info('[INIT-DATABASE] Initial Database');
+  Loader.updatePillRecognitionData();
+  Loader.updateDrugPermissionData();
+}
+
+/**
  * 서버 시작
  */
 async function main() {
@@ -28,8 +37,10 @@ async function main() {
   const documentsCount = await DatabaseQuery.countDocuments();
   const noneDataCollections = documentsCount.filter((v) => v.documets === 0);
 
-  if (process.env.NODE_ENV === 'init' || noneDataCollections.length > 0) {
-    logger.info('[APP-INIT] Has no essential datas. do collection update');
+  if (noneDataCollections.length > 0) {
+    logger.info(
+      '[APP-INIT] Has no essential datas or init mode. do collection update'
+    );
 
     for (const collection of noneDataCollections) {
       switch (collection.model) {
@@ -44,6 +55,8 @@ async function main() {
         default:
       }
     }
+  } else if (process.env.NODE_ENV === 'init') {
+    initDatabase();
   }
 }
 
