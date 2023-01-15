@@ -70,89 +70,87 @@ async function convertXlsToJson(filePath) {
  * @returns {object[]}
  */
 async function getJsonFromExcelFile(schema, dirPath) {
-  const result = { xlsx: [], csv: [], xls: [] };
+  const result = [];
+  let data;
+
   try {
     const fileList = await promiseFs.readdir(dirPath);
 
     for (const file of fileList) {
-      switch (path.extname(file)) {
-        case '.xlsx': {
-          const xlsxJson = await convertXlsxToJson(`${dirPath}${file}`, schema);
-          result.xlsx.push(...xlsxJson);
-          break;
+      const filName = path.extname(file);
+
+      const convertFunction = {
+        '.xlsx': convertXlsxToJson,
+        '.csv': convertCsvToJson,
+        '.xls': convertXlsToJson,
+      }[filName];
+
+      // .md의 경우 기본으로 들어있는 파일이기 때문에 로그로 표시하지 않는다.
+      if (!convertFunction && filName !== '.md') {
+        logger.warn(
+          `[GET-JSON-FROM-EXCEL-FILE] None execute function extension: ${filName}`
+        );
+      } else {
+        data = await convertFunction(`${dirPath}${file}`, schema);
+
+        if (data) {
+          result.push(...data);
         }
-
-        case '.csv': {
-          const csvJson = await convertCsvToJson(`${dirPath}${file}`);
-          result.csv.push(...csvJson);
-          break;
-        }
-
-        case '.xls': {
-          const xlsJson = await convertXlsToJson(`${dirPath}${file}`, schema);
-          result.xls.push(...xlsJson);
-          break;
-        }
-
-        case '.md':
-          break;
-
-        default:
-          logger.warn(
-            `[UTIL] None execute function extension: ${path.extname(file)}`
-          );
       }
     }
-
-    logger.info(`[UTIL] File to json complete(${dirPath})`);
     return result;
   } catch (e) {
-    logger.error(`[UTIL] Fail to read File(${dirPath}).\n${e.stack}`);
-    return {};
+    logger.error(
+      `[GET-JSON-FROM-EXCEL-FILE] Excel to read File(${dirPath}).\n${e.stack}`
+    );
+    return [];
   }
-}
-
-// 작업중
-async function convertOctetStreamUrlToBase64() {
-  const res = await axios({
-    method: 'post',
-    url: 'https://nedrug.mfds.go.kr/pbp/cmn/itemImageDownload/1NTofcj34bb',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-    },
-  });
-
-  console.log(res);
-
-  // fs.writeFileSync(
-  //   './test.txt',
-  //   Buffer.from(res.data, 'binary').toString('base64url')
-  // );
 }
 
 /**
- * 알약 정보 관련 DB 업데이트
- * @param {Object} excelJson 엑셀 파일에서 추출한 Json객체
- * @param {Function} upsertFunc DB에 업데이트 하기 위한 upsert 쿼리 함수
+ * octet-stream 형태의 url을 base64로 변경
+ * @param {String} imageUrl base64 URL
+ * @returns {String}
  */
-async function updatePillData(excelJson, upsertFunc) {
-  let excelJsonVar = excelJson;
-
+async function convertOctetStreamUrlToBase64(imageUrl) {
   try {
-    // 식별정보의 ITEM_IMAGE를 base64로 변환
-    if (upsertFunc.name === 'recognitionDataUpsertFunc') {
-      excelJsonVar =
-        (await convertOctetStreamUrlToBase64(excelJsonVar)) || excelJsonVar;
-    }
+    const res = await axios({
+      method: 'post',
+      url: imageUrl,
+      headers: { 'Content-Type': 'application/download' },
+      responseType: 'arrayBuffer',
+      responseEncoding: 'binary',
+    });
 
-    for (const key of Object.keys(excelJsonVar)) {
-      for (const value of excelJsonVar[key]) {
-        await upsertFunc(value);
-      }
-    }
+    return Buffer.from(res.data, 'binary').toString('base64');
   } catch (e) {
-    logger.error(`[QUERY] Fail to change file to json.\n${e.stack}`);
+    logger.warn(
+      `[CONVERT-OCTET-TO-BASE64] can not convert for '${imageUrl}'.\n${e.stack}`
+    );
+    return imageUrl;
   }
+}
+
+/**
+ * 알약 식별 정보의 이미지를 octet-stream에서 base64로 변경한 객체 배열을 반환
+ * @param {Obejct[]} excelJson
+ * @returns {Object[]}
+ */
+async function convertPillImageUrl(excelJson) {
+  const convertedDatas = [];
+
+  for (const data of excelJson) {
+    if (data.ITEM_IMAGE) {
+      await convertedDatas.push({
+        ...data,
+        ITEM_IMAGE:
+          (await convertOctetStreamUrlToBase64(data.ITEM_IMAGE)) ||
+          data.ITEM_IMAGE,
+      });
+    }
+  }
+
+  return convertedDatas;
 }
 
 /**
@@ -219,6 +217,6 @@ async function generateOperatorForRecognition(data) {
 
 module.exports = {
   getJsonFromExcelFile,
+  convertPillImageUrl,
   generateOperatorForRecognition,
-  updatePillData,
 };

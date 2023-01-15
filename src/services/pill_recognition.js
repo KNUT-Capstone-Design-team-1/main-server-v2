@@ -1,0 +1,71 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+const { PillRecognitionDataQuery } = require('../queries');
+const { logger, getJsonFromExcelFile } = require('../util');
+// const { convertPillImageUrl } = require('../util');
+
+/**
+ * DB에 여러 항목의 알약 식별 정보 데이터 업데이트 요청
+ * @param {Object[]} datas 알약 식별 정보 데이터 배열
+ */
+async function requestUpdatePillRecognitionDatas(datas) {
+  if (datas.length === 0) {
+    logger.warn(`[REQ-UPDATE-PILL-RECOG-DATA] No data from excel file.`);
+    return;
+  }
+
+  try {
+    for (const data of datas) {
+      await PillRecognitionDataQuery.updatePillRecognitionData(
+        // await convertPillImageUrl(excelJson)
+        data
+      );
+    }
+  } catch (e) {
+    logger.error(
+      `[REQ-UPDATE-PILL-RECOG-DATA] Fail to update datas.\n${e.stack}`
+    );
+  }
+}
+
+/**
+ * 엑셀파일을 읽어 알약 식별 정보 업데이트
+ */
+async function initPillRecognitionData() {
+  const schema = {
+    ITEM_SEQ: { prop: 'ITEM_SEQ', type: String, required: true },
+    ITEM_NAME: { prop: 'ITEM_NAME', type: String, required: true },
+    ENTP_SEQ: { prop: 'ENTP_SEQ', type: String, required: true },
+    ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
+    CHARTN: { prop: 'CHARTN', type: String, required: true },
+    ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String },
+    PRINT_FRONT: { prop: 'PRINT_FRONT', type: String },
+    PRINT_BACK: { prop: 'PRINT_BACK', type: String },
+    DRUG_SHAPE: { prop: 'DRUG_SHAPE', type: String, required: true },
+    COLOR_CLASS1: { prop: 'COLOR_CLASS1', type: String, required: true },
+    COLOR_CLASS2: { prop: 'COLOR_CLASS2', type: String },
+    LINE_FRONT: { prop: 'LINE_FRONT', type: String },
+    LINE_BACK: { prop: 'LINE_BACK', type: String },
+    LENG_LONG: { prop: 'LENG_LONG', type: String },
+    LENG_SHORT: { prop: 'LENG_SHORT', type: String },
+    THICK: { prop: 'THICK', type: String },
+    IMG_REGIST_TS: { prop: 'IMG_REGIST_TS', type: String },
+    CLASS_NO: { prop: 'CLASS_NO', type: String },
+    ETC_OTC_CODE: { prop: 'ETC_OTC_CODE', type: String },
+    ITEM_PERMIT_DATE: { prop: 'ITEM_PERMIT_DATE', type: String },
+    SHAPE_CODE: { prop: 'SHAPE_CODE', type: String },
+    MARK_CODE_FRONT_ANAL: { prop: 'MARK_CODE_FRONT_ANAL', type: String },
+    MARK_CODE_BACK_ANAL: { prop: 'MARK_CODE_BACK_ANAL', type: String },
+    MARK_CODE_FRONT_IMG: { prop: 'MARK_CODE_FRONT_IMG', type: String },
+    MARK_CODE_BACK_IMG: { prop: 'MARK_CODE_BACK_IMG', type: String },
+    ITEM_ENG_NAME: { prop: 'ITEM_ENG_NAME', type: String },
+    EDI_CODE: { prop: 'EDI_CODE', type: String },
+  };
+  const excelJson = await getJsonFromExcelFile(schema, 'res/pill_recognition/');
+  await requestUpdatePillRecognitionDatas(excelJson);
+}
+
+module.exports = {
+  requestUpdatePillRecognitionDatas,
+  initPillRecognitionData,
+};

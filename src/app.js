@@ -18,8 +18,8 @@ app.use('/pill-search', PillSearchApi);
  */
 function initDatabase() {
   logger.info('[INIT-DATABASE] Initial Database');
-  Loader.updatePillRecognitionData();
-  Loader.updateDrugPermissionData();
+  Loader.loadPillRecognitionData();
+  Loader.loadDrugPermissionData();
 }
 
 /**
@@ -45,11 +45,11 @@ async function main() {
     for (const collection of noneDataCollections) {
       switch (collection.model) {
         case 'PillRecognitionDataModel':
-          Loader.updatePillRecognitionData();
+          Loader.loadPillRecognitionData();
           break;
 
         case 'DrugPermissionDataModel':
-          Loader.updateDrugPermissionData();
+          Loader.loadDrugPermissionData();
           break;
 
         default:
