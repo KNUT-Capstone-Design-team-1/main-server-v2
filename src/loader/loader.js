@@ -1,6 +1,6 @@
 const {
-  PillRecognitionService,
-  DrugPermissionService,
+  initPillRecognitionData,
+  initDrugPermissionData,
 } = require('../services');
 const { logger } = require('../util');
 
@@ -8,7 +8,7 @@ const { logger } = require('../util');
  * 알약 식별 정보 업데이트
  */
 async function loadPillRecognitionData() {
-  await PillRecognitionService.initPillRecognitionData();
+  await initPillRecognitionData();
   logger.info('[LOAD-PILL-RECOG-DATA] load complete');
 }
 
@@ -16,7 +16,7 @@ async function loadPillRecognitionData() {
  * 의약품 허가 정보 업데이트
  */
 async function loadDrugPermissionData() {
-  await DrugPermissionService.initDrugPermissionData();
+  await initDrugPermissionData();
   logger.info('[LOAD-DRUG-PERM-DATA] load complete');
 }
 

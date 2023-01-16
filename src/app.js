@@ -5,8 +5,12 @@ const bodyParser = require('body-parser');
 const app = express();
 const { logger } = require('./util');
 const { PillSearchApi } = require('./api');
-const { Loader, Database } = require('./loader');
-const { DatabaseQuery } = require('./queries');
+const {
+  loadPillRecognitionData,
+  loadDrugPermissionData,
+  connectOnDatabase,
+} = require('./loader');
+const { countDocuments } = require('./queries');
 
 const port = 17261;
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
@@ -18,8 +22,8 @@ app.use('/pill-search', PillSearchApi);
  */
 function initDatabase() {
   logger.info('[INIT-DATABASE] Initial Database');
-  Loader.loadPillRecognitionData();
-  Loader.loadDrugPermissionData();
+  loadPillRecognitionData();
+  loadDrugPermissionData();
 }
 
 /**
@@ -32,9 +36,9 @@ async function main() {
     );
   });
 
-  Database.connectOnDatabase();
+  connectOnDatabase();
 
-  const documentsCount = await DatabaseQuery.countDocuments();
+  const documentsCount = await countDocuments();
   const noneDataCollections = documentsCount.filter((v) => v.documets === 0);
 
   if (noneDataCollections.length > 0) {
@@ -45,11 +49,11 @@ async function main() {
     for (const collection of noneDataCollections) {
       switch (collection.model) {
         case 'PillRecognitionDataModel':
-          Loader.loadPillRecognitionData();
+          loadPillRecognitionData();
           break;
 
         case 'DrugPermissionDataModel':
-          Loader.loadDrugPermissionData();
+          loadDrugPermissionData();
           break;
 
         default:

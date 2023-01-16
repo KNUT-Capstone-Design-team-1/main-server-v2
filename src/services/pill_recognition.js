@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { PillRecognitionDataQuery } = require('../queries');
+const { updatePillRecognitionData } = require('../queries');
 const { logger, getJsonFromExcelFile } = require('../util');
 // const { convertPillImageUrl } = require('../util');
 
@@ -16,7 +16,7 @@ async function requestUpdatePillRecognitionDatas(datas) {
 
   try {
     for (const data of datas) {
-      await PillRecognitionDataQuery.updatePillRecognitionData(
+      await updatePillRecognitionData(
         // await convertPillImageUrl(excelJson)
         data
       );

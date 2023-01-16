@@ -1,4 +1,3 @@
-const { logger } = require('../util');
 const { PillRecognitionDataModel } = require('../models');
 
 /**
@@ -6,19 +5,10 @@ const { PillRecognitionDataModel } = require('../models');
  * @param {Object} data 알약 식별 정보 데이터
  */
 async function updatePillRecognitionData(data) {
-  try {
-    await PillRecognitionDataModel.updateOne(
-      { ITEM_SEQ: data.ITEM_SEQ },
-      data,
-      { new: true, upsert: true }
-    );
-  } catch (e) {
-    logger.error(
-      `[UPDATE-RECOG-DATA] Fail to update.\n${JSON.stringify(data)}.\n${
-        e.stack
-      }`
-    );
-  }
+  await PillRecognitionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
+    new: true,
+    upsert: true,
+  });
 }
 
 /**

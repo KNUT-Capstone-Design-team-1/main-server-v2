@@ -1,8 +1,8 @@
 const axios = require('axios');
 const _ = require('lodash');
 const {
-  PillRecognitionDataQuery,
-  DrugPermissionDataQuery,
+  readPillRecognitionData,
+  readDrugPermissionData,
 } = require('../queries');
 const { logger } = require('../util');
 const { generateOperatorForRecognition } = require('../util');
@@ -22,11 +22,10 @@ async function searchRecognition(whereData, func) {
     );
 
     // 1. 알약 식별 정보 DB 쿼리
-    const recognitionDatas =
-      await PillRecognitionDataQuery.readPillRecognitionData(
-        operatorForRecognition,
-        func
-      );
+    const recognitionDatas = await readPillRecognitionData(
+      operatorForRecognition,
+      func
+    );
 
     if (recognitionDatas.length === 0) {
       return { isSuccess: false, message: '식별된 정보가 없습니다.' };
@@ -37,11 +36,10 @@ async function searchRecognition(whereData, func) {
     };
 
     // 2. 알약 허가 정보 DB 쿼리
-    const permissionDatas =
-      await DrugPermissionDataQuery.readDrugPermissionData(
-        operatorForPermission,
-        func
-      );
+    const permissionDatas = await readDrugPermissionData(
+      operatorForPermission,
+      func
+    );
 
     // 3. 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
     const result = recognitionDatas.map((recognitionData) => {

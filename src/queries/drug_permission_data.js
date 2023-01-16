@@ -1,4 +1,3 @@
-const { logger } = require('../util');
 const { DrugPermissionDataModel } = require('../models');
 
 /**
@@ -6,16 +5,10 @@ const { DrugPermissionDataModel } = require('../models');
  * @param {Object} data 의약품 허가 정보
  */
 async function updateDrugPermissionData(data) {
-  try {
-    await DrugPermissionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
-      new: true,
-      upsert: true,
-    });
-  } catch (e) {
-    logger.error(
-      `[UPDATE-PERM-DATA] Fail to update.\n${JSON.stringify(data)}.\n${e.stack}`
-    );
-  }
+  await DrugPermissionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
+    new: true,
+    upsert: true,
+  });
 }
 
 /**

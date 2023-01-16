@@ -86,10 +86,12 @@ async function getJsonFromExcelFile(schema, dirPath) {
       }[filName];
 
       // .md의 경우 기본으로 들어있는 파일이기 때문에 로그로 표시하지 않는다.
-      if (!convertFunction && filName !== '.md') {
-        logger.warn(
-          `[GET-JSON-FROM-EXCEL-FILE] None execute function extension: ${filName}`
-        );
+      if (!convertFunction) {
+        if (filName !== '.md') {
+          logger.warn(
+            `[GET-JSON-FROM-EXCEL-FILE] None execute function extension: ${filName}`
+          );
+        }
       } else {
         data = await convertFunction(`${dirPath}${file}`, schema);
 

@@ -4,8 +4,8 @@ const SearchHistoryQuery = require('./search_history');
 const DatabaseQuery = require('./database');
 
 module.exports = {
-  DrugPermissionDataQuery,
-  PillRecognitionDataQuery,
-  SearchHistoryQuery,
-  DatabaseQuery,
+  ...DrugPermissionDataQuery,
+  ...PillRecognitionDataQuery,
+  ...SearchHistoryQuery,
+  ...DatabaseQuery,
 };

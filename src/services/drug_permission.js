@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { DrugPermissionDataQuery } = require('../queries');
+const { updateDrugPermissionData } = require('../queries');
 const { logger, getJsonFromExcelFile } = require('../util');
 
 /**
@@ -15,7 +15,7 @@ async function requestUpdateDrugPermissionDatas(datas) {
 
   try {
     for (const data of datas) {
-      await DrugPermissionDataQuery.updateDrugPermissionData(data);
+      await updateDrugPermissionData(data);
     }
   } catch (e) {
     logger.error(
