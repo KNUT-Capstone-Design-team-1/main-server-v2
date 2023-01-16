@@ -97,7 +97,9 @@ async function searchFromImage(imageData, func) {
     return searchRecognition(recognizeResult, func);
   } catch (e) {
     logger.error(
-      `[RECOG-SERVICE] Fail to image search.\nimageData: ${imageData} \n${e.stack}`
+      `[RECOG-SERVICE] Fail to image search.\nimageData: ${JSON.stringify(
+        imageData
+      )}\n${e.stack}`
     );
     return {
       isSuccess: false,
