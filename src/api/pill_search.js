@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  searchRecognition,
+  searchOverview,
   searchFromImage,
   searchDetail,
 } = require('../services');
@@ -11,7 +11,7 @@ const { logger } = require('../util');
 
 /* /pill-search */
 
-// 식별 정보 검색
+// 식별 정보 검색 (개요 검색)
 router.get('/recognition', async (req, res) => {
   insertSearchHistory('recognition', req.body).catch((e) => {
     logger.error(
@@ -21,7 +21,7 @@ router.get('/recognition', async (req, res) => {
     );
   });
 
-  const data = await searchRecognition(req.body, req.query);
+  const data = await searchOverview(req.body, req.query);
   res.json(data);
 });
 

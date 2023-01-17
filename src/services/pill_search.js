@@ -9,39 +9,79 @@ const { generateOperatorForRecognition } = require('../util');
 const { imageSearch, detailSearch } = require('../../res/config.json');
 
 /**
- * 식별 검색
+ * 낱알 식별 검색
  * @param {Object} whereData DB 쿼리를 위한 데이터 ex) { PRINT: '~~', CHRTIN: '~~', ... }
  * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
  * @returns {Object}
  */
 async function searchRecognition(whereData, func) {
-  try {
-    // DB 쿼리 조건
-    const operatorForRecognition = await generateOperatorForRecognition(
-      whereData
-    );
+  // DB 쿼리 조건
+  const operatorForRecognition = await generateOperatorForRecognition(
+    whereData
+  );
 
-    // 1. 알약 식별 정보 DB 쿼리
-    const recognitionDatas = await readPillRecognitionData(
-      operatorForRecognition,
-      func
-    );
+  // 조회할 컬럼
+  const recogFileds = {
+    ITEM_SEQ: 1,
+    ITEM_NAME: 1,
+    ENTP_NAME: 1,
+    CHARTN: 1,
+    ITEM_IMAGE: 1,
+    DRUG_SHAPE: 1,
+    COLOR_CLASS1: 1,
+    COLOR_CLASS2: 1,
+    LINE_FRONT: 1,
+    LINE_BACK: 1,
+  };
+
+  return readPillRecognitionData(operatorForRecognition, recogFileds, func);
+}
+
+/**
+ * 의약품 허가 정보 조회
+ * @param {Object} where 검색 조건
+ * @returns {Object}
+ */
+async function searchPermission(where) {
+  // 조회할 컬럼
+  const permFileds = {
+    ITEM_SEQ: 1,
+    DRUG_SHAPE: 1,
+    MAIN_ITEM_INGR: 1,
+    INGR_NAME: 1,
+    MATERIAL_NAME: 1,
+    PACK_UNIT: 1,
+    VALID_TERM: 1,
+    STORAGE_METHOD: 1,
+  };
+
+  return readDrugPermissionData(where, permFileds);
+}
+
+/**
+ * 개요 검색
+ * @param {Object} whereData DB 쿼리를 위한 데이터 ex) { PRINT: '~~', CHRTIN: '~~', ... }
+ * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
+ * @returns {Object}
+ */
+async function searchOverview(whereData, func) {
+  try {
+    // 낱알 식별 정보
+    const recognitionDatas = await searchRecognition(whereData, func);
 
     if (recognitionDatas.length === 0) {
       return { isSuccess: false, message: '식별된 정보가 없습니다.' };
     }
 
+    // 의약품 허가 정보 검색 조건
     const operatorForPermission = {
       ITEM_SEQ: { $in: recognitionDatas.map(({ ITEM_SEQ }) => ITEM_SEQ) },
     };
 
-    // 2. 알약 허가 정보 DB 쿼리
-    const permissionDatas = await readDrugPermissionData(
-      operatorForPermission,
-      func
-    );
+    // 의약품 허가 정보
+    const permissionDatas = await searchPermission(operatorForPermission);
 
-    // 3. 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
+    // 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
     const result = recognitionDatas.map((recognitionData) => {
       const permissionData = permissionDatas.find(
         (v) => v.ITEM_SEQ === recognitionData.ITEM_SEQ
@@ -87,14 +127,14 @@ async function searchFromImage(imageData, func) {
 
     recognizeResult = {
       PRINT: resultData.data[0].print || '',
-      CHARTIN: resultData.data[0].chartin || '',
+      CHARTN: resultData.data[0].chartn || '',
       DRUG_SHAPE: resultData.data[0].durg_shape || '',
       COLOR_CLASS: resultData.data[0].color_class || '',
       LINE: resultData.data[0].line || '',
     };
 
-    // 2. 식별 검색 호출
-    return searchRecognition(recognizeResult, func);
+    // 2. 개요 검색 호출
+    return searchOverview(recognizeResult, func);
   } catch (e) {
     logger.error(
       `[RECOG-SERVICE] Fail to image search.\nimageData: ${JSON.stringify(
@@ -141,7 +181,7 @@ async function searchDetail(itemSeq) {
 }
 
 module.exports = {
-  searchRecognition,
+  searchOverview,
   searchFromImage,
   searchDetail,
 };
