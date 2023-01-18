@@ -162,61 +162,51 @@ async function convertPillImageUrl(excelJson) {
  */
 function generateOperatorForRecognition(where) {
   // DB 쿼리 조건
-  const operator = Object.entries(where).reduce((acc, [key, value]) => {
-    const $and = [];
-    const $or = [];
+  const operator = Object.entries(where).reduce(
+    (acc, [key, value]) => {
+      if (!value) {
+        return acc;
+      }
 
-    if (!value) {
+      switch (key) {
+        case 'ITEM_NAME': {
+          acc.$and.push({ [key]: new RegExp(`${value}`, 'g') });
+          break;
+        }
+
+        case 'PRINT':
+        case 'LINE': {
+          ['_FRONT', '_BACK'].forEach((f) => {
+            acc.$and[0].$or.push({
+              [`${key}${f}`]: new RegExp(`${value}`, 'g'),
+            });
+          });
+          break;
+        }
+
+        case 'COLOR_CLASS': {
+          ['1', '2'].forEach((f) => {
+            acc.$and[0].$or.push({
+              [`${key}${f}`]: new RegExp(`${value}`, 'g'),
+            });
+          });
+          break;
+        }
+
+        case 'CHARTN':
+        case 'DRUG_SHAPE':
+        default: {
+          acc.$and[0].$or.push({ [key]: `${value}` });
+        }
+      }
       return acc;
-    }
+    },
+    { $and: [{ $or: [] }] }
+  );
 
-    switch (key) {
-      case 'CHARTN':
-      case 'ITEM_NAME': {
-        const condition = {};
-        condition[key] = new RegExp(`${value}`);
-        $and.push(condition);
-        break;
-      }
-
-      case 'PRINT':
-      case 'LINE': {
-        const face = ['_FRONT', '_BACK'];
-
-        face.forEach((f) => {
-          const condition = {};
-          condition[`${key}${f}`] = new RegExp(`${value}`);
-          $or.push(condition);
-        });
-
-        $and.push({ $or });
-        break;
-      }
-
-      case 'COLOR_CLASS': {
-        const face = ['1', '2'];
-
-        face.forEach((f) => {
-          const condition = {};
-          condition[`${key}${f}`] = new RegExp(`${value}`);
-          $or.push(condition);
-        });
-
-        $and.push({ $or });
-        break;
-      }
-
-      default: {
-        const condition = {};
-        condition[key] = `${value}`;
-        $or.push(condition);
-        $and.push({ $or });
-      }
-    }
-
-    acc.$and = $and;
-    return acc;
-  }, {});
+  if (operator.$and[0].$or.length === 0) {
+    delete operator.$and[0].$or;
+  }
 
   return operator;
 }

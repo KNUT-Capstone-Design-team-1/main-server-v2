@@ -65,7 +65,7 @@ async function searchPillRecognitionData(where, option) {
     result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[SEARCH-RECOG] Fail to recognition search.\nwhere: ${JSON.stringfy(
+      `[SEARCH-RECOG] Fail to recognition search.\nwhere: ${JSON.stringify(
         where
       )}\noption: ${JSON.stringify(option)}\n${e.stack}`
     );
