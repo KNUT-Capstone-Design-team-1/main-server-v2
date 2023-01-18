@@ -15,7 +15,7 @@ const { logger } = require('./logger');
  * xlsx 파일의 데이터를 json 데이터로 변경
  * @param {string} filePath 파일명을 포함한 파일 경로
  * @param {object} schema json으로 바꿀 스키마
- * @returns {object}
+ * @returns {object[]}
  */
 async function convertXlsxToJson(filePath, schema) {
   try {
@@ -35,7 +35,7 @@ async function convertXlsxToJson(filePath, schema) {
 /**
  * csv 파일의 데이터를 json 데이터로 변경
  * @param {string} filePath 파일명을 포함한 파일 경로
- * @returns {object}
+ * @returns {object[]}
  */
 async function convertCsvToJson(filePath) {
   const { Converter } = csvParser;
@@ -52,7 +52,7 @@ async function convertCsvToJson(filePath) {
 /**
  * xls 파일의 데이터를 json 데이터로 변경
  * @param {string} filePath 파일명을 포함한 파일 경로
- * @returns {object}
+ * @returns {object[]}
  */
 async function convertXlsToJson(filePath) {
   try {
@@ -111,8 +111,8 @@ async function getJsonFromExcelFile(schema, dirPath) {
 
 /**
  * octet-stream 형태의 url을 base64로 변경
- * @param {String} imageUrl base64 URL
- * @returns {String}
+ * @param {string} imageUrl base64 URL
+ * @returns {string}
  */
 async function convertOctetStreamUrlToBase64(imageUrl) {
   try {
@@ -135,8 +135,8 @@ async function convertOctetStreamUrlToBase64(imageUrl) {
 
 /**
  * 알약 식별 정보의 이미지를 octet-stream에서 base64로 변경한 객체 배열을 반환
- * @param {Obejct[]} excelJson
- * @returns {Object[]}
+ * @param {obejct[]} excelJson 엑셀 파일에서 추출한 JSON 객체 배열
+ * @returns {object[]}
  */
 async function convertPillImageUrl(excelJson) {
   const convertedDatas = [];
@@ -157,18 +157,21 @@ async function convertPillImageUrl(excelJson) {
 
 /**
  * DB 검색을 위한 or 연산자 생성
- * @param {Object} data 조건이 될 데이터
- * @returns or 연산자
+ * @param {object} where 검색할 데이터
+ * @returns {object}
  */
-async function generateOperatorForRecognition(data) {
-  const entries = Object.entries(data);
-
+function generateOperatorForRecognition(where) {
   // DB 쿼리 조건
-  const operator = entries.reduce((acc, [key, value]) => {
+  const operator = Object.entries(where).reduce((acc, [key, value]) => {
     const $and = [];
     const $or = [];
 
+    if (!value) {
+      return acc;
+    }
+
     switch (key) {
+      case 'CHARTN':
       case 'ITEM_NAME': {
         const condition = {};
         condition[key] = new RegExp(`${value}`);
@@ -202,6 +205,7 @@ async function generateOperatorForRecognition(data) {
         $and.push({ $or });
         break;
       }
+
       default: {
         const condition = {};
         condition[key] = `${value}`;

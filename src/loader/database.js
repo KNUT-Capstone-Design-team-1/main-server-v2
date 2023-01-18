@@ -10,12 +10,7 @@ function connectOnDatabase() {
       ? 'mongodb://wip-db:27017/whatispill'
       : 'mongodb://localhost:27017/whatispill';
 
-  const connectOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  };
-
-  mongoose.connect(dbUrl, connectOptions);
+  mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
   const db = mongoose.connection;
 
   db.on('error', (e) => {

@@ -18,7 +18,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/pill-search', PillSearchApi);
 
 /**
- * 데이터베이스 세팅
+ * 데이터베이스 초기화 및 업데이트
  */
 function initDatabase() {
   logger.info('[INIT-DATABASE] Initial Database');
@@ -46,8 +46,8 @@ async function main() {
       '[APP-INIT] Has no essential datas or init mode. do collection update'
     );
 
-    for (const collection of noneDataCollections) {
-      switch (collection.model) {
+    for (const { model } of noneDataCollections) {
+      switch (model) {
         case 'PillRecognitionDataModel':
           loadPillRecognitionData();
           break;

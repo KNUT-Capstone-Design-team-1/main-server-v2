@@ -1,11 +1,34 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { updateDrugPermissionData } = require('../queries');
+const {
+  updateDrugPermissionData,
+  readDrugPermissionData,
+} = require('../queries');
 const { logger, getJsonFromExcelFile } = require('../util');
 
 /**
+ * 식별 검색을 위한 의약품 허가 정보 조회
+ * @param {object} where 검색할 데이터
+ * @returns {object[]}
+ */
+function getPermissionDataForSearch(where) {
+  // 조회할 컬럼
+  const field = {
+    ITEM_SEQ: 1,
+    DRUG_SHAPE: 1,
+    MAIN_ITEM_INGR: 1,
+    INGR_NAME: 1,
+    MATERIAL_NAME: 1,
+    PACK_UNIT: 1,
+    VALID_TERM: 1,
+    STORAGE_METHOD: 1,
+  };
+  return readDrugPermissionData(where, field);
+}
+
+/**
  * DB에 여러 항목의 의약품 허가 정보 데이터 업데이트 요청
- * @param {Object[]} datas 의약품 허가정보 데이터 배열
+ * @param {object[]} datas 의약품 허가정보 데이터 배열
  */
 async function requestUpdateDrugPermissionDatas(datas) {
   if (datas.length === 0) {
@@ -60,6 +83,7 @@ async function initDrugPermissionData() {
 }
 
 module.exports = {
+  getPermissionDataForSearch,
   requestUpdateDrugPermissionDatas,
   initDrugPermissionData,
 };

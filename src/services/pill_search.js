@@ -1,187 +1,197 @@
+/* eslint-disable camelcase */
 const axios = require('axios');
 const _ = require('lodash');
-const {
-  readPillRecognitionData,
-  readDrugPermissionData,
-} = require('../queries');
+
+const { getRecognitionDataForSearch } = require('./pill_recognition');
+const { getPermissionDataForSearch } = require('./drug_permission');
+const { writeSearchHistory } = require('./search_history');
 const { logger } = require('../util');
-const { generateOperatorForRecognition } = require('../util');
 const { imageSearch, detailSearch } = require('../../res/config.json');
 
 /**
- * 낱알 식별 검색
- * @param {Object} whereData DB 쿼리를 위한 데이터 ex) { PRINT: '~~', CHRTIN: '~~', ... }
- * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
- * @returns {Object}
+ * @typedef {{isSuccess: boolean, data: object[], [message: string]}} RESPONSE
  */
-async function searchRecognition(whereData, func) {
-  // DB 쿼리 조건
-  const operatorForRecognition = await generateOperatorForRecognition(
-    whereData
+
+/**
+ * @typedef {{
+ *   COLOR_CLASS: string,
+ *   ITEM_NAME: string,
+ *   DRUG_SHAPE: string,
+ *   PRINT: string,
+ *   CHARTN: string,
+ *   LINE: string,
+ * }} RECOG_SEARCH_REQ_DATA
+ */
+
+/**
+ * 알약 식별 정보 및 허가 정보의 데이터를 병합
+ * @param {object[]} recognitionDatas
+ * @param {object[]} permissionDatas
+ * @returns {object[]}
+ */
+function mergePillData(recognitionDatas, permissionDatas) {
+  return recognitionDatas.map((recognition) =>
+    _.merge(
+      recognition,
+      permissionDatas.find(({ ITEM_SEQ }) => ITEM_SEQ === recognition.ITEM_SEQ)
+    )
   );
-
-  // 조회할 컬럼
-  const recogFileds = {
-    ITEM_SEQ: 1,
-    ITEM_NAME: 1,
-    ENTP_NAME: 1,
-    CHARTN: 1,
-    ITEM_IMAGE: 1,
-    DRUG_SHAPE: 1,
-    COLOR_CLASS1: 1,
-    COLOR_CLASS2: 1,
-    LINE_FRONT: 1,
-    LINE_BACK: 1,
-  };
-
-  return readPillRecognitionData(operatorForRecognition, recogFileds, func);
 }
 
 /**
- * 의약품 허가 정보 조회
- * @param {Object} where 검색 조건
- * @returns {Object}
+ * 식별 검색
+ * @param {RECOG_SEARCH_REQ_DATA} where 검색할 데이터
+ * @param {{skip: number, limit: number}} option 쿼리 옵션
+ * @returns {RESPONSE}
  */
-async function searchPermission(where) {
-  // 조회할 컬럼
-  const permFileds = {
-    ITEM_SEQ: 1,
-    DRUG_SHAPE: 1,
-    MAIN_ITEM_INGR: 1,
-    INGR_NAME: 1,
-    MATERIAL_NAME: 1,
-    PACK_UNIT: 1,
-    VALID_TERM: 1,
-    STORAGE_METHOD: 1,
-  };
+async function searchPillRecognitionData(where, option) {
+  const result = { isSuccess: false };
 
-  return readDrugPermissionData(where, permFileds);
-}
-
-/**
- * 개요 검색
- * @param {Object} whereData DB 쿼리를 위한 데이터 ex) { PRINT: '~~', CHRTIN: '~~', ... }
- * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
- * @returns {Object}
- */
-async function searchOverview(whereData, func) {
   try {
     // 낱알 식별 정보
-    const recognitionDatas = await searchRecognition(whereData, func);
+    const recognitionDatas = await getRecognitionDataForSearch(where, option);
 
     if (recognitionDatas.length === 0) {
-      return { isSuccess: false, message: '식별된 정보가 없습니다.' };
+      result.message = '식별된 정보가 없습니다.';
+      return result;
     }
 
-    // 의약품 허가 정보 검색 조건
-    const operatorForPermission = {
-      ITEM_SEQ: { $in: recognitionDatas.map(({ ITEM_SEQ }) => ITEM_SEQ) },
-    };
-
     // 의약품 허가 정보
-    const permissionDatas = await searchPermission(operatorForPermission);
-
-    // 알약 식별 정보 및 허가 정보 쿼리 결과에 대해 항목마다 병합
-    const result = recognitionDatas.map((recognitionData) => {
-      const permissionData = permissionDatas.find(
-        (v) => v.ITEM_SEQ === recognitionData.ITEM_SEQ
-      );
-      return _.merge(recognitionData, permissionData);
+    const permissionDatas = await getPermissionDataForSearch({
+      ITEM_SEQ: { $in: recognitionDatas.map(({ ITEM_SEQ }) => ITEM_SEQ) },
     });
 
-    return { isSuccess: true, data: result };
+    result.data = mergePillData(recognitionDatas, permissionDatas);
+    result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[RECOG-SERVICE] Fail to recognition search.\nwhereData: ${whereData}\n${e.stack}`
+      `[SEARCH-RECOG] Fail to recognition search.\nwhere: ${JSON.stringfy(
+        where
+      )}\noption: ${JSON.stringify(option)}\n${e.stack}`
     );
-    return { isSuccess: false, message: '식별 검색 중 오류가 발생 했습니다.' };
+
+    result.message = '식별 검색 중 오류가 발생 했습니다.';
   }
+  return result;
 }
 
 /**
- * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
- * @param {Object} imageData base64 이미지 코드 ex) { base64Url }
- * @param {Object} func 페이징 등 쿼리에 실행할 연산 ex) { skip: 0, limit: 10 }
- * @returns {Object}
+ * 딥러닝 서버에 이미지 인식 요청
+ * @param {string} base64Url 이미지의 base64 코드
+ * @returns {RESPONSE}
  */
-async function searchFromImage(imageData, func) {
-  let recognizeResult;
-  const { base64Url } = imageData;
+async function requestImageRecognitionDlServer(base64Url) {
+  const result = { isSuccess: false };
+
+  const { devUrl, prodUrl } = imageSearch;
+  const url = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
 
   try {
-    // 1. DL 서버 API 호출
-    const { devUrl, prodUrl } = imageSearch;
-    const url = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
-
-    // { PRINT, DRUG_SHAPE }
-    const result = await axios({
+    const { data } = await axios({
       method: 'post',
       url,
       data: { img_base64: base64Url },
     });
 
-    const resultData = JSON.parse(result.data);
-    if (!resultData.is_success) {
-      return { isSuccess: false, message: resultData?.message };
+    if (!data) {
+      result.message = '응답받은 데이터가 없습니다.';
+      return result;
     }
 
-    recognizeResult = {
-      PRINT: resultData.data[0].print || '',
-      CHARTN: resultData.data[0].chartn || '',
-      DRUG_SHAPE: resultData.data[0].durg_shape || '',
-      COLOR_CLASS: resultData.data[0].color_class || '',
-      LINE: resultData.data[0].line || '',
-    };
+    const recogResult = JSON.parse(data);
+    if (!recogResult.is_success) {
+      result.message = recogResult.message;
+      return result;
+    }
 
-    // 2. 개요 검색 호출
-    return searchOverview(recognizeResult, func);
+    result.data = recogResult.data;
+    result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[RECOG-SERVICE] Fail to image search.\nimageData: ${JSON.stringify(
-        imageData
-      )}\n${e.stack}`
+      `[REQ-IMG-RECOG-DL-SERVER] Fail to image recognition.\n${e.stack}`
     );
-    return {
-      isSuccess: false,
-      message: '이미지 검색 중 오류가 발생 했습니다.',
-    };
+
+    result.message = '이미지 인식 과정에서 오류가 발생했습니다.';
   }
+  return result;
+}
+
+/**
+ * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
+ * @param {{base64Url: string}} image base64 이미지 코드
+ * @param {{skip: number, limit: number}} option 쿼리 옵션
+ * @returns {RESPONSE}
+ */
+async function searchFromImage(imageData, option) {
+  const result = { isSuccess: false };
+
+  // DL 서버 API 호출
+  const dlServerRes = await requestImageRecognitionDlServer(
+    imageData.base64Url
+  );
+
+  if (!dlServerRes.isSuccess) {
+    result.message = dlServerRes.message;
+    return result;
+  }
+
+  const { print, chartn, drug_shape, color_class, line_front } =
+    dlServerRes.data[0];
+
+  const where = {
+    PRINT: print || '',
+    CHARTN: chartn || '',
+    DRUG_SHAPE: drug_shape || '',
+    COLOR_CLASS: color_class || '',
+    LINE: line_front || '',
+  };
+
+  // 알약 식별 데이터 조회
+  const pillRecognition = await searchPillRecognitionData(where, option);
+
+  if (!pillRecognition.isSuccess) {
+    result.message = pillRecognition.message;
+    return result;
+  }
+
+  result.data = pillRecognition.data;
+  result.isSuccess = true;
+
+  return result;
 }
 
 /**
  * 알약에 대한 상세 검색 (의약품 허가 정보)
  * @param {string} itemSeq API 호출을 위한 옵션인 알약 제품 일련 번호
- * @returns 검색 결과 데이터
+ * @returns {RESPONSE}
  */
 async function searchDetail(itemSeq) {
+  const result = { isSuccess: false };
+
   try {
     // API URL 및 서비스키
     const { url, encServiceKey } = detailSearch;
+    const apiUrl = `${url}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
 
-    let apiUrl = `${url}`;
-    apiUrl += `?serviceKey=${encServiceKey}`;
-    apiUrl += `&type=json`;
-    apiUrl += `&item_seq=${itemSeq.ITEM_SEQ}`;
-    apiUrl += `&pageNo=1&numOfRows=20`;
-
-    const result = await axios({ method: 'get', url: apiUrl });
+    const response = await axios({ method: 'get', url: apiUrl });
     const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } =
-      result.data.body.items[0];
+      response.data.body.items[0];
 
-    return {
-      isSuccess: true,
-      data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }],
-    };
+    result.data = [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }];
+    result.isSuccess = true;
   } catch (e) {
     logger.error(
       `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e.stack}`
     );
-    return { isSuccess: false, message: '상세 검색 중 오류가 발생했습니다.' };
+
+    result.message = '상세 검색 중 오류가 발생했습니다.';
   }
+  return result;
 }
 
 module.exports = {
-  searchOverview,
+  writeSearchHistory,
+  searchPillRecognitionData,
   searchFromImage,
   searchDetail,
 };

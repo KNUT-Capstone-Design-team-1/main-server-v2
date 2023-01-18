@@ -1,12 +1,49 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { updatePillRecognitionData } = require('../queries');
-const { logger, getJsonFromExcelFile } = require('../util');
-// const { convertPillImageUrl } = require('../util');
+const {
+  updatePillRecognitionData,
+  readPillRecognitionData,
+} = require('../queries');
+
+const {
+  logger,
+  getJsonFromExcelFile,
+  generateOperatorForRecognition,
+  // convertPillImageUrl
+} = require('../util');
+
+// eslint-disable-next-line no-unused-vars
+const { RECOG_SEARCH_REQ_DATA } = require('./pill_search');
+
+/**
+ * 식별 검색을 위한 낱알 식별 데이터 조회
+ * @param {RECOG_SEARCH_REQ_DATA} where 검색할 데이터
+ * @param {{skip: number, limit: number}} option 쿼리 옵션
+ * @returns {object[]}
+ */
+function getRecognitionDataForSearch(where, option) {
+  // DB 쿼리 조건
+  const operation = generateOperatorForRecognition(where);
+
+  // 조회할 컬럼
+  const field = {
+    ITEM_SEQ: 1,
+    ITEM_NAME: 1,
+    ENTP_NAME: 1,
+    CHARTN: 1,
+    ITEM_IMAGE: 1,
+    DRUG_SHAPE: 1,
+    COLOR_CLASS1: 1,
+    COLOR_CLASS2: 1,
+    LINE_FRONT: 1,
+    LINE_BACK: 1,
+  };
+  return readPillRecognitionData(operation, field, option);
+}
 
 /**
  * DB에 여러 항목의 알약 식별 정보 데이터 업데이트 요청
- * @param {Object[]} datas 알약 식별 정보 데이터 배열
+ * @param {object[]} datas 알약 식별 정보 데이터 배열
  */
 async function requestUpdatePillRecognitionDatas(datas) {
   if (datas.length === 0) {
@@ -66,6 +103,7 @@ async function initPillRecognitionData() {
 }
 
 module.exports = {
+  getRecognitionDataForSearch,
   requestUpdatePillRecognitionDatas,
   initPillRecognitionData,
 };

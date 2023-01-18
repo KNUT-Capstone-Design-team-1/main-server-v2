@@ -2,13 +2,13 @@ const { SearchHistoryModel } = require('../models');
 
 /**
  * 검색 저장 INSERT 쿼리
- * @param {String} type 기능 타입 ex) recognition
- * @param {Object} data request로 보낸 데이터 ex) { ITEM_SEQ: ... }
+ * @param {string} searchType 검색 타입
+ * @param {object} where 검색할 데이터
  */
-async function insertSearchHistory(type, data) {
+async function insertSearchHistory(searchType, where) {
   await SearchHistoryModel.create({
-    type,
-    data,
+    searchType,
+    where,
     date: new Date(),
   });
 }

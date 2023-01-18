@@ -1,56 +1,32 @@
 const express = require('express');
-
+// /pill-search */
 const router = express.Router();
 const {
-  searchOverview,
+  writeSearchHistory,
+  searchPillRecognitionData,
   searchFromImage,
   searchDetail,
 } = require('../services');
-const { insertSearchHistory } = require('../queries');
-const { logger } = require('../util');
-
-/* /pill-search */
 
 // 식별 정보 검색 (개요 검색)
 router.get('/recognition', async (req, res) => {
-  insertSearchHistory('recognition', req.body).catch((e) => {
-    logger.error(
-      `[RECOGNITION-SEARCH-API] Fail to insert search history.\ndata: ${JSON.stringify(
-        req.body
-      )}\n${e.stack}`
-    );
-  });
+  writeSearchHistory('recognition', req.body);
 
-  const data = await searchOverview(req.body, req.query);
-  res.json(data);
+  res.json(await searchPillRecognitionData(req.body, req.query));
 });
 
 // 이미지 검색
 router.post('/image', async (req, res) => {
-  insertSearchHistory('image', req.body).catch((e) => {
-    logger.error(
-      `[IMAGE-SEARCH-API] Fail to insert search history.\ndata: ${JSON.stringify(
-        req.body
-      )}\n${e.stack}`
-    );
-  });
+  writeSearchHistory('image', req.body);
 
-  const data = await searchFromImage(req.body, req.query);
-  res.json(data);
+  res.json(await searchFromImage(req.body, req.query));
 });
 
 // 상세 검색
 router.get('/detail', async (req, res) => {
-  insertSearchHistory('detail', req.body).catch((e) => {
-    logger.error(
-      `[DETAIL-SEARCH-API] Fail to insert search history.\ndata: ${JSON.stringify(
-        req.body
-      )}\n${e.stack}`
-    );
-  });
+  writeSearchHistory('detail', req.body);
 
-  const data = await searchDetail(req.body);
-  res.json(data);
+  res.json(await searchDetail(req.body));
 });
 
 module.exports = router;
