@@ -12,8 +12,9 @@ const {
   // convertPillImageUrl
 } = require('../util');
 
-// eslint-disable-next-line no-unused-vars
-const { RECOG_SEARCH_REQ_DATA } = require('./pill_search');
+/**
+ * @type {import('../data_type/recog_search')}
+ */
 
 /**
  * 식별 검색을 위한 낱알 식별 데이터 조회

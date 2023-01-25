@@ -9,18 +9,7 @@ const { logger } = require('../util');
 const { imageSearch, detailSearch } = require('../../res/config.json');
 
 /**
- * @typedef {{isSuccess: boolean, data: object[], [message: string]}} RESPONSE
- */
-
-/**
- * @typedef {{
- *   COLOR_CLASS: string,
- *   ITEM_NAME: string,
- *   DRUG_SHAPE: string,
- *   PRINT: string,
- *   CHARTN: string,
- *   LINE: string,
- * }} RECOG_SEARCH_REQ_DATA
+ * @type {import('../data_type/recog_search')}
  */
 
 /**
