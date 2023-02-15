@@ -88,7 +88,12 @@ async function requestImageRecognitionDlServer(base64Url) {
     }
 
     const recogResult = JSON.parse(data);
+
     if (!recogResult.is_success) {
+      if (recogResult.message) {
+        throw new Error(`response: ${JSON.stringify(recogResult)}`);
+      }
+
       result.message = recogResult.message;
       return result;
     }
