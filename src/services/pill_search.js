@@ -148,7 +148,7 @@ async function searchFromImage(imageData, option) {
     return result;
   }
 
-  result.data = pillRecognition.data;
+  result.data = { pillInfoList: pillRecognition.data, recogResult: where };
   result.isSuccess = true;
 
   return result;
