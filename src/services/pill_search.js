@@ -7,6 +7,7 @@ const { getPermissionDataForSearch } = require('./drug_permission');
 const { writeSearchHistory } = require('./search_history');
 const { logger } = require('../util');
 const { imageSearch, detailSearch } = require('../../res/config.json');
+const msg = require('../../res/ko-KR.json');
 
 /**
  * @type {import('../data_type/recog_search')}
@@ -41,7 +42,7 @@ async function searchPillRecognitionData(where, option) {
     const recognitionDatas = await getRecognitionDataForSearch(where, option);
 
     if (recognitionDatas.length === 0) {
-      result.message = '식별된 정보가 없습니다.';
+      result.message = msg['pill-search.error.no-data'];
       return result;
     }
 
@@ -58,8 +59,7 @@ async function searchPillRecognitionData(where, option) {
         where
       )}\noption: ${JSON.stringify(option)}\n${e.stack}`
     );
-
-    result.message = '식별 검색 중 오류가 발생 했습니다.';
+    result.message = msg['pill-search.error.general'];
   }
   return result;
 }
@@ -83,18 +83,16 @@ async function requestImageRecognitionDlServer(base64Url) {
     });
 
     if (!data) {
-      result.message = '응답받은 데이터가 없습니다.';
+      result.message = msg['pill-search.error.no-data'];
       return result;
     }
 
     const recogResult = JSON.parse(data);
-
     if (!recogResult.is_success) {
-      if (recogResult.message) {
-        throw new Error(`response: ${JSON.stringify(recogResult)}`);
-      }
+      logger.error(`response: ${JSON.stringify(recogResult)}`);
 
-      result.message = recogResult.message;
+      // DL 서버에서 응답한 오류 메시지 반환
+      result.message = msg[recogResult.message];
       return result;
     }
 
@@ -104,8 +102,7 @@ async function requestImageRecognitionDlServer(base64Url) {
     logger.error(
       `[REQ-IMG-RECOG-DL-SERVER] Fail to image recognition.\n${e.stack}`
     );
-
-    result.message = '이미지 인식 과정에서 오류가 발생했습니다.';
+    result.message = msg['pill-search.error.general'];
   }
   return result;
 }
@@ -177,8 +174,7 @@ async function searchDetail(itemSeq) {
     logger.error(
       `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e.stack}`
     );
-
-    result.message = '상세 검색 중 오류가 발생했습니다.';
+    result.message = msg['pill-search.error.general'];
   }
   return result;
 }
