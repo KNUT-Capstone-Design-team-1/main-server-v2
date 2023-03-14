@@ -9,7 +9,6 @@ const {
   logger,
   getJsonFromExcelFile,
   generateOperatorForRecognition,
-  // convertPillImageUrl
 } = require('../util');
 
 /**
@@ -54,10 +53,7 @@ async function requestUpdatePillRecognitionDatas(datas) {
 
   try {
     for (const data of datas) {
-      await updatePillRecognitionData(
-        // await convertPillImageUrl(excelJson)
-        data
-      );
+      await updatePillRecognitionData(data);
     }
   } catch (e) {
     logger.error(

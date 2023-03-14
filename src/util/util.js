@@ -127,7 +127,7 @@ async function convertOctetStreamUrlToBase64(imageUrl) {
     return Buffer.from(res.data, 'binary').toString('base64');
   } catch (e) {
     logger.warn(
-      `[CONVERT-OCTET-TO-BASE64] can not convert for '${imageUrl}'.\n${e.stack}`
+      `[CONVERT-OCTET-TO-BASE64] can not convert for '${imageUrl}'.\n${e}`
     );
     return imageUrl;
   }

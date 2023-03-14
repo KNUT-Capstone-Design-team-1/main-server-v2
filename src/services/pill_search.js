@@ -99,9 +99,7 @@ async function requestImageRecognitionDlServer(base64Url) {
     result.data = recogResult.data;
     result.isSuccess = true;
   } catch (e) {
-    logger.error(
-      `[REQ-IMG-RECOG-DL-SERVER] Fail to image recognition.\n${e.stack}`
-    );
+    logger.error(`[REQ-IMG-RECOG-DL-SERVER] Fail to image recognition.\n${e}`);
     result.message = msg['pill-search.error.general'];
   }
   return result;
@@ -172,7 +170,7 @@ async function searchDetail(itemSeq) {
     result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e.stack}`
+      `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e}`
     );
     result.message = msg['pill-search.error.general'];
   }
