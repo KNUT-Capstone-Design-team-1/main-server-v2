@@ -92,7 +92,8 @@ async function requestImageRecognitionDlServer(base64Url) {
       logger.error(`response: ${JSON.stringify(recogResult)}`);
 
       // DL 서버에서 응답한 오류 메시지 반환
-      result.message = msg[recogResult.message];
+      result.message =
+        msg[recogResult.message] || msg['pill-search.error.general'];
       return result;
     }
 
