@@ -11,7 +11,6 @@ services:
      - wip-router
     environment: 
      - TZ=Asia/Seoul 
-     - NODE_ENV=production
     deploy: 
       mode: replicated 
       replicas: 10 
@@ -23,12 +22,10 @@ services:
 
   wip-db: 
     image: mongo
-    expose: 
-      - 27017
     networks:
       - wip-router
     environment:
      - TZ=Asia/Seoul
      - MONGO_INIT_DB_DATABASE=whatispill
     volumes: 
-     - /mnt/d/server/wip-main/data:/data/db 
+     - ./data:/data/db 

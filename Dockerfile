@@ -1,5 +1,8 @@
 FROM alpine:edge 
 
+# 환경변수 선언
+ENV NODE_ENV = production
+
 # 컨테이너 내 디렉터리로 파일 복사
 COPY . /usr/local/wip-main 
 
