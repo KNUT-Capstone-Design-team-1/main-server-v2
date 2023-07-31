@@ -10,12 +10,12 @@ const {
   loadDrugPermissionData,
   connectOnDatabase,
 } = require('./loader');
-const { countDocuments } = require('./queries');
 
-const port = 17261;
+const port = process.env.SERVER_PORT;
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/pill-search', PillSearchApi);
+require('dotenv').config();
 
 /**
  * 데이터베이스 초기화 및 업데이트
@@ -38,28 +38,7 @@ async function main() {
 
   connectOnDatabase();
 
-  const documentsCount = await countDocuments();
-  const noneDataCollections = documentsCount.filter((v) => v.documets === 0);
-
-  if (noneDataCollections.length > 0) {
-    logger.info(
-      '[APP-INIT] Has no essential datas or init mode. do collection update'
-    );
-
-    for (const { model } of noneDataCollections) {
-      switch (model) {
-        case 'PillRecognitionDataModel':
-          loadPillRecognitionData();
-          break;
-
-        case 'DrugPermissionDataModel':
-          loadDrugPermissionData();
-          break;
-
-        default:
-      }
-    }
-  } else if (process.env.NODE_ENV === 'init') {
+  if (process.env.NODE_ENV === 'init') {
     initDatabase();
   }
 }

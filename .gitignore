@@ -1,12 +1,10 @@
 package-lock.json
-*.xls
-*.xlsx
-*.csv
-*.log
+res
 node_modules
 logs
 tmp
 *.lock
 config.json
 *.http
+*.env
 test*

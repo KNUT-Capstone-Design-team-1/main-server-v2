@@ -6,7 +6,6 @@ const { getRecognitionDataForSearch } = require('./pill_recognition');
 const { getPermissionDataForSearch } = require('./drug_permission');
 const { writeSearchHistory } = require('./search_history');
 const { logger } = require('../util');
-const { imageSearch, detailSearch } = require('../../res/config.json');
 const msg = require('../../res/ko-KR.json');
 
 /**
@@ -72,13 +71,10 @@ async function searchPillRecognitionData(where, option) {
 async function requestImageRecognitionDlServer(base64Url) {
   const result = { isSuccess: false };
 
-  const { devUrl, prodUrl } = imageSearch;
-  const url = process.env.NODE_ENV === 'production' ? prodUrl : devUrl;
-
   try {
     const { data } = await axios({
       method: 'post',
-      url,
+      url: process.env.DL_SERVER_URL,
       data: { img_base64: base64Url },
     });
 
@@ -160,8 +156,11 @@ async function searchDetail(itemSeq) {
 
   try {
     // API URL 및 서비스키
-    const { url, encServiceKey } = detailSearch;
-    const apiUrl = `${url}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
+    const detailSearchUrl =
+      'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDtlInq01';
+    const encServiceKey = process.env.ENC_SERVICE_KEY;
+
+    const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
 
     const response = await axios({ method: 'get', url: apiUrl });
     const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } =

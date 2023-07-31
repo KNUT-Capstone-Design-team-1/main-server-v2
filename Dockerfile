@@ -10,10 +10,10 @@ COPY . /usr/local/wip-main
 RUN apk add --update nodejs && apk add --update npm 
 
 # 작업 디렉터리 이동
-WORKDIR /usr/local/wip-main 
+WORKDIR /usr/local/wip-main/src/app.js 
 
 # node 모듈 설치
 RUN npm install 
 
 # 실행
-ENTRYPOINT ["node", "index.js"] 
+ENTRYPOINT ["node", "app.js"]
