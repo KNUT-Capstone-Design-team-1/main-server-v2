@@ -20,7 +20,7 @@ ENV DL_SERVER_URL=$DL_SERVER_URL
 COPY . /usr/local/wip-main 
 
 # 작업 디렉터리 이동
-WORKDIR /usr/local/wip-main/src/app.js 
+WORKDIR /usr/local/wip-main/src
 
 # node 모듈 설치
 RUN npm install
