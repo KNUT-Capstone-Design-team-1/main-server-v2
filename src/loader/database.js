@@ -5,7 +5,6 @@ const { logger } = require('../util');
  * 데이터베이스 연결
  */
 function connectOnDatabase() {
-  console.log(process.env.DB_URL);
   mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
