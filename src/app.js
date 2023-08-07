@@ -11,7 +11,7 @@ const {
   connectOnDatabase,
 } = require('./loader');
 
-const port = process.env.SERVER_PORT;
+const port = process.env.MAIN_SERVER_PORT;
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/pill-search', PillSearchApi);
