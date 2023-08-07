@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { logger } = require('../util');
 
-mongoose.set('strictQuery', true);
-
 /**
  * 데이터베이스 연결
  */
