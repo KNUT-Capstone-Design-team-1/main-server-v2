@@ -16,7 +16,9 @@ function connectOnDatabase() {
 
   db.on('error', (e) => {
     logger.error(`[DATABASE] Database connection fail.\n${e}`);
-    throw new Error(`데이터베이스 연결 오류`);
+    throw new Error(
+      `데이터베이스 연결 오류 (DB_URL: ${process.env.DB_URL})${e}`
+    );
   });
 
   db.once('open', () => {
