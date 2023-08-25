@@ -72,9 +72,12 @@ async function requestImageRecognitionDlServer(base64Url) {
   const result = { isSuccess: false };
 
   try {
+    const { DL_SERVER_ADDR, DL_SERVER_PORT, DL_SERVER_IMG_RECOG_PATH } =
+      process.env;
+
     const { data } = await axios({
       method: 'post',
-      url: process.env.DL_SERVER_URL,
+      url: `${DL_SERVER_ADDR}:${DL_SERVER_PORT}/${DL_SERVER_IMG_RECOG_PATH}`,
       data: { img_base64: base64Url },
     });
 
