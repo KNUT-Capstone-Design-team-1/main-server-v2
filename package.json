@@ -5,6 +5,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
     "prettier": "^2.7.1"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "yarn": "^1.22.19"
   },
   "scripts": {
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "start": "cross-env NODE_ENV=development nodemon --watch src/ src/app.js",
     "start-prod": "cross-env NODE_ENV=production nodemon --watch src/ src/app.js",
     "start-init": "cross-env NODE_ENV=init nodemon --watch src/ src/app.js"
