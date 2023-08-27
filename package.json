@@ -21,7 +21,6 @@
     "read-excel-file": "^5.4.2",
     "simple-excel-to-json": "^2.3.0",
     "winston": "^3.8.1",
-    "winston-daily-rotate-file": "^4.7.1",
     "yarn": "^1.22.19"
   },
   "scripts": {
@@ -32,7 +31,7 @@
   "name": "main-server-v2",
   "version": "1.0.0",
   "description": "what is pill main server",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "repository": "https://github.com/KNUT-Capstone-Design-team-1/main-server-v2.git",
   "author": "YongSiHun <tlgns1537@naver.com>",
   "license": "MIT"
