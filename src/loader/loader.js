@@ -9,7 +9,7 @@ const { logger } = require('../util');
  */
 async function loadPillRecognitionData() {
   await initPillRecognitionData();
-  logger.info('[LOAD-PILL-RECOG-DATA] load complete');
+  logger.info('[LOADER] pill recognition data load complete');
 }
 
 /**
@@ -17,7 +17,7 @@ async function loadPillRecognitionData() {
  */
 async function loadDrugPermissionData() {
   await initDrugPermissionData();
-  logger.info('[LOAD-DRUG-PERM-DATA] load complete');
+  logger.info('[LOADER] drug permission data load complete');
 }
 
 module.exports = {

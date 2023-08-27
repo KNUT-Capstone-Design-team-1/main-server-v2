@@ -1,13 +1,13 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
+const path = require('path');
+const promiseFs = require('node:fs/promises');
+const fs = require('fs');
 const xlsxParser = require('read-excel-file/node');
 const csvParser = require('csvtojson');
 const xlsParser = require('simple-excel-to-json');
-const path = require('path');
 const iconvLite = require('iconv-lite');
-const promiseFs = require('node:fs/promises');
-const fs = require('fs');
 const { default: axios } = require('axios');
 const { logger } = require('./logger');
 
@@ -22,12 +22,20 @@ async function convertXlsxToJson(filePath, schema) {
     const { rows, err } = await xlsxParser(filePath, { schema });
 
     if (err) {
-      logger.warn(`[UTIL] xlsx to json have error.[${filePath}]\n${err}`);
+      logger.warn(
+        `[UTIL] xlsx to json have error. filePath: %s\n%s`,
+        filePath,
+        err
+      );
     }
 
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] Convert xlsx file fail(${filePath})\n${e.stack}`);
+    logger.error(
+      '[UTIL] Convert xlsx file fail (filePath: %s)\n%s',
+      filePath,
+      e.stack || e
+    );
     return [];
   }
 }
@@ -44,7 +52,12 @@ async function convertCsvToJson(filePath) {
     const rows = await new Converter().fromString(csvString);
     return rows;
   } catch (e) {
-    logger.error(`[UTIL] Convert csv file fail(${filePath})\n${e.stack}`);
+    logger.error(
+      '[UTIL] Convert csv file fail (filePath: %s)\n%s',
+      filePath,
+      e.stack || e
+    );
+
     return [];
   }
 }
@@ -59,7 +72,12 @@ async function convertXlsToJson(filePath) {
     const doc = xlsParser.parseXls2Json(filePath);
     return doc.flat();
   } catch (e) {
-    logger.error(`[UTIL] Convert xls file fail(${filePath})\n${e.stack}`);
+    logger.error(
+      '[UTIL] Convert xls file fail (filePath: %s)\n%s',
+      filePath,
+      e.stack || e
+    );
+
     return [];
   }
 }
@@ -89,7 +107,8 @@ async function getJsonFromExcelFile(schema, dirPath) {
       if (!convertFunction) {
         if (filName !== '.md') {
           logger.warn(
-            `[GET-JSON-FROM-EXCEL-FILE] None execute function extension: ${filName}`
+            `[UTIL] None execute function extension. (filaName: %s)`,
+            filName
           );
         }
       } else {
@@ -103,7 +122,9 @@ async function getJsonFromExcelFile(schema, dirPath) {
     return result;
   } catch (e) {
     logger.error(
-      `[GET-JSON-FROM-EXCEL-FILE] Excel to read File(${dirPath}).\n${e.stack}`
+      '[UTIL] Excel to read File (dirPath: %s).\n%s',
+      dirPath,
+      e.stack || e
     );
     return [];
   }
@@ -126,9 +147,8 @@ async function convertOctetStreamUrlToBase64(imageUrl) {
 
     return Buffer.from(res.data, 'binary').toString('base64');
   } catch (e) {
-    logger.warn(
-      `[CONVERT-OCTET-TO-BASE64] can not convert for '${imageUrl}'.\n${e}`
-    );
+    logger.warn('[UTIL] can not convert for %s.\n%s', imageUrl, e.stack || e);
+
     return imageUrl;
   }
 }

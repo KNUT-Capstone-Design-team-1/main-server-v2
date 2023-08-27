@@ -11,9 +11,10 @@ async function writeSearchHistory(searchType, where) {
     await insertSearchHistory(searchType, where);
   } catch (e) {
     logger.error(
-      `[WRITE-SEARCH-HISTORY] Fail to insert search history.\nsearch type: ${searchType}\ndata: ${JSON.stringify(
-        where
-      )}\n${e.stack}`
+      '[SEARCH-HISTORY-SERVICE] Fail to insert search history.\nsearch type: %s\ndata: %s\n%s',
+      searchType,
+      JSON.stringify(where),
+      e.stack || e
     );
   }
 }

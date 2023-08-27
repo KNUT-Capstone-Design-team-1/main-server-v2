@@ -47,7 +47,7 @@ function getRecognitionDataForSearch(where, option) {
  */
 async function requestUpdatePillRecognitionDatas(datas) {
   if (datas.length === 0) {
-    logger.warn(`[REQ-UPDATE-PILL-RECOG-DATA] No data from excel file.`);
+    logger.warn(`[PILL-RECOGNITION-SERVICE] No data from excel file.`);
     return;
   }
 
@@ -57,7 +57,8 @@ async function requestUpdatePillRecognitionDatas(datas) {
     }
   } catch (e) {
     logger.error(
-      `[REQ-UPDATE-PILL-RECOG-DATA] Fail to update datas.\n${e.stack}`
+      '[PILL-RECOGNITION-SERVICE] Fail to update datas.\n%s',
+      e.stack || e
     );
   }
 }

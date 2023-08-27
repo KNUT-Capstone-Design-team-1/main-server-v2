@@ -32,7 +32,7 @@ function getPermissionDataForSearch(where) {
  */
 async function requestUpdateDrugPermissionDatas(datas) {
   if (datas.length === 0) {
-    logger.warn(`[REQ-UPDATE-DRUG-PERM-DATA] No data from excel file.`);
+    logger.warn(`[DRUG-PERMISSION-SERVICE] No data from excel file.`);
     return;
   }
 
@@ -42,7 +42,8 @@ async function requestUpdateDrugPermissionDatas(datas) {
     }
   } catch (e) {
     logger.error(
-      `[REQ-UPDATE-DRUG-PERM-DATA] Fail to update datas.\n${e.stack}`
+      '[DRUG-PERMISSION-SERVICE] Fail to update datas.\n%s',
+      e.stack || e
     );
   }
 }

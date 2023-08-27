@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const app = express();
 const { logger } = require('./util');
 const { PillSearchApi } = require('./api');
 const {
@@ -11,9 +10,12 @@ const {
   connectOnDatabase,
 } = require('./loader');
 
-const port = process.env.MAIN_SERVER_PORT;
+// express 서버 정의
+const app = express();
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 app.use(bodyParser.json({ limit: '50mb' }));
+
+// API 정의
 app.use('/pill-search', PillSearchApi);
 require('dotenv').config();
 
@@ -21,7 +23,7 @@ require('dotenv').config();
  * 데이터베이스 초기화 및 업데이트
  */
 function initDatabase() {
-  logger.info('[INIT-DATABASE] Initial Database');
+  logger.info('[APP] Initial Database');
   loadPillRecognitionData();
   loadDrugPermissionData();
 }
@@ -30,15 +32,19 @@ function initDatabase() {
  * 서버 시작
  */
 async function main() {
-  app.listen(port, () => {
+  const { MAIN_SERVER_PORT, NODE_ENV } = process.env;
+
+  app.listen(MAIN_SERVER_PORT, () => {
     logger.info(
-      `[APP-INIT] Server Running on ${port} port. env: ${process.env.NODE_ENV}`
+      '[APP] Server Running on %s port. env: %s',
+      MAIN_SERVER_PORT,
+      NODE_ENV
     );
   });
 
   connectOnDatabase();
 
-  if (process.env.NODE_ENV === 'init') {
+  if (NODE_ENV === 'init') {
     initDatabase();
   }
 }

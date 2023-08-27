@@ -54,10 +54,12 @@ async function searchPillRecognitionData(where, option) {
     result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[SEARCH-RECOG] Fail to recognition search.\nwhere: ${JSON.stringify(
-        where
-      )}\noption: ${JSON.stringify(option)}\n${e.stack}`
+      '[PILL-SEARCH-SERVICE] Fail to recognition search.\nwhere: %s\noption: %s\n%s',
+      JSON.stringify(where),
+      JSON.stringify(option),
+      e.stack || e
     );
+
     result.message = msg['pill-search.error.general'];
   }
   return result;
@@ -88,7 +90,10 @@ async function requestImageRecognitionDlServer(base64Url) {
 
     const recogResult = JSON.parse(data);
     if (!recogResult.is_success) {
-      logger.error(`response: ${JSON.stringify(recogResult)}`);
+      logger.error(
+        '[PILL-SEARCH-SERVICE] response: %s',
+        JSON.stringify(recogResult)
+      );
 
       // DL 서버에서 응답한 오류 메시지 반환
       result.message =
@@ -99,7 +104,11 @@ async function requestImageRecognitionDlServer(base64Url) {
     result.data = recogResult.data;
     result.isSuccess = true;
   } catch (e) {
-    logger.error(`[REQ-IMG-RECOG-DL-SERVER] Fail to image recognition.\n${e}`);
+    logger.error(
+      `[PILL-SEARCH-SERVICE] Fail to image recognition.\n%s`,
+      e.stack || e
+    );
+
     result.message = msg['pill-search.error.general'];
   }
   return result;
@@ -173,8 +182,11 @@ async function searchDetail(itemSeq) {
     result.isSuccess = true;
   } catch (e) {
     logger.error(
-      `[RECOG-SERVICE] Fail to call api.\nitemSeq: ${itemSeq}\n${e}`
+      '[PILL-SEARCH-SERVICE] Fail to call api.\nitemSeq: %s\n%s',
+      itemSeq,
+      e.stack || e
     );
+
     result.message = msg['pill-search.error.general'];
   }
   return result;

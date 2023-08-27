@@ -1,61 +1,22 @@
-const Winston = require('winston');
-const WinstonDaily = require('winston-daily-rotate-file');
+const { createLogger, format, transports } = require('winston');
 
-// logs 디렉터리 하위에 로그 파일 저장
-const logDir = 'logs';
-const { combine, timestamp, printf } = Winston.format;
+const PATH = 'logs';
 
-// 로그 포맷 정의
-const logFormat = printf(
-  (info) => `${info.timestamp} ${info.level}: ${info.message}`
-);
+const { combine, timestamp, printf, splat } = format;
 
-/*
- * 로그레벨
- * error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
- */
-const logger = Winston.createLogger({
+const logger = createLogger({
   format: combine(
-    timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    logFormat
+    splat(),
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    printf(
+      ({ timestamp: time, level, message }) => `${time} ${level}: ${message}`
+    )
   ),
   transports: [
-    // info 레벨 로그를 저장할 파일 설정
-    new WinstonDaily({
-      level: 'info',
-      datePattern: 'YYYY-MM-DD',
-      dirname: logDir,
-      filename: '%DATE%.log',
-      maxFiles: 30, // 30일치 로그 파일 저장
-      zippedArchive: true,
-    }),
-
-    // error 레벨 로그를 저장할 파일 설정
-    new WinstonDaily({
-      level: 'error',
-      datePattern: 'YYYY-MM-DD',
-      dirname: `${logDir}/error`, // error.log 파일은 /logs/error 하위에 저장
-      filename: '%DATE%.error.log',
-      maxFiles: 30,
-      zippedArchive: true,
-    }),
+    new transports.Console(),
+    new transports.File({ filename: `${PATH}/main_server.log` }),
+    new transports.File({ level: 'error', filename: `${PATH}/error.log` }),
   ],
 });
 
-// Production 환경이 아닌 경우(dev 등)
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new Winston.transports.Console({
-      format: Winston.format.combine(
-        Winston.format.colorize(),
-        Winston.format.simple()
-      ),
-    })
-  );
-}
-
-module.exports = {
-  logger,
-};
+module.exports = { logger };
