@@ -1,9 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const {
-  updatePillRecognitionData,
-  readPillRecognitionData,
-} = require('../queries');
+const { PillRecognitionDataModel } = require('../models');
 
 const {
   logger,
@@ -38,7 +35,10 @@ function getRecognitionDataForSearch(where, option) {
     LINE_FRONT: 1,
     LINE_BACK: 1,
   };
-  return readPillRecognitionData(operation, field, option);
+
+  return PillRecognitionDataModel.find(operation, field)
+    .skip(option?.skip || 0)
+    .limit(option?.limit || 0);
 }
 
 /**
@@ -53,7 +53,14 @@ async function requestUpdatePillRecognitionDatas(datas) {
 
   try {
     for (const data of datas) {
-      await updatePillRecognitionData(data);
+      await PillRecognitionDataModel.updateOne(
+        { ITEM_SEQ: data.ITEM_SEQ },
+        data,
+        {
+          new: true,
+          upsert: true,
+        }
+      );
     }
   } catch (e) {
     logger.error(

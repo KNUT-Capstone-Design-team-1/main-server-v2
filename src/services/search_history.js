@@ -1,4 +1,4 @@
-const { insertSearchHistory } = require('../queries');
+const { SearchHistoryModel } = require('../models');
 const { logger } = require('../util');
 
 /**
@@ -8,7 +8,11 @@ const { logger } = require('../util');
  */
 async function writeSearchHistory(searchType, where) {
   try {
-    await insertSearchHistory(searchType, where);
+    await SearchHistoryModel.create({
+      searchType,
+      where,
+      date: new Date(),
+    });
   } catch (e) {
     logger.error(
       '[SEARCH-HISTORY-SERVICE] Fail to insert search history.\nsearch type: %s\ndata: %s\n%s',

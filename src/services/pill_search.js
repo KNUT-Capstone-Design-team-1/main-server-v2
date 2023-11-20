@@ -170,11 +170,12 @@ async function searchDetail(itemSeq) {
     // API URL 및 서비스키
     const detailSearchUrl =
       'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService02/getDrugPrdtPrmsnDtlInq01';
-    const encServiceKey = process.env.ENC_SERVICE_KEY;
+    const decServiceKey = process.env.DEC_SERVICE_KEY;
 
-    const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
+    const apiUrl = `${detailSearchUrl}?serviceKey=${decServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
 
     const response = await axios({ method: 'get', url: apiUrl });
+
     const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } =
       response.data.body.items[0];
 
