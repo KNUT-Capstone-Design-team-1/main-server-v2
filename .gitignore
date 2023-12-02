@@ -1,6 +1,8 @@
 package-lock.json
-res
 node_modules
+*.xlsx
+*.xls
+*.csv
 logs
 tmp
 *.lock
@@ -8,3 +10,4 @@ config.json
 *.http
 *.env
 test*
+dist

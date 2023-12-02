@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 /**
  * 의약품 허가 정보 모델
@@ -38,6 +38,4 @@ const DrugPermissionDataModel = mongoose.model(
   )
 );
 
-module.exports = {
-  DrugPermissionDataModel,
-};
+export { DrugPermissionDataModel };

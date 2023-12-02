@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 /**
  * 검색 저장 모델
@@ -15,6 +15,4 @@ const SearchHistoryModel = mongoose.model(
   )
 );
 
-module.exports = {
-  SearchHistoryModel,
-};
+export { SearchHistoryModel };

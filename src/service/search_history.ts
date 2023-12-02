@@ -1,12 +1,13 @@
-const { SearchHistoryModel } = require('../models');
-const { logger } = require('../util');
+import { SearchHistoryModel } from '../schema';
+import { TSearchHistoryData } from '../type/search_history';
+import { logger } from '../util';
 
 /**
  * 검색 히스토리 저장
- * @param {string} searchType 검색 타입
- * @param {object} where 검색할 데이터
+ * @param searchType 검색 타입
+ * @param where 검색할 데이터
  */
-async function writeSearchHistory(searchType, where) {
+async function writeSearchHistory(searchType: string, where: TSearchHistoryData) {
   try {
     await SearchHistoryModel.create({
       searchType,
@@ -23,6 +24,6 @@ async function writeSearchHistory(searchType, where) {
   }
 }
 
-module.exports = {
+export {
   writeSearchHistory,
 };

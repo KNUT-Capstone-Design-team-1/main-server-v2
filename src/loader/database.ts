@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { logger } = require('../util');
+import mongoose from 'mongoose';
+import { logger } from '../util';
 
 mongoose.set('strictQuery', true);
 
@@ -9,7 +9,7 @@ mongoose.set('strictQuery', true);
 function connectOnDatabase() {
   const { DB_URL } = process.env;
 
-  mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+  mongoose.connect(DB_URL as string);
 
   const db = mongoose.connection;
   db.on('error', (e) => {
@@ -20,6 +20,4 @@ function connectOnDatabase() {
   db.once('open', () => logger.info('[DATABASE] Database connection success'));
 }
 
-module.exports = {
-  connectOnDatabase,
-};
+export { connectOnDatabase };

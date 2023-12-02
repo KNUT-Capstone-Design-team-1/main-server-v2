@@ -1,15 +1,18 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-const { DrugPermissionDataModel } = require('../models');
-const { logger, getJsonFromExcelFile } = require('../util');
+import { DrugPermissionDataModel } from '../schema';
+import { TDrugPermissionData } from '../type/drug_permission';
+import { TSearchQueryOption } from '../type/pill_search';
+import { generateQueryFilterForPillSearch, logger } from '../util';
 
 /**
  * 식별 검색을 위한 의약품 허가 정보 조회
- * @param {object} where 검색할 데이터
- * @param {object} option 검색 옵션
- * @returns {object[]}
+ * @param where 검색할 데이터
+ * @param option 검색 옵션
+ * @returns
  */
-function getPermissionDataForSearch(where, option) {
+async function getPermissionDataForSearch(
+  where: Partial<TDrugPermissionData>,
+  option?: Partial<TSearchQueryOption>
+) {
   // 조회할 컬럼
   const field = {
     ITEM_SEQ: 1,
@@ -22,16 +25,27 @@ function getPermissionDataForSearch(where, option) {
     STORAGE_METHOD: 1,
   };
 
-  return DrugPermissionDataModel.find(where, field)
-    .skip(option?.skip || 0)
-    .limit(option?.limit || 0);
+  const { skip, limit } = option || {};
+
+  const findQuery = await generateQueryFilterForPillSearch(where);
+
+  const drugpermissionDatas = await DrugPermissionDataModel.find(
+    findQuery,
+    field
+  )
+    .skip(skip || 0)
+    .limit(limit || 0);
+
+  return drugpermissionDatas;
 }
 
 /**
  * DB에 여러 항목의 의약품 허가 정보 데이터 업데이트 요청
- * @param {object[]} datas 의약품 허가정보 데이터 배열
+ * @param datas 의약품 허가정보 데이터 배열
  */
-async function requestUpdateDrugPermissionDatas(datas) {
+async function requestUpdateDrugPermissionDatas(
+  datas: Partial<TDrugPermissionData>[]
+) {
   if (datas.length === 0) {
     logger.warn(`[DRUG-PERMISSION-SERVICE] No data from excel file.`);
     return;
@@ -87,11 +101,13 @@ async function initDrugPermissionData() {
     주성분명: { prop: 'MAIN_ITEM_INGR', type: String },
     첨가제명: { prop: 'INGR_NAME', type: String },
   };
-  const excelJson = await getJsonFromExcelFile(schema, 'res/drug_permission/');
-  await requestUpdateDrugPermissionDatas(excelJson);
+  // const excelJson = await getJsonFromExcelFile(schema, 'res/drug_permission/');
+  // await requestUpdateDrugPermissionDatas(excelJson);
+
+  return schema;
 }
 
-module.exports = {
+export {
   getPermissionDataForSearch,
   requestUpdateDrugPermissionDatas,
   initDrugPermissionData,

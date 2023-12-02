@@ -1,8 +1,5 @@
-const {
-  initPillRecognitionData,
-  initDrugPermissionData,
-} = require('../services');
-const { logger } = require('../util');
+import { initPillRecognitionData, initDrugPermissionData } from '../service';
+import { logger } from '../util';
 
 /**
  * 알약 식별 정보 업데이트
@@ -20,7 +17,4 @@ async function loadDrugPermissionData() {
   logger.info('[LOADER] drug permission data load complete');
 }
 
-module.exports = {
-  loadPillRecognitionData,
-  loadDrugPermissionData,
-};
+export { loadPillRecognitionData, loadDrugPermissionData };

@@ -1,33 +1,24 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-const { PillRecognitionDataModel } = require('../models');
-
-const {
-  logger,
-  getJsonFromExcelFile,
-  generateOperatorForRecognition,
-} = require('../util');
-
-/**
- * @type {import('../data_type/recog_search')}
- */
+import { PillRecognitionDataModel } from '../schema';
+import { TPillRecognitionData } from '../type/pill_recognition';
+import { TSearchQueryOption } from '../type/pill_search';
+import { logger, generateQueryFilterForPillSearch } from '../util';
 
 /**
  * 식별 검색을 위한 낱알 식별 데이터 조회
- * @param {RECOG_SEARCH_REQ_DATA} where 검색할 데이터
- * @param {{skip: number, limit: number}} option 쿼리 옵션
- * @returns {object[]}
+ * @param where 검색할 데이터
+ * @param option 쿼리 옵션
+ * @returns
  */
-function getRecognitionDataForSearch(where, option) {
-  // DB 쿼리 조건
-  const operation = generateOperatorForRecognition(where);
-
+async function getRecognitionDataForSearch(
+  where: Partial<TPillRecognitionData>,
+  option?: Partial<TSearchQueryOption>
+) {
   // 조회할 컬럼
   const field = {
     ITEM_SEQ: 1,
     ITEM_NAME: 1,
     ENTP_NAME: 1,
-    CHARTN: 1,
+    CHARTIN: 1,
     ITEM_IMAGE: 1,
     DRUG_SHAPE: 1,
     COLOR_CLASS1: 1,
@@ -36,16 +27,24 @@ function getRecognitionDataForSearch(where, option) {
     LINE_BACK: 1,
   };
 
-  return PillRecognitionDataModel.find(operation, field)
-    .skip(option?.skip || 0)
-    .limit(option?.limit || 0);
+  const findQuery = await generateQueryFilterForPillSearch(where);
+
+  const { skip, limit } = option || {};
+
+  const recognitionDatas = await PillRecognitionDataModel.find(findQuery, field)
+    .skip(skip || 0)
+    .limit(limit || 0);
+
+  return recognitionDatas;
 }
 
 /**
  * DB에 여러 항목의 알약 식별 정보 데이터 업데이트 요청
- * @param {object[]} datas 알약 식별 정보 데이터 배열
+ * @param datas 알약 식별 정보 데이터 배열
  */
-async function requestUpdatePillRecognitionDatas(datas) {
+async function requestUpdatePillRecognitionDatas(
+  datas: Partial<TPillRecognitionData>[]
+) {
   if (datas.length === 0) {
     logger.warn(`[PILL-RECOGNITION-SERVICE] No data from excel file.`);
     return;
@@ -56,10 +55,7 @@ async function requestUpdatePillRecognitionDatas(datas) {
       await PillRecognitionDataModel.updateOne(
         { ITEM_SEQ: data.ITEM_SEQ },
         data,
-        {
-          new: true,
-          upsert: true,
-        }
+        { new: true, upsert: true }
       );
     }
   } catch (e) {
@@ -79,7 +75,7 @@ async function initPillRecognitionData() {
     ITEM_NAME: { prop: 'ITEM_NAME', type: String, required: true },
     ENTP_SEQ: { prop: 'ENTP_SEQ', type: String, required: true },
     ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
-    CHARTN: { prop: 'CHARTN', type: String, required: true },
+    CHARTIN: { prop: 'CHARTIN', type: String, required: true },
     ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String },
     PRINT_FRONT: { prop: 'PRINT_FRONT', type: String },
     PRINT_BACK: { prop: 'PRINT_BACK', type: String },
@@ -103,11 +99,13 @@ async function initPillRecognitionData() {
     ITEM_ENG_NAME: { prop: 'ITEM_ENG_NAME', type: String },
     EDI_CODE: { prop: 'EDI_CODE', type: String },
   };
-  const excelJson = await getJsonFromExcelFile(schema, 'res/pill_recognition/');
-  await requestUpdatePillRecognitionDatas(excelJson);
+  // const excelJson = await getJsonFromExcelFile(schema, 'res/pill_recognition/');
+  // await requestUpdatePillRecognitionDatas(excelJson);
+
+  return schema;
 }
 
-module.exports = {
+export {
   getRecognitionDataForSearch,
   requestUpdatePillRecognitionDatas,
   initPillRecognitionData,
