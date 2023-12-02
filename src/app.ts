@@ -1,8 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 import { logger } from './util';
-import { loadPillRecognitionData, loadDrugPermissionData, connectOnDatabase } from './loader';
+import { connectOnDatabase } from './loader';
 import { PillSearchApi } from './api';
 
 // env 파일 사용
@@ -17,15 +17,6 @@ app.use(bodyParser.json({ limit: '100mb' }));
 app.use('/pill-search', PillSearchApi);
 
 /**
- * 데이터베이스 초기화 및 업데이트
- */
-function initDatabase() {
-  logger.info('[APP] Initial Database');
-  loadPillRecognitionData();
-  loadDrugPermissionData();
-}
-
-/**
  * 서버 시작
  */
 async function main() {
@@ -36,10 +27,6 @@ async function main() {
   });
 
   connectOnDatabase();
-
-  if (NODE_ENV === 'init') {
-    initDatabase();
-  }
 }
 
 main();

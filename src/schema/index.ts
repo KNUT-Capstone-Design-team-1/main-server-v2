@@ -1,9 +1,5 @@
-import { DrugPermissionDataModel } from './drug_permission_data';
-import { PillRecognitionDataModel } from './pill_recognition_data';
+import { DrugPermissionDataModel } from './drug_permission';
+import { PillRecognitionDataModel } from './pill_recognition';
 import { SearchHistoryModel } from './search_history';
 
-export {
-  DrugPermissionDataModel,
-  PillRecognitionDataModel,
-  SearchHistoryModel,
-};
+export { DrugPermissionDataModel, PillRecognitionDataModel, SearchHistoryModel };
