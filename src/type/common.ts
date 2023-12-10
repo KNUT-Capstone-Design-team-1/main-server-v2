@@ -22,4 +22,10 @@ type TResourceUpdateInfo = {
   fileList: string[];
 };
 
-export { RESOURCE_PATH, TFuncReturn, TResourceMapperAttribute, TResourceMapper, TResourceUpdateInfo };
+export {
+  RESOURCE_PATH,
+  TFuncReturn,
+  TResourceMapperAttribute,
+  TResourceMapper,
+  TResourceUpdateInfo,
+};
