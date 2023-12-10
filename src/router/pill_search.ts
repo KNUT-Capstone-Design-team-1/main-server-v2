@@ -4,8 +4,22 @@ import { TSearchQueryOption } from '../type/pill_search';
 
 const router = express.Router();
 
-// 식별 정보 검색 (개요 검색)
-router.get('/recognition', async (req, res) => {
+/**
+ * @swagger
+ * paths:
+ *   /pill-search/recognition:
+ *     post:
+ *       description: '사용자가 식별한 알약의 특징으로 알약의 정보를 검색'
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: {
+ *               name: string,
+ *             }
+ *
+ */
+router.post('/recognition', async (req, res) => {
   SearchHistoryService.writeSearchHistory('recognition', req.body);
 
   res.json(
