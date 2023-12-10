@@ -9,7 +9,7 @@ import msg from '../../res/ko-KR.json';
 import { TPillRecognitionData } from '../type/pill_recognition';
 import { TDrugPermissionData } from '../type/drug_permission';
 import {
-  TDlServerRecogData,
+  TDlServerData,
   TDlServerResponse,
   TImageSearchParam,
   TMergedPillSearchData,
@@ -88,7 +88,7 @@ async function searchPillRecognitionData(
  * @returns
  */
 async function requestImageRecognitionDlServer(base64: string) {
-  const result = { success: false } as TFuncReturn<TDlServerRecogData[]>;
+  const result = { success: false } as TFuncReturn<TDlServerData>;
 
   try {
     const { DL_SERVER_ADDR, DL_SERVER_PORT, DL_SERVER_IMG_RECOG_PATH } = process.env;
@@ -121,7 +121,7 @@ async function requestImageRecognitionDlServer(base64: string) {
       return result;
     }
 
-    if (!data || data.length === 0) {
+    if (!data || data.recognization.length === 0) {
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist.\nresponse: %s',
         JSON.stringify(dlServerRes)
@@ -159,8 +159,10 @@ async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TS
     return dlServerRes;
   }
 
+  const { recognization } = dlServerRes.data;
+
   // DL 서버로 부터 받은 데이터를 기반으로 DB의 알약 식별 데이터를 조회
-  const recogDataPromises = dlServerRes.data.map((recogData) =>
+  const recogDataPromises = recognization.map((recogData) =>
     searchPillRecognitionData(recogData, option)
   );
 

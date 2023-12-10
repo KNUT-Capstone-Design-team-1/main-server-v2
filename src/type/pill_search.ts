@@ -21,9 +21,11 @@ type TDlServerRecogData = {
   LINE_BACK?: string;
 };
 
+type TDlServerData = { recognization: TDlServerRecogData[] };
+
 type TDlServerResponse = {
   success: boolean;
-  data?: TDlServerRecogData[];
+  data?: TDlServerData;
   message?: string;
 };
 
@@ -35,6 +37,7 @@ export {
   TSearchQueryWhere,
   TSearchQueryOption,
   TDlServerRecogData,
+  TDlServerData,
   TDlServerResponse,
   TMergedPillSearchData,
 };
