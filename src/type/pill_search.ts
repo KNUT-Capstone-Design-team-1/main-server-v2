@@ -2,7 +2,7 @@ import { TDrugPermissionData } from './drug_permission';
 import { TPillRecognitionData } from './pill_recognition';
 
 type TImageSearchParam = {
-  base64Url: string;
+  base64: string;
 };
 
 type TPillDetailSearchParam = Pick<TPillRecognitionData, 'ITEM_SEQ'>;
@@ -12,11 +12,13 @@ type TSearchQueryWhere = Partial<TPillRecognitionData | TDrugPermissionData>;
 type TSearchQueryOption = { skip: number; limit: number };
 
 type TDlServerRecogData = {
-  print: string;
-  chartin: string;
-  drug_shape: string;
-  color_class: string;
-  line_front: string;
+  PRINT_FRONT?: string;
+  PRINT_BACK?: string;
+  COLOR_CLASS1?: string;
+  COLOR_CLASS2?: string;
+  DRUG_SHAPE?: string;
+  LINE_FRONT?: string;
+  LINE_BACK?: string;
 };
 
 type TDlServerResponse = {

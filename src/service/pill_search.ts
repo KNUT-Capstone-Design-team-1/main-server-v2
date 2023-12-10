@@ -17,10 +17,7 @@ import {
   TSearchQueryOption,
 } from '../type/pill_search';
 import { TFuncReturn } from '../type/common';
-import {
-  TPillPermissionDetailApiRes,
-  TPillPermissionDetailData,
-} from '../type/pii_detail';
+import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../type/pii_detail';
 
 /**
  * 알약 식별 정보 및 허가 정보의 데이터를 병합
@@ -66,10 +63,7 @@ async function searchPillRecognitionData(
     // 의약품 허가 정보
     const permissionDatas = await getPermissionDataForSearch(where);
 
-    result.data = mergePillData(
-      recognitionDatas,
-      permissionDatas
-    ) as TMergedPillSearchData[];
+    result.data = mergePillData(recognitionDatas, permissionDatas) as TMergedPillSearchData[];
 
     result.success = true;
 
@@ -90,19 +84,18 @@ async function searchPillRecognitionData(
 
 /**
  * 딥러닝 서버에 이미지 인식 요청
- * @param base64Url 이미지의 base64 코드
+ * @param base64 이미지의 base64 코드
  * @returns
  */
-async function requestImageRecognitionDlServer(base64Url: string) {
+async function requestImageRecognitionDlServer(base64: string) {
   const result = { success: false } as TFuncReturn<TDlServerRecogData[]>;
 
   try {
-    const { DL_SERVER_ADDR, DL_SERVER_PORT, DL_SERVER_IMG_RECOG_PATH } =
-      process.env;
+    const { DL_SERVER_ADDR, DL_SERVER_PORT, DL_SERVER_IMG_RECOG_PATH } = process.env;
 
     const dlServerRes = await axios.post<TDlServerResponse>(
       `${DL_SERVER_ADDR}:${DL_SERVER_PORT}/${DL_SERVER_IMG_RECOG_PATH}`,
-      { img_base64: base64Url }
+      { base64 }
     );
 
     if (!dlServerRes?.data) {
@@ -142,10 +135,7 @@ async function requestImageRecognitionDlServer(base64Url: string) {
 
     return result;
   } catch (e) {
-    logger.error(
-      `[PILL-SEARCH-SERVICE] Fail to image recognition.\n%s`,
-      e.stack || e
-    );
+    logger.error(`[PILL-SEARCH-SERVICE] Fail to image recognition.\n%s`, e.stack || e);
     result.message = msg['pill-search.error.general'];
     return result;
   }
@@ -157,42 +147,21 @@ async function requestImageRecognitionDlServer(base64Url: string) {
  * @param option 쿼리 옵션
  * @returns
  */
-async function searchFromImage(
-  imageData: TImageSearchParam,
-  option?: Partial<TSearchQueryOption>
-) {
+async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TSearchQueryOption>) {
   const result = { success: false } as TFuncReturn<{
     pillInfoList: TMergedPillSearchData[];
   }>;
 
   // DL 서버 API 호출
-  const dlServerRes = await requestImageRecognitionDlServer(
-    imageData.base64Url
-  );
+  const dlServerRes = await requestImageRecognitionDlServer(imageData.base64);
 
   if (!dlServerRes.success) {
-    result.message = dlServerRes.message;
-    return result;
+    return dlServerRes;
   }
 
   // DL 서버로 부터 받은 데이터를 기반으로 DB의 알약 식별 데이터를 조회
-  const recogDataPromises = (dlServerRes.data as TDlServerRecogData[]).map(
-    async (recogData) => {
-      const { print, chartin, drug_shape, color_class, line_front } = recogData;
-
-      const where = {
-        PRINT: print || '',
-        CHARTIN: chartin || '',
-        DRUG_SHAPE: drug_shape || '',
-        COLOR_CLASS: color_class || '',
-        LINE: line_front || '',
-      };
-
-      // 알약 식별 데이터 조회 (낱알 식별 정보, 의약품 허가 정보)
-      const pillRecognition = await searchPillRecognitionData(where, option);
-
-      return pillRecognition;
-    }
+  const recogDataPromises = dlServerRes.data.map((recogData) =>
+    searchPillRecognitionData(recogData, option)
   );
 
   const queryResults = await Promise.all(recogDataPromises);
@@ -216,9 +185,7 @@ async function searchFromImage(
  * @returns
  */
 async function searchDetail(itemSeq: TPillDetailSearchParam) {
-  const result = { success: false } as TFuncReturn<
-    Partial<TPillPermissionDetailData>[]
-  >;
+  const result = { success: false } as TFuncReturn<Partial<TPillPermissionDetailData>[]>;
 
   try {
     // API URL 및 서비스키
@@ -230,26 +197,16 @@ async function searchDetail(itemSeq: TPillDetailSearchParam) {
 
     const response = await axios.get<TPillPermissionDetailApiRes>(apiUrl);
 
-    const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } =
-      response.data.body.items[0];
+    const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } = response.data.body.items[0];
 
     result.data = [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }];
     result.success = true;
   } catch (e) {
-    logger.error(
-      '[PILL-SEARCH-SERVICE] Fail to call api.\nitemSeq: %s\n%s',
-      itemSeq,
-      e.stack || e
-    );
+    logger.error('[PILL-SEARCH-SERVICE] Fail to call api.\nitemSeq: %s\n%s', itemSeq, e.stack || e);
 
     result.message = msg['pill-search.error.general'];
   }
   return result;
 }
 
-export {
-  writeSearchHistory,
-  searchPillRecognitionData,
-  searchFromImage,
-  searchDetail,
-};
+export { writeSearchHistory, searchPillRecognitionData, searchFromImage, searchDetail };
