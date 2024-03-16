@@ -32,7 +32,7 @@ jobs:
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
-           git pull && \
+           git pull https://${{ github.actor }}:${{ github.token }}@${{ github.repository }}.git && \
            bash run.sh ${{ github.event.inputs.deploy_mode }}"
     
       - if: contains(fromJSON('["DOCKER-COMPOSE"]'), github.event.inputs.deploy_mode)
@@ -40,7 +40,7 @@ jobs:
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
-           git pull && \
+           git pull https://${{ github.actor }}:${{ github.token }}@${{ github.repository }}.git && \
            cd ${{ secrets.WORK_DIR_INFRA }} && \
            bash run.sh ${{ github.event.inputs.deploy_mode }}"
 
