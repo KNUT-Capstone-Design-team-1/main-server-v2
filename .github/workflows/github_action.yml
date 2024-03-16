@@ -34,6 +34,6 @@ jobs:
       - name: test
         run: |
           echo "ssh test"
-          cat ${{ WORK_PATH }}/Dockerfile
+          cat $WORK_PATH/Dockerfile
       - name: cleanup
         run: rm -rf ~/.ssh
