@@ -30,6 +30,7 @@ jobs:
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
+           git config --global --add safe.directory ${{ secrets.WORK_DIR_MAIN }} && \
            git pull && \
            bash run.sh ${{ github.event.inputs.deploy_mode }}"
     
@@ -38,6 +39,7 @@ jobs:
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
+           git config --global --add safe.directory ${{ secrets.WORK_DIR_MAIN }} && \
            git pull && \
            cd ${{ secrets.WORK_DIR_INFRA }} && \
            bash run.sh ${{ github.event.inputs.deploy_mode }}"
