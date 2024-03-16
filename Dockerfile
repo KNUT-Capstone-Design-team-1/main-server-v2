@@ -21,10 +21,10 @@ ENV DL_SERVER_PORT=$DL_SERVER_PORT
 ENV DL_SERVER_IMG_RECOG_PATH=$DL_SERVER_IMG_RECOG_PATH
 
 # 컨테이너 내 디렉터리로 파일 복사
-COPY . /usr/local/wip-main 
+COPY . /usr/local/wip-main-server-v2 
 
 # 작업 디렉터리 이동
-WORKDIR /usr/local/wip-main/src
+WORKDIR /usr/local/wip-main-server-v2/src
 
 # node 모듈 설치
 RUN npm install
