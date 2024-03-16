@@ -11,6 +11,7 @@ on:
         default: 'BUILD-ONLY'
         type: choice
         options:
+          - BUILD-ONLY
           - STAND-ALONE
           - SINGLE-CONTAINER
           - DOCKER-COMPOSE
