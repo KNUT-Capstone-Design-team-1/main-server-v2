@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: install ssh keys
         run: |
-          install -m 700 -D /dev/null ~/.ssh/id_rsa
+          mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect ssh
