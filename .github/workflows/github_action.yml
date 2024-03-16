@@ -30,10 +30,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect ssh
-        run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-      - name: test
         run: |
-          echo "ssh test"
-          ls -al /must_be_madness/what_is_pill/wip-main
+          ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          ls -al /must_be_madness/what_is_pill/wip-main \
+          ls -al $WORK_PATH
       - name: cleanup
         run: rm -rf ~/.ssh
