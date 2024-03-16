@@ -29,6 +29,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect ssh
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
         run: echo ${{ github.event.intpus.deploy_mode }}
