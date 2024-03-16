@@ -1,4 +1,4 @@
-name: what-is-pill-mai-_server-cicd
+name: what-is-pill-main-server-cicd
 
 run-name: ${{ github.actor }} run cicd
 
