@@ -25,13 +25,19 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
-      - uses: appleboy/ssh-action@v1.0.3
+      - name: test
+        run: |
+          echo ${{ secrets.SSH_HOST }}
+          echo ${{ github.event.intpus.deploy_mode }}
+      - name: connect ssh
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_HOST }}
-          script: echo ${{ github.event.intpus.deploy_mode }}
+          script: |
+            echo ${{ github.event.intpus.deploy_mode }}
     # steps:
     #   - name: install ssh keys
     #     run: |
