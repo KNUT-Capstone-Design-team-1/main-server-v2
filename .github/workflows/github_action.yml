@@ -32,6 +32,3 @@ jobs:
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
         run: echo ${{ github.event.intpus.deploy_mode }}
-
-  execute:
-    runs-on: ubuntu-20.04
