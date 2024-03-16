@@ -32,6 +32,8 @@ jobs:
       - name: connect ssh
         run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
-        run: echo ${{ github.event.inputs.deploy_mode }}
+        run: |
+          echo "ssh test"
+          cat ${{ WORK_PATH }}/Dockerfile
       - name: cleanup
         run: rm -rf ~/.ssh
