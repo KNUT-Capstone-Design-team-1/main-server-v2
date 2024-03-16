@@ -31,8 +31,8 @@ jobs:
           ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect ssh
         run: |
-          ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} && \
-          cd ${{ secrets.WORK_DIR_MAIN }} && \
-          bash test.sh
+          ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          "cd ${{ secrets.WORK_DIR_MAIN }} && \
+          bash test.sh"
       - name: cleanup
         run: rm -rf ~/.ssh
