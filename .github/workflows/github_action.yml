@@ -23,18 +23,6 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
-    #   - uses: actions/checkout@v4
-    #   - uses: webfactory/ssh-agent@v0.9.0
-    #     with:
-    #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #   - uses: appleboy/ssh-action@master
-    #     with:
-    #       host: ${{ secrets.SSH_HOST }}
-    #       username: ${{ secrets.SSH_USER }}
-    #       key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #       port: ${{ secrets.SSH_PORT }}
-    #       script: |
-    #         echo success
       - name: install ssh keys
         run: |
           mkdir -p ~/.ssh/
@@ -44,6 +32,6 @@ jobs:
       - name: connect ssh
         run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
-        run: echo ${{ github.event.intpus.deploy_mode }}
+        run: echo ${{ github.event.inputs.deploy_mode }}
       - name: cleanup
         run: rm -rf ~/.ssh
