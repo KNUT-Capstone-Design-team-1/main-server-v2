@@ -18,7 +18,6 @@ on:
 jobs:
   run-pull:
     runs-on: ubuntu-20.04
-    timeout-minutes: 5
     steps:
       - name: install ssh keys
         run: |
