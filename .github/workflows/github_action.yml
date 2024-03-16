@@ -28,7 +28,6 @@ jobs:
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: connect ssh
-        run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+          ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
         run: echo ${{ github.event.intpus.deploy_mode }}
