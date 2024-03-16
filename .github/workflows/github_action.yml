@@ -26,14 +26,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - if: contains(fromJSON('["STAND-ALONE", "SINGLE-CONTAINER"]'), ${{ github.event.inputs.deploy_mode }})
+      - if: contains(fromJSON('["STAND-ALONE", "SINGLE-CONTAINER"]'), github.event.inputs.deploy_mode)
         name: run single mode
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
           bash run.sh ${{ github.event.inputs.deploy_mode }}"
     
-      - if: contains(fromJSON('["DOCKER-COMPOSE"]'), ${{ github.event.inputs.deploy_mode }})
+      - if: contains(fromJSON('["DOCKER-COMPOSE"]'), github.event.inputs.deploy_mode)
         name: run multiple mode
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
