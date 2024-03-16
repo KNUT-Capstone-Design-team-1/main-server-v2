@@ -1,19 +1,37 @@
-name: what_is_pill_cicd
+name: what-is-pill-mai-_server-cicd
 
 run-name: ${{ github.actor }} run cicd
 
 on:
-  push:
-    branches:
-      - releases
+  workflow_dispatch:
+    inputs:
+      deploy_mode:
+        description: 'set deploy mode'
+        required: true
+        default: 'BUILD-ONLY'
+        type: choice
+        options:
+          - STAND-ALONE
+          - SINGLE-CONTAINER
+          - DOCKER-COMPOSE
+  
+env:
+  WORK_PATH: ${{ secrets.WORK_DIR_MAIN }}
 
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+  run-pull:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: List files in the repository
+      - name: install ssh keys
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: connect ssh
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      - name: test
+        run: echo ${{ github.event.intpus.deploy_mode }}
+
+  execute:
+    runs-on: ubuntu-20.04
