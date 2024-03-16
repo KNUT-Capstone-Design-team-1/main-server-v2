@@ -27,10 +27,12 @@ jobs:
     steps:
       - name: install ssh keys
         run: |
-          mkdir -p ~/.ssh/
+          mkdir -m 600 -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect ssh
         run: ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
       - name: test
         run: echo ${{ github.event.intpus.deploy_mode }}
+      - name: cleanup
+        run: rm -rf ~/.ssh
