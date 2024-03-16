@@ -34,6 +34,6 @@ jobs:
       - name: test
         run: |
           echo "ssh test"
-          cat $WORK_PATH/Dockerfile
+          ls -al /must_be_madness/what_is_pill/wip-main
       - name: cleanup
         run: rm -rf ~/.ssh
