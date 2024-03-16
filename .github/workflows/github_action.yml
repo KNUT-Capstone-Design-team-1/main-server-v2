@@ -30,14 +30,17 @@ jobs:
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "cd ${{ secrets.WORK_DIR_MAIN }} && \
-          bash run.sh ${{ github.event.inputs.deploy_mode }}"
+           git pull && \
+           bash run.sh ${{ github.event.inputs.deploy_mode }}"
     
       - if: contains(fromJSON('["DOCKER-COMPOSE"]'), github.event.inputs.deploy_mode)
         name: run multiple mode
         run: |
           ssh -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-          "cd ${{ secrets.WORK_DIR_INFRA }} && \
-          bash run.sh ${{ github.event.inputs.deploy_mode }}"
+          "cd ${{ secrets.WORK_DIR_MAIN }} && \
+           git pull && \
+           cd ${{ secrets.WORK_DIR_INFRA }} && \
+           bash run.sh ${{ github.event.inputs.deploy_mode }}"
 
       - name: cleanup
         run: rm -rf ~/.ssh
