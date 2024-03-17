@@ -4,10 +4,10 @@
 echo "---- set environment values ----"
 unamestr=$(uname)
 
-if [ ${unamestr} = "Linux" ]; then
+if [ $unamestr = "Linux" ]; then
   export $(grep -v '^#' .env | xargs -d '\n')
 
-elif [ ${unamestr} = "FreeBSD" ] || [ ${unamestr} = "Darwin" ]; then
+elif [ $unamestr = "FreeBSD" ] || [ $unamestr = "Darwin" ]; then
   export $(grep -v '^#' .env | xargs -0)
 fi
 
