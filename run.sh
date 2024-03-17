@@ -15,13 +15,13 @@ fi
 echo "---- OK ----"
 echo "---- $build_mode ----"
 
-if [ "$build_mode"='STAND-ALONE' ]; then
+if [ ${build_mode}='STAND-ALONE' ]; then
   # 모든 node 종료. 차후에는 systemd로 개선 필요
   killall node
   tsc --build
   npm install
   node ./build/src/app.js &
-elif [ "$build_mode"='SINGLE-CONTAINER' ]; then
+elif [ ${build_mode}='SINGLE-CONTAINER' ]; then
   # 도커 이미지 빌드
   echo "---- container image build ----"
   build_cmd="docker build . -t wip-main-server-v2"
