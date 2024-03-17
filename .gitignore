@@ -10,4 +10,4 @@ config.json
 *.http
 *.env
 test*
-dist
+build
