@@ -22,6 +22,6 @@ sudo systemctl enable mongod
 sudo systemctl daemon-reload
 sudo systemctl start mongod
 
-# main server service daemon setting
+# service daemon setting
 sudo cp ./system/wip-main-server-v2.service /etc/systemd/system/wip-main-server-v2.service
 sudo systemctl enable wip-main-server-v2
