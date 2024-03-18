@@ -16,10 +16,10 @@ echo "---- $1 ----"
 
 if [ $1 = "STAND-ALONE" ]; then
   # 모든 node 종료. 차후에는 systemd로 개선 필요
-  killall node
+  sudo systemctl stop wip-main-server-v2
   tsc --build
   npm install
-  node ./build/src/app.js &
+  sudo systemctl start wip-main-server-v2
 elif [ $1 = "SINGLE-CONTAINER" ]; then
   # 도커 이미지 빌드
   echo "---- container image build ----"
