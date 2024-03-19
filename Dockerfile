@@ -22,9 +22,9 @@ COPY . /usr/local/wip-main-server-v2
 
 WORKDIR /usr/local/wip-main-server-v2
 
-RUN npm install
-RUN npm install -g typescript
-RUN tsc --build
+ONBUILD RUN npm install
+ONBUILD RUN npm install -g typescript
+ONBUILD RUN tsc --build
 
 WORKDIR /usr/local/wip-main-server-v2/build/src
 
