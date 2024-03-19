@@ -25,11 +25,8 @@ WORKDIR /usr/local/wip-main-server-v2
 RUN npm install
 RUN npm install -g typescript
 RUN tsc --build
-RUN mv -f ./build/src ./src
-RUN mv -f ./build/doc ./doc
-RUN mv -f ./build/res ./res
 
-WORKDIR /usr/local/wip-main-server-v2/src
+WORKDIR /usr/local/wip-main-server-v2/build/src
 
 EXPOSE $MAIN_SERVER_PORT
 
