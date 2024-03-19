@@ -26,8 +26,8 @@ if [ $1 = "STAND-ALONE" ]; then
   sudo systemctl start wip-main-server-v2
   echo "---- OK ----"
 elif [ $1 = "SINGLE-CONTAINER" ]; then
-  echo "---- Build Container image ----"
-  build_cmd="docker build . -t wip-main-server-v2"
+  echo "---- Build container image ----"
+  build_cmd="docker build --no-cache --pull . -t wip-main-server-v2"
 
   while read line; do
     arg_temp=$(echo $line | cut -f 1 -d'=')
@@ -41,11 +41,11 @@ elif [ $1 = "SINGLE-CONTAINER" ]; then
   docker container rm -f wip-main-server-v2
   echo "---- OK ----"
 
-  echo "---- Remove previous image ----"
-  docker rmi $(docker images -q wip-main-server-v2)
-  echo "---- OK ----"
-
   echo "---- Run container ----"
   docker run -d --name wip-main-server-v2 wip-main-server-v2
+  echo "---- OK ----"
+
+  echo "---- Remove previous image ----"
+  docker image prune -f
   echo "---- OK ----"
 fi
