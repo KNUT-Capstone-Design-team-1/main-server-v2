@@ -18,7 +18,7 @@ if [ $1 = "STAND-ALONE" ]; then
   echo "---- OK ----"
 
   echo "---- Build and install library ----"
-  tsc --build
+  tsc --build --force
   npm install
   echo "---- OK ----"
 
