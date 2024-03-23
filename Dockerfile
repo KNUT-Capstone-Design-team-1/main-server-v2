@@ -28,6 +28,4 @@ RUN tsc --build
 
 EXPOSE $MAIN_SERVER_PORT
 
-VOLUME /usr/local/wip-main-server-v2/logs
-
 ENTRYPOINT ["node", "./build/src/app.js"]

@@ -42,7 +42,8 @@ elif [ $1 = "SINGLE-CONTAINER" ]; then
   echo "---- OK ----"
 
   echo "---- Run container ----"
-  docker run -d -v ./logs:./logs \
+  docker run -d \
+    -v /must_be_madness/what_is_pill/wip-main-server-v2/logs:/usr/local/wip-main-server-v2/logs \
     --name wip-main-server-v2 wip-main-server-v2 \
     --add-host host.docker.internal:host-gateway
   echo "---- OK ----"
