@@ -26,10 +26,8 @@ RUN npm install
 RUN npm install -g typescript
 RUN tsc --build
 
-WORKDIR /usr/local/wip-main-server-v2/build/src
-
 EXPOSE $MAIN_SERVER_PORT
 
 VOLUME ./logs /usr/local/wip-main-server-v2/logs
 
-ENTRYPOINT ["node", "app.js"]
+ENTRYPOINT ["node", ".build/src/app.js"]
