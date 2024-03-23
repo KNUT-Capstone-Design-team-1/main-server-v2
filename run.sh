@@ -42,7 +42,7 @@ elif [ $1 = "SINGLE-CONTAINER" ]; then
   echo "---- OK ----"
 
   echo "---- Run container ----"
-  docker run -d --name wip-main-server-v2 wip-main-server-v2 --add-host host.docker.internal:host-gateway
+  docker run -d --name wip-main-server-v2 wip-main-server-v2 --add-host host.docker.internal:host-gateway -v ./logs
   echo "---- OK ----"
 
   echo "---- Remove previous image ----"
