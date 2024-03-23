@@ -28,6 +28,6 @@ RUN tsc --build
 
 EXPOSE $MAIN_SERVER_PORT
 
-VOLUME ./logs /usr/local/wip-main-server-v2/logs
+VOLUME /must_be_madness/what_is_pill/wip-main-server-v2/logs /usr/local/wip-main-server-v2/logs
 
 ENTRYPOINT ["node", "./build/src/app.js"]
