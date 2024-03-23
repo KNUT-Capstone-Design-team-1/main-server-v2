@@ -30,4 +30,6 @@ WORKDIR /usr/local/wip-main-server-v2/build/src
 
 EXPOSE $MAIN_SERVER_PORT
 
+VOLUME ./logs /usr/local/wip-main-server-v2/logs
+
 ENTRYPOINT ["node", "app.js"]
