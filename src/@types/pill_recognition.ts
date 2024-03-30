@@ -1,4 +1,4 @@
-type TPillRecognitionData = {
+export type TPillRecognitionData = {
   ITEM_SEQ: string; // 품목 일련 번호
   ITEM_NAME: string; // 품목명
   ENTP_SEQ: string; // 업체 일련 번호
@@ -28,6 +28,4 @@ type TPillRecognitionData = {
   EDI_CODE: string; // 보험 코드
 };
 
-type TRecognitionSearchParam = TPillRecognitionData;
-
-export { TPillRecognitionData, TRecognitionSearchParam };
+export type TRecognitionSearchParam = TPillRecognitionData;

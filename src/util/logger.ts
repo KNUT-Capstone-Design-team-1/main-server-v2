@@ -4,7 +4,7 @@ const PATH = 'logs';
 
 const { combine, timestamp, printf, splat } = format;
 
-const logger = createLogger({
+export const logger = createLogger({
   format: combine(
     splat(),
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -18,5 +18,3 @@ const logger = createLogger({
     new transports.File({ level: 'error', filename: `${PATH}/error.log` }),
   ],
 });
-
-export { logger };

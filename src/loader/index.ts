@@ -1,2 +1,2 @@
-export * from './database';
-export * from './loader';
+export * as DataBase from './database';
+export * as Loader from './loader';

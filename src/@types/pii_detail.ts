@@ -1,4 +1,4 @@
-type TPillPermissionDetailData = {
+export type TPillPermissionDetailData = {
   ITEM_SEQ: string;
   ITEM_NAME: string;
   ENTP_NAME: string;
@@ -43,9 +43,9 @@ type TPillPermissionDetailData = {
   BOZRNO: string;
 };
 
-type TPillPermissionDetailHeader = { resultCode: string; resultMsg: string };
+export type TPillPermissionDetailHeader = { resultCode: string; resultMsg: string };
 
-type TPillPermissionDetailApiRes = {
+export type TPillPermissionDetailApiRes = {
   header: TPillPermissionDetailHeader;
   body: {
     pageNo: number;
@@ -54,5 +54,3 @@ type TPillPermissionDetailApiRes = {
     items: TPillPermissionDetailData[];
   };
 };
-
-export { TPillPermissionDetailData, TPillPermissionDetailApiRes };

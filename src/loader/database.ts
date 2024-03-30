@@ -7,7 +7,7 @@ mongoose.set('strictQuery', true);
 /**
  * 데이터베이스 연결
  */
-function connectOnDatabase() {
+export function connectOnDatabase() {
   const { DB_URL } = process.env;
 
   mongoose.connect(DB_URL as string);
@@ -23,5 +23,3 @@ function connectOnDatabase() {
     // updateDatabaseFromResource();
   });
 }
-
-export { connectOnDatabase };

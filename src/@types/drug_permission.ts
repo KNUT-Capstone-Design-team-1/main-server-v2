@@ -1,4 +1,4 @@
-type TDrugPermissionData = {
+export type TDrugPermissionData = {
   ITEM_SEQ: string; // 품목 일련 번호
   ITEM_NAME: string; // 품목명
   ENTP_NAME: string; // 업체명
@@ -26,5 +26,3 @@ type TDrugPermissionData = {
   MAIN_ITEM_INGR: string; // 주성분명
   INGR_NAME: string; // 첨가제명
 };
-
-export { TDrugPermissionData };

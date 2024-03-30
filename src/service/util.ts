@@ -1,11 +1,11 @@
-import { TSearchQueryWhere } from '../type/pill_search';
+import { TSearchQueryWhere } from '../@types/pill_search';
 
 /**
  * 알약 검색을 위한 쿼리 필터 생성
  * @param where 검색할 데이터
  * @returns 
  */
-async function generateQueryFilterForPillSearch(where: TSearchQueryWhere) {
+export async function generateQueryFilterForPillSearch(where: TSearchQueryWhere) {
   const andTargetKeys = ['ITEM_NAME'];
   const orTargetKeys = [
     'COLOR_CLASS_1',
@@ -50,5 +50,3 @@ async function generateQueryFilterForPillSearch(where: TSearchQueryWhere) {
 
   return queryFilter;
 }
-
-export { generateQueryFilterForPillSearch };

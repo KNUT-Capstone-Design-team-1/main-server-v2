@@ -15,4 +15,4 @@ const SearchHistoryModel = mongoose.model(
   )
 );
 
-export { SearchHistoryModel };
+export default SearchHistoryModel;

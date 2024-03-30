@@ -1,7 +1,7 @@
 import { PillRecognitionDataModel } from '../schema';
-import { TResourceMapper } from '../type/common';
-import { TPillRecognitionData } from '../type/pill_recognition';
-import { TSearchQueryOption } from '../type/pill_search';
+import { TResourceMapper } from '../@types/common';
+import { TPillRecognitionData } from '../@types/pill_recognition';
+import { TSearchQueryOption } from '../@types/pill_search';
 import { logger, generateQueryFilterForPillSearch } from '../util';
 
 /**
@@ -10,7 +10,7 @@ import { logger, generateQueryFilterForPillSearch } from '../util';
  * @param option 쿼리 옵션
  * @returns
  */
-async function getRecognitionDataForSearch(
+export async function getRecognitionDataForSearch(
   where: Partial<TPillRecognitionData>,
   option?: Partial<TSearchQueryOption>
 ) {
@@ -43,7 +43,7 @@ async function getRecognitionDataForSearch(
  * DB에 여러 항목의 알약 식별 정보 데이터 업데이트 요청
  * @param datas 알약 식별 정보 데이터 배열
  */
-async function requestUpdatePillRecognitionDatas(datas: Partial<TPillRecognitionData>[]) {
+export async function requestUpdatePillRecognitionDatas(datas: Partial<TPillRecognitionData>[]) {
   if (datas.length === 0) {
     logger.warn(`[PILL-RECOGNITION-SERVICE] No data from excel file.`);
     return;
@@ -64,7 +64,7 @@ async function requestUpdatePillRecognitionDatas(datas: Partial<TPillRecognition
 /**
  * 엑셀파일을 읽어 알약 식별 정보 업데이트
  */
-function getPillrecognitionResourceMapper() {
+export function getPillrecognitionResourceMapper() {
   const mapper = {
     ITEM_SEQ: { colunmOfResource: 'ITEM_SEQ', required: true },
     ITEM_NAME: { colunmOfResource: 'ITEM_NAME', required: true },
@@ -97,9 +97,3 @@ function getPillrecognitionResourceMapper() {
 
   return mapper;
 }
-
-export {
-  getRecognitionDataForSearch,
-  requestUpdatePillRecognitionDatas,
-  getPillrecognitionResourceMapper,
-};

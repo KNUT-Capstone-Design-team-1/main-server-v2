@@ -3,11 +3,10 @@ import _ from 'lodash';
 
 import { getRecognitionDataForSearch } from './pill_recognition';
 import { getPermissionDataForSearch } from './drug_permission';
-import { writeSearchHistory } from './search_history';
 import { logger } from '../util';
 import msg from '../../res/ko-KR.json';
-import { TPillRecognitionData } from '../type/pill_recognition';
-import { TDrugPermissionData } from '../type/drug_permission';
+import { TPillRecognitionData } from '../@types/pill_recognition';
+import { TDrugPermissionData } from '../@types/drug_permission';
 import {
   TDlServerData,
   TDlServerResponse,
@@ -15,9 +14,9 @@ import {
   TMergedPillSearchData,
   TPillDetailSearchParam,
   TSearchQueryOption,
-} from '../type/pill_search';
-import { TFuncReturn } from '../type/common';
-import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../type/pii_detail';
+} from '../@types/pill_search';
+import { TFuncReturn } from '../@types/common';
+import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pii_detail';
 
 /**
  * 알약 식별 정보 및 허가 정보의 데이터를 병합
@@ -45,7 +44,7 @@ function mergePillData(
  * @param option 쿼리 옵션
  * @returns
  */
-async function searchPillRecognitionData(
+export async function searchPillRecognitionData(
   where: Partial<TPillRecognitionData>,
   option?: Partial<TSearchQueryOption>
 ) {
@@ -147,7 +146,7 @@ async function requestImageRecognitionDlServer(base64: string) {
  * @param option 쿼리 옵션
  * @returns
  */
-async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TSearchQueryOption>) {
+export async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TSearchQueryOption>) {
   const result = { success: false } as TFuncReturn<{
     pillInfoList: TMergedPillSearchData[];
   }>;
@@ -186,7 +185,7 @@ async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TS
  * @param itemSeq API 호출을 위한 옵션인 알약 제품 일련 번호
  * @returns
  */
-async function searchDetail(itemSeq: TPillDetailSearchParam) {
+export async function searchDetail(itemSeq: TPillDetailSearchParam) {
   const result = { success: false } as TFuncReturn<Partial<TPillPermissionDetailData>[]>;
 
   try {
@@ -210,5 +209,3 @@ async function searchDetail(itemSeq: TPillDetailSearchParam) {
   }
   return result;
 }
-
-export { writeSearchHistory, searchPillRecognitionData, searchFromImage, searchDetail };

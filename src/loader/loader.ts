@@ -1,9 +1,9 @@
 import fs from 'fs';
-import { logger } from '../util';
-import { RESOURCE_PATH, TResourceMapper, TResourceUpdateInfo } from '../type/common';
+import { RESOURCE_PATH, logger } from '../util';
+import { TResourceMapper, TResourceUpdateInfo } from '../@types/common';
 import { PillRecognitionService, DrugPermissionService } from '../service';
 
-async function convertResourceForDatabaseUpdate(resourceDatas: TResourceUpdateInfo[]) {
+export async function convertResourceForDatabaseUpdate(resourceDatas: TResourceUpdateInfo[]) {
   // xls 및 xlsx, csv에 따라 다른 라이브러리를 사용하여 업데이트
   logger.info('datas %s', resourceDatas);
 }
@@ -11,7 +11,7 @@ async function convertResourceForDatabaseUpdate(resourceDatas: TResourceUpdateIn
 /**
  * 리소스 파일로 부터 데이터베이스 업데이트
  */
-async function updateDatabaseFromResource() {
+export async function updateDatabaseFromResource() {
   logger.info('[LOADER] Update pill search data resource');
 
   const resourceUpdateInfos = [] as TResourceUpdateInfo[];
@@ -53,5 +53,3 @@ async function updateDatabaseFromResource() {
 
   await convertResourceForDatabaseUpdate(resourceUpdateInfos);
 }
-
-export { updateDatabaseFromResource };

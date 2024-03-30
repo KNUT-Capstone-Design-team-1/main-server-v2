@@ -1,5 +1,5 @@
 import { SearchHistoryModel } from '../schema';
-import { TSearchHistoryData } from '../type/search_history';
+import { TSearchHistoryData } from '../@types/search_history';
 import { logger } from '../util';
 
 /**
@@ -7,7 +7,7 @@ import { logger } from '../util';
  * @param searchType 검색 타입
  * @param where 검색할 데이터
  */
-async function writeSearchHistory(searchType: string, where: TSearchHistoryData) {
+export async function writeSearchHistory(searchType: string, where: TSearchHistoryData) {
   try {
     await SearchHistoryModel.create({
       searchType,
@@ -23,7 +23,3 @@ async function writeSearchHistory(searchType: string, where: TSearchHistoryData)
     );
   }
 }
-
-export {
-  writeSearchHistory,
-};

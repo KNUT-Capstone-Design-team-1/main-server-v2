@@ -1,7 +1,7 @@
 import { DrugPermissionDataModel } from '../schema';
-import { TResourceMapper } from '../type/common';
-import { TDrugPermissionData } from '../type/drug_permission';
-import { TSearchQueryOption } from '../type/pill_search';
+import { TResourceMapper } from '../@types/common';
+import { TDrugPermissionData } from '../@types/drug_permission';
+import { TSearchQueryOption } from '../@types/pill_search';
 import { generateQueryFilterForPillSearch, logger } from '../util';
 
 /**
@@ -10,7 +10,7 @@ import { generateQueryFilterForPillSearch, logger } from '../util';
  * @param option 검색 옵션
  * @returns
  */
-async function getPermissionDataForSearch(
+export async function getPermissionDataForSearch(
   where: Partial<TDrugPermissionData>,
   option?: Partial<TSearchQueryOption>
 ) {
@@ -41,7 +41,7 @@ async function getPermissionDataForSearch(
  * DB에 여러 항목의 의약품 허가 정보 데이터 업데이트 요청
  * @param datas 의약품 허가정보 데이터 배열
  */
-async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermissionData>[]) {
+export async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermissionData>[]) {
   if (datas.length === 0) {
     logger.warn(`[DRUG-PERMISSION-SERVICE] No data from excel file.`);
     return;
@@ -62,7 +62,7 @@ async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermissionDa
 /**
  * 엑셀파일을 읽어 의약품 허가 정보 초기화
  */
-function getDrugPermissionResourceMapper() {
+export function getDrugPermissionResourceMapper() {
   const mapper = {
     ITEM_SEQ: { colunmOfResource: '품목일련번호', required: true },
     ITEM_NAME: { colunmOfResource: '품목명', required: true },
@@ -93,9 +93,3 @@ function getDrugPermissionResourceMapper() {
 
   return mapper;
 }
-
-export {
-  getPermissionDataForSearch,
-  requestUpdateDrugPermissionDatas,
-  getDrugPermissionResourceMapper,
-};

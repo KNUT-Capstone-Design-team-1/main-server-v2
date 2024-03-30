@@ -38,4 +38,4 @@ const DrugPermissionDataModel = mongoose.model(
   )
 );
 
-export { DrugPermissionDataModel };
+export default DrugPermissionDataModel;

@@ -39,4 +39,4 @@ const PillRecognitionDataModel = mongoose.model(
   )
 );
 
-export { PillRecognitionDataModel };
+export default PillRecognitionDataModel;

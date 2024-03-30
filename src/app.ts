@@ -1,15 +1,12 @@
 import express from 'express';
 
 import * as dotenv from 'dotenv';
+import * as Router from './router';
+import { DataBase } from './loader';
 import { logger } from './util';
-import { connectOnDatabase } from './loader';
-import { loadRouter } from './router';
 
-// env 파일 사용
 dotenv.config();
-
-// express 서버 정의
-const app = express();
+export const app = express();
 
 /**
  * 서버 시작
@@ -21,11 +18,9 @@ async function main() {
     logger.info('[APP] Server Running on %s port. env: %s', MAIN_SERVER_PORT, NODE_ENV);
   });
 
-  loadRouter(app);
+  Router.loadRouter(app);
 
-  connectOnDatabase();
+  DataBase.connectOnDatabase();
 }
 
 main();
-
-export { app };
