@@ -42,7 +42,7 @@
   "version": "1.0.0",
   "description": "what is pill main server",
   "main": "src/app.js",
-  "repository": "https://github.com/KNUT-Capstone-Design-team-1/main-server-v2.git",
+  "repository": "https://github.com/KNUT-Capstone-Design-team-1/wip-main-server-v2",
   "author": "YongSiHun <tlgns1537@naver.com>",
   "license": "MIT"
 }
