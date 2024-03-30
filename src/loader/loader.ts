@@ -4,7 +4,6 @@ import { TResourceMapper, TResourceUpdateInfo } from '../@types/common';
 import { PillRecognitionService, DrugPermissionService } from '../service';
 
 export async function convertResourceForDatabaseUpdate(resourceDatas: TResourceUpdateInfo[]) {
-  // xls 및 xlsx, csv에 따라 다른 라이브러리를 사용하여 업데이트
   logger.info('datas %s', resourceDatas);
 }
 

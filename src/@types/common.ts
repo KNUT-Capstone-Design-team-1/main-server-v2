@@ -1,4 +1,4 @@
-import { RESOURCE_PATH } from "../util";
+import { RESOURCE_PATH } from '../util';
 
 export type TFuncReturn<T> = {
   success: boolean;

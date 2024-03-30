@@ -18,7 +18,7 @@ async function main() {
     logger.info('[APP] Server Running on %s port. env: %s', MAIN_SERVER_PORT, NODE_ENV);
   });
 
-  Router.loadRouter(app);
+  Router.init(app);
 
   DataBase.connectOnDatabase();
 }

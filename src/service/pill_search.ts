@@ -146,7 +146,10 @@ async function requestImageRecognitionDlServer(base64: string) {
  * @param option 쿼리 옵션
  * @returns
  */
-export async function searchFromImage(imageData: TImageSearchParam, option?: Partial<TSearchQueryOption>) {
+export async function searchFromImage(
+  imageData: TImageSearchParam,
+  option?: Partial<TSearchQueryOption>
+) {
   const result = { success: false } as TFuncReturn<{
     pillInfoList: TMergedPillSearchData[];
   }>;

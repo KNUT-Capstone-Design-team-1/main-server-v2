@@ -8,9 +8,7 @@ export const logger = createLogger({
   format: combine(
     splat(),
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    printf(
-      ({ timestamp: time, level, message }) => `${time} ${level}: ${message}`
-    )
+    printf(({ timestamp: time, level, message }) => `${time} ${level}: ${message}`)
   ),
   transports: [
     new transports.Console(),

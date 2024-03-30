@@ -1,6 +1,10 @@
 import express from 'express';
 import { SearchHistoryService, PillSearchService } from '../service';
-import { TImageSearchParam, TPillDetailSearchParam, TSearchQueryOption } from '../@types/pill_search';
+import {
+  TImageSearchParam,
+  TPillDetailSearchParam,
+  TSearchQueryOption,
+} from '../@types/pill_search';
 import { TPillRecognitionData } from '../@types/pill_recognition';
 
 const router = express.Router();
