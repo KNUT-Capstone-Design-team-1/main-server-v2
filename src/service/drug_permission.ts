@@ -56,7 +56,7 @@ export async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermi
       });
     }
   } catch (e) {
-    logger.error('[DRUG-PERMISSION-SERVICE] Fail to update datas.\n%s', e.stack || e);
+    logger.error('[DRUG-PERMISSION-SERVICE] Fail to update datas. %s', e.stack || e);
   }
 }
 

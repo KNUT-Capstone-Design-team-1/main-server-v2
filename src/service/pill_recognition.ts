@@ -58,7 +58,7 @@ export async function requestUpdatePillRecognitionDatas(datas: Partial<TPillReco
       });
     }
   } catch (e) {
-    logger.error('[PILL-RECOGNITION-SERVICE] Fail to update datas.\n%s', e.stack || e);
+    logger.error('[PILL-RECOGNITION-SERVICE] Fail to update datas. %s', e.stack || e);
   }
 }
 

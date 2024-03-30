@@ -12,7 +12,7 @@ export function connectOnDatabase() {
 
   const db = mongoose.connection;
   db.on('error', (e) => {
-    logger.error('[DATABASE] Database connection fail.\n%s', e.stack || e);
+    logger.error('[DATABASE] Database connection fail. %s', e.stack || e);
     throw e;
   });
 

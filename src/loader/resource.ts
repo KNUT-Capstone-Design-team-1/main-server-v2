@@ -23,7 +23,12 @@ function getResourceFileList(resourcePath: string): string[] {
 
     return fileList;
   } catch (e) {
-    logger.error('[RESOURCE] Fail to get resource file datas. resource path: %s', resourcePath);
+    logger.error(
+      '[RESOURCE] Fail to get resource file datas. resource path: %s. %s',
+      resourcePath,
+      e.stack || e
+    );
+
     return [];
   }
 }
@@ -108,7 +113,21 @@ async function updateResource(path: string, resourceDatas: object[]) {
         logger.warn('[RESOURCE] Wrong resource path (%s)', path);
     }
   } catch (e) {
-    logger.error('[RESOURCE] Fail to update resource');
+    logger.error('[RESOURCE] Fail to update resource. path: %s, %s', path, e.stack || e);
+  }
+}
+
+/**
+ * 업데이트가 완료된 리소스 디렉터리 제거
+ * @param path 리소스 디렉터리 경로
+ */
+function deleteUpdatedResourceDirectory(path: string) {
+  try {
+    fs.rmSync(path, { recursive: true, force: true });
+
+    logger.info('[RESOURCE] delete updated resource %s', path);
+  } catch (e) {
+    logger.error('[RESOURCE] Fail to delete updated resource directory %s. %s', path, e.stack || e);
   }
 }
 
@@ -126,6 +145,8 @@ export async function update() {
   ];
 
   for await (const path of paths) {
+    logger.info('[RESOURCE] try resource update for %s', path);
+
     const fileList = getResourceFileList(path);
     if (fileList.length === 0) {
       continue;
@@ -143,5 +164,7 @@ export async function update() {
 
     await updateResource(path, resourceDatas);
     logger.info('[RESOURCE] Resource update complete for %s', path);
+
+    deleteUpdatedResourceDirectory(path);
   }
 }

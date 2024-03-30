@@ -69,7 +69,7 @@ export async function searchPillRecognitionData(
     return result;
   } catch (e) {
     logger.error(
-      '[PILL-SEARCH-SERVICE] Fail to recognition search.\nwhere: %s\noption: %s\n%s',
+      '[PILL-SEARCH-SERVICE] Fail to recognition search. where: %s. option: %s. %s',
       JSON.stringify(where),
       JSON.stringify(option),
       e.stack || e
@@ -90,7 +90,8 @@ async function requestImageRecognitionDlServer(base64: string) {
   const result = { success: false } as TFuncReturn<TDlServerData>;
 
   try {
-    const { DL_SERVER_ADDRESS, DL_SERVER_PORT, DL_SERVER_PILL_RECOGNITION_API_URL_PATH } = process.env;
+    const { DL_SERVER_ADDRESS, DL_SERVER_PORT, DL_SERVER_PILL_RECOGNITION_API_URL_PATH } =
+      process.env;
 
     const dlServerRes = await axios.post<TDlServerResponse>(
       `${DL_SERVER_ADDRESS}:${DL_SERVER_PORT}/${DL_SERVER_PILL_RECOGNITION_API_URL_PATH}`,
@@ -99,10 +100,12 @@ async function requestImageRecognitionDlServer(base64: string) {
 
     if (!dlServerRes?.data) {
       logger.error(
-        '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist.\nresponse: %s',
+        '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
         JSON.stringify(dlServerRes)
       );
+
       result.message = msg['pill-search.error.no-response'];
+
       return result;
     }
 
@@ -111,7 +114,7 @@ async function requestImageRecognitionDlServer(base64: string) {
     if (!success) {
       const dlServerMessage = msg[message as keyof typeof msg];
       logger.error(
-        '[PILL-SEARCH-SERVICE] Deeplearning server response fail.\nmessage: %s (%s), response: %s',
+        '[PILL-SEARCH-SERVICE] Deeplearning server response fail. message: %s (%s), response: %s',
         dlServerMessage,
         message,
         JSON.stringify(dlServerRes)
@@ -122,7 +125,7 @@ async function requestImageRecognitionDlServer(base64: string) {
 
     if (!data || data.recognization.length === 0) {
       logger.error(
-        '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist.\nresponse: %s',
+        '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
         JSON.stringify(dlServerRes)
       );
       result.message = msg['pill-search.error.no-data'];
@@ -134,7 +137,7 @@ async function requestImageRecognitionDlServer(base64: string) {
 
     return result;
   } catch (e) {
-    logger.error(`[PILL-SEARCH-SERVICE] Fail to image recognition.\n%s`, e.stack || e);
+    logger.error(`[PILL-SEARCH-SERVICE] Fail to image recognition. %s`, e.stack || e);
     result.message = msg['pill-search.error.general'];
     return result;
   }
@@ -206,7 +209,7 @@ export async function searchDetail(itemSeq: TPillDetailSearchParam) {
     result.data = [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }];
     result.success = true;
   } catch (e) {
-    logger.error('[PILL-SEARCH-SERVICE] Fail to call api.\nitemSeq: %s\n%s', itemSeq, e.stack || e);
+    logger.error('[PILL-SEARCH-SERVICE] Fail to call api. itemSeq: %s. %s', itemSeq, e.stack || e);
 
     result.message = msg['pill-search.error.general'];
   }

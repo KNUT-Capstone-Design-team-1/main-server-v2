@@ -16,7 +16,7 @@ export async function writeSearchHistory(searchType: string, where: TSearchHisto
     });
   } catch (e) {
     logger.error(
-      '[SEARCH-HISTORY-SERVICE] Fail to insert search history.\nsearch type: %s\ndata: %s\n%s',
+      '[SEARCH-HISTORY-SERVICE] Fail to insert search history. search type: %s. data: %s. %s',
       searchType,
       JSON.stringify(where),
       e.stack || e
