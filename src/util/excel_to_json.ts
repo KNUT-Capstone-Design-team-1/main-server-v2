@@ -1,28 +1,8 @@
 import fs from 'fs';
-import xlsxParser from 'read-excel-file/node';
 import { Converter } from 'csvtojson/v2/Converter';
 import xlsParser from 'simple-excel-to-json';
 import iconvLite from 'iconv-lite';
-import { TResourceSchema } from '../@types/common';
 import { logger } from './logger';
-
-/**
- * xlsx 파일을 JSON으로 변환
- * @param schema JSON 스키마
- * @param filePath 파일 경로
- * @returns
- */
-async function convertXlsxToJson(schema: TResourceSchema, filePath: string) {
-  const result = await xlsxParser(filePath, { schema });
-
-  const { rows, errors } = result;
-
-  if (errors.length > 0) {
-    logger.warn(`[UTIL] xlsx to json have error. filePath: %s`, filePath);
-  }
-
-  return rows;
-}
 
 /**
  * xls 파일을 JSON으로 변환
@@ -56,14 +36,15 @@ async function convertCsvToJson(filePath: string) {
  * @param filePath 엑셀 파일 경로
  * @returns
  */
-export async function convertExcelToJson(mapper: TResourceSchema, filePath: string) {
+export async function convertExcelToJson(filePath: string) {
   const fileExtension = filePath.split('.').slice(-1)[0];
 
   const jsonDatas: object[] = [];
 
   switch (fileExtension) {
     case 'xlsx':
-      jsonDatas.push(...(await convertXlsxToJson(mapper, filePath)));
+      console.log(await convertXlsToJson(filePath));
+      jsonDatas.push(...(await convertXlsToJson(filePath)));
       break;
 
     case 'xls':

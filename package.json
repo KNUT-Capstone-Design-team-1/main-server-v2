@@ -28,7 +28,6 @@
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21",
     "mongoose": "^6.4.4",
-    "read-excel-file": "^5.7.1",
     "simple-excel-to-json": "^2.3.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",

@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { convertExcelToJson, logger } from '../util';
-import { TResourceSchema } from '../@types/common';
 import { PillRecognitionService, DrugPermissionService } from '../service';
 
 /**
@@ -34,35 +33,12 @@ function getResourceFileList(resourcePath: string): string[] {
 }
 
 /**
- * 리소스 업데이트를 위한 mapper 생성
- * @param path 리소스 경로
- * @returns
- */
-function generateResourceMapper(path: string): TResourceSchema | null {
-  const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
-
-  switch (path) {
-    case PILL_RECOGNITION_RESOURCE_PATH:
-      return PillRecognitionService.getPillrecognitionResourceSchema();
-
-    case DRUG_PERMISSION_RESOURCE_PATH:
-      return DrugPermissionService.getDrugPermissionResourceSchema();
-
-    default:
-      logger.warn('[RESOURCE] Mapper is not exist for resource path (%s)', path);
-      return null;
-  }
-}
-
-/**
  * 엑셀 파일 (xls, xlsx, csv) 데이터를 JSON 데이터로 변환
- * @param mapper JSON 변환을 위한 mapper
  * @param path 리소스 파일 경로
  * @param fileList 엑셀 파일 목록
  * @returns
  */
 async function generateResourceUpdateData(
-  mapper: TResourceSchema,
   path: string,
   fileList: string[]
 ) {
@@ -70,7 +46,7 @@ async function generateResourceUpdateData(
     const datas: object[] = [];
 
     for await (const file of fileList) {
-      const jsonData = await convertExcelToJson(mapper, `${path}/${file}`);
+      const jsonData = await convertExcelToJson(`${path}/${file}`);
 
       if (jsonData.length > 0) {
         datas.push(...jsonData);
@@ -80,8 +56,7 @@ async function generateResourceUpdateData(
     return datas;
   } catch (e) {
     logger.error(
-      '[RESOURCE] Fail to convert excel to json. resource mapper: %s. path: %s. file list: %s. %s',
-      JSON.stringify(mapper),
+      '[RESOURCE] Fail to convert excel to json. path: %s. file list: %s. %s',
       path,
       JSON.stringify(fileList),
       e.stack || e
@@ -152,12 +127,7 @@ export async function update() {
       continue;
     }
 
-    const mapper = generateResourceMapper(path);
-    if (!mapper) {
-      continue;
-    }
-
-    const resourceDatas = await generateResourceUpdateData(mapper, path, fileList);
+    const resourceDatas = await generateResourceUpdateData(path, fileList);
     if (resourceDatas.length === 0) {
       continue;
     }

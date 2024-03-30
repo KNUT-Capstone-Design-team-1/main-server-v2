@@ -1,5 +1,4 @@
 import { PillRecognitionDataModel } from '../schema';
-import { TResourceSchema } from '../@types/common';
 import { TPillRecognitionData } from '../@types/pill_recognition';
 import { TSearchQueryOption } from '../@types/pill_search';
 import { logger } from '../util';
@@ -60,41 +59,4 @@ export async function requestUpdatePillRecognitionDatas(datas: Partial<TPillReco
   } catch (e) {
     logger.error('[PILL-RECOGNITION-SERVICE] Fail to update datas. %s', e.stack || e);
   }
-}
-
-/**
- * 엑셀파일을 읽어 알약 식별 정보 업데이트
- */
-export function getPillrecognitionResourceSchema() {
-  const mapper: TResourceSchema = {
-    ITEM_SEQ: { prop: 'ITEM_SEQ', type: String, required: true },
-    ITEM_NAME: { prop: 'ITEM_NAME', type: String, required: true },
-    ENTP_SEQ: { prop: 'ENTP_SEQ', type: String },
-    ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
-    CHARTN: { prop: 'CHARTN', type: String },
-    ITEM_IMAGE: { prop: 'ITEM_IMAGE', type: String },
-    PRINT_FRONT: { prop: 'PRINT_FRONT', type: String },
-    PRINT_BACK: { prop: 'PRINT_BACK', type: String },
-    DRUG_SHAPE: { prop: 'DRUG_SHAPE', type: String },
-    COLOR_CLASS1: { prop: 'COLOR_CLASS1', type: String },
-    COLOR_CLASS2: { prop: 'COLOR_CLASS2', type: String },
-    LINE_FRONT: { prop: 'LINE_FRONT', type: String },
-    LINE_BACK: { prop: 'LINE_BACK', type: String },
-    LENG_LONG: { prop: 'LENG_LONG', type: String },
-    LENG_SHORT: { prop: 'LENG_SHORT', type: String },
-    THICK: { prop: 'THICK', type: String },
-    IMG_REGIST_TS: { prop: 'IMG_REGIST_TS', type: String },
-    CLASS_NO: { prop: 'CLASS_NO', type: String },
-    ETC_OTC_CODE: { prop: 'ETC_OTC_CODE', type: String },
-    ITEM_PERMIT_DATE: { prop: 'ITEM_PERMIT_DATE', type: String },
-    SHAPE_CODE: { prop: 'SHAPE_CODE', type: String },
-    MARK_CODE_FRONT_ANAL: { prop: 'MARK_CODE_FRONT_ANAL', type: String },
-    MARK_CODE_BACK_ANAL: { prop: 'MARK_CODE_BACK_ANAL', type: String },
-    MARK_CODE_FRONT_IMG: { prop: 'MARK_CODE_FRONT_IMG', type: String },
-    MARK_CODE_BACK_IMG: { prop: 'MARK_CODE_BACK_IMG', type: String },
-    ITEM_ENG_NAME: { prop: 'ITEM_ENG_NAME', type: String },
-    EDI_CODE: { prop: 'EDI_CODE', type: String },
-  };
-
-  return mapper;
 }
