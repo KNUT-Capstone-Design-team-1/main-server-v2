@@ -90,10 +90,10 @@ async function requestImageRecognitionDlServer(base64: string) {
   const result = { success: false } as TFuncReturn<TDlServerData>;
 
   try {
-    const { DL_SERVER_ADDR, DL_SERVER_PORT, DL_SERVER_IMG_RECOG_PATH } = process.env;
+    const { DL_SERVER_ADDRESS, DL_SERVER_PORT, DL_SERVER_IMG_RECOGNITION_URL_PATH } = process.env;
 
     const dlServerRes = await axios.post<TDlServerResponse>(
-      `${DL_SERVER_ADDR}:${DL_SERVER_PORT}/${DL_SERVER_IMG_RECOG_PATH}`,
+      `${DL_SERVER_ADDRESS}:${DL_SERVER_PORT}/${DL_SERVER_IMG_RECOGNITION_URL_PATH}`,
       { base64 }
     );
 

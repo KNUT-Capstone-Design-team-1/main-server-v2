@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { RESOURCE_PATH, logger } from '../util';
+import { logger } from '../util';
 import { TResourceMapper, TResourceUpdateInfo } from '../@types/common';
 import { PillRecognitionService, DrugPermissionService } from '../service';
 
@@ -13,33 +13,36 @@ export async function convertResourceForDatabaseUpdate(resourceDatas: TResourceU
 export async function updateDatabaseFromResource() {
   logger.info('[LOADER] Update pill search data resource');
 
+  const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
+  const paths: string[] = [PILL_RECOGNITION_RESOURCE_PATH as string, DRUG_PERMISSION_RESOURCE_PATH as string];
+
   const resourceUpdateInfos = [] as TResourceUpdateInfo[];
 
-  for (const value of Object.values(RESOURCE_PATH)) {
-    const files = fs.readdirSync(value);
+  for (const resourcePath of paths) {
+    const files = fs.readdirSync(resourcePath);
 
     if (files.length === 0) {
-      logger.info('[LOADER] %s is empty', value);
+      logger.info('[LOADER] %s is empty', resourcePath);
       break;
     }
 
     const mapper = {} as TResourceMapper;
-    switch (value) {
-      case RESOURCE_PATH.PILL_RECOGNITION:
+    switch (resourcePath) {
+      case PILL_RECOGNITION_RESOURCE_PATH:
         Object.assign(mapper, PillRecognitionService.getPillrecognitionResourceMapper());
         break;
 
-      case RESOURCE_PATH.DRUG_PERMISSION:
+      case DRUG_PERMISSION_RESOURCE_PATH:
         Object.assign(mapper, DrugPermissionService.getDrugPermissionResourceMapper());
         break;
 
       default:
-        logger.warn('[LOADER] Wrong resource path %s', value);
+        logger.warn('[LOADER] Wrong resource path %s', resourcePath);
     }
 
     const resourceUpdateInfo = {
       mapper,
-      path: value as keyof typeof RESOURCE_PATH,
+      path: resourcePath,
       fileList: files,
     } as TResourceUpdateInfo;
 
