@@ -43,7 +43,9 @@ elif [ $1 = "SINGLE-CONTAINER" ]; then
 
   echo "---- Run container ----"
   docker run -d \
-    -v /must_be_madness/what_is_pill/wip-main-server-v2/logs:/usr/local/wip-main-server-v2/logs /must_be_madness/what_is_pill/resources/pill_recognition:/usr/local/resources/pill_recognition /must_be_madness/what_is_pill/resources/drug_permission:/usr/local/resources/drug_permission \
+    -v /must_be_madness/what_is_pill/wip-main-server-v2/logs:/usr/local/wip-main-server-v2/logs \
+    -v /must_be_madness/what_is_pill/resources/pill_recognition:/usr/local/resources/pill_recognition \
+    -v /must_be_madness/what_is_pill/resources/drug_permission:/usr/local/resources/drug_permission \
     --name wip-main-server-v2 wip-main-server-v2 \
     --add-host host.docker.internal:host-gateway
   echo "---- OK ----"
