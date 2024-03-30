@@ -16,7 +16,7 @@ import {
   TSearchQueryOption,
 } from '../@types/pill_search';
 import { TFuncReturn } from '../@types/common';
-import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pii_detail';
+import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pill_detail';
 
 /**
  * 알약 식별 정보 및 허가 정보의 데이터를 병합
