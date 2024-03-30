@@ -49,7 +49,7 @@ export async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermi
   }
 
   try {
-    for (const data of datas) {
+    for await (const data of datas) {
       await DrugPermissionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
         new: true,
         upsert: true,

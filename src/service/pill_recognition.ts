@@ -51,7 +51,7 @@ export async function requestUpdatePillRecognitionDatas(datas: Partial<TPillReco
   }
 
   try {
-    for (const data of datas) {
+    for await (const data of datas) {
       await PillRecognitionDataModel.updateOne({ ITEM_SEQ: data.ITEM_SEQ }, data, {
         new: true,
         upsert: true,
