@@ -1,28 +1,7 @@
 import fs from 'fs';
-import { logger } from '../util';
-import { TResourceMapper } from '../@types/common';
+import { convertExcelToJson, logger } from '../util';
+import { TResourceSchema } from '../@types/common';
 import { PillRecognitionService, DrugPermissionService } from '../service';
-
-/**
- * 엑셀 파일 (xls, xlsx, csv) 데이터를 JSON 데이터로 변환
- * @param convertInfo 파일 정보
- * @returns
- */
-async function convertExcelToJson(mapper: TResourceMapper, path: string, fileList: string[]) {
-  try {
-    return {};
-  } catch (e) {
-    logger.error(
-      '[LOADER] Fail to convert excel to json. resource mapper: %s. path: %s. file list: %s. %s',
-      JSON.stringify(mapper),
-      path,
-      JSON.stringify(fileList),
-      e.stack || e,
-    );
-
-    return null;
-  }
-}
 
 /**
  * 리소스 파일 목록을 조회한다
@@ -32,19 +11,19 @@ async function convertExcelToJson(mapper: TResourceMapper, path: string, fileLis
 function getResourceFileList(resourcePath: string): string[] {
   try {
     if (!fs.existsSync(resourcePath)) {
-      logger.info('[LOADER] resource directory(%s) is not exist', resourcePath);
+      logger.info('[RESOURCE] resource directory(%s) is not exist', resourcePath);
       return [];
     }
 
     const fileList = fs.readdirSync(resourcePath);
 
     if (fileList.length === 0) {
-      logger.info('[LOADER] resource directory(%s) is empty', resourcePath);
+      logger.info('[RESOURCE] resource directory(%s) is empty', resourcePath);
     }
 
     return fileList;
   } catch (e) {
-    logger.error('[LOADER] Fail to get resource file datas. resource path: %s', resourcePath);
+    logger.error('[RESOURCE] Fail to get resource file datas. resource path: %s', resourcePath);
     return [];
   }
 }
@@ -54,19 +33,82 @@ function getResourceFileList(resourcePath: string): string[] {
  * @param path 리소스 경로
  * @returns
  */
-function generateResourceMapper(path: string): TResourceMapper | null {
+function generateResourceMapper(path: string): TResourceSchema | null {
   const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
 
   switch (path) {
     case PILL_RECOGNITION_RESOURCE_PATH:
-      return PillRecognitionService.getPillrecognitionResourceMapper();
+      return PillRecognitionService.getPillrecognitionResourceSchema();
 
     case DRUG_PERMISSION_RESOURCE_PATH:
-      return DrugPermissionService.getDrugPermissionResourceMapper();
+      return DrugPermissionService.getDrugPermissionResourceSchema();
 
     default:
-      logger.warn('[LOADER] Mapper is not exist for resource path (%s)', path);
+      logger.warn('[RESOURCE] Mapper is not exist for resource path (%s)', path);
       return null;
+  }
+}
+
+/**
+ * 엑셀 파일 (xls, xlsx, csv) 데이터를 JSON 데이터로 변환
+ * @param mapper JSON 변환을 위한 mapper
+ * @param path 리소스 파일 경로
+ * @param fileList 엑셀 파일 목록
+ * @returns
+ */
+async function generateResourceUpdateData(
+  mapper: TResourceSchema,
+  path: string,
+  fileList: string[]
+) {
+  try {
+    const datas: object[] = [];
+
+    for await (const file of fileList) {
+      const jsonData = await convertExcelToJson(mapper, `${path}/${file}`);
+
+      if (jsonData.length > 0) {
+        datas.push(...jsonData);
+      }
+    }
+
+    return datas;
+  } catch (e) {
+    logger.error(
+      '[RESOURCE] Fail to convert excel to json. resource mapper: %s. path: %s. file list: %s. %s',
+      JSON.stringify(mapper),
+      path,
+      JSON.stringify(fileList),
+      e.stack || e
+    );
+
+    return [];
+  }
+}
+
+/**
+ * 리소스 업데이트
+ * @param path 리소스 경로
+ * @param resourceDatas 리소스 데이터
+ */
+async function updateResource(path: string, resourceDatas: object[]) {
+  try {
+    const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
+
+    switch (path) {
+      case PILL_RECOGNITION_RESOURCE_PATH:
+        await PillRecognitionService.requestUpdatePillRecognitionDatas(resourceDatas);
+        break;
+
+      case DRUG_PERMISSION_RESOURCE_PATH:
+        await DrugPermissionService.requestUpdateDrugPermissionDatas(resourceDatas);
+        break;
+
+      default:
+        logger.warn('[RESOURCE] Wrong resource path (%s)', path);
+    }
+  } catch (e) {
+    logger.error('[RESOURCE] Fail to update resource');
   }
 }
 
@@ -74,7 +116,7 @@ function generateResourceMapper(path: string): TResourceMapper | null {
  * 리소스 파일로 부터 데이터베이스 업데이트
  */
 export async function update() {
-  logger.info('[LOADER] Update pill search data resource');
+  logger.info('[RESOURCE] Update pill search data resource');
 
   const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
 
@@ -94,10 +136,12 @@ export async function update() {
       continue;
     }
 
-    const jsonData = await convertExcelToJson(mapper, path, fileList);
-
-    if (!jsonData) {
+    const resourceDatas = await generateResourceUpdateData(mapper, path, fileList);
+    if (resourceDatas.length === 0) {
       continue;
     }
+
+    await updateResource(path, resourceDatas);
+    logger.info('[RESOURCE] Resource update complete for %s', path);
   }
 }

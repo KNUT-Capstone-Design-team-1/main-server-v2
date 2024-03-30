@@ -9,14 +9,14 @@ const PillRecognitionDataModel = mongoose.model(
     {
       ITEM_SEQ: { type: String, require: true, unique: true }, // 품목 일련 번호
       ITEM_NAME: { type: String, require: true }, // 품목명
-      ENTP_SEQ: { type: String, require: true }, // 업체 일련 번호
+      ENTP_SEQ: { type: String }, // 업체 일련 번호
       ENTP_NAME: { type: String, require: true }, // 업체명
-      CHARTIN: { type: String, require: true }, // 제형
+      CHARTIN: { type: String }, // 제형
       ITEM_IMAGE: String, // 큰 제품 이미지
       PRINT_FRONT: String, // 글자 앞
       PRINT_BACK: String, // 글자 뒤
-      DRUG_SHAPE: { type: String, require: true }, // 모양
-      COLOR_CLASS1: { type: String, require: true }, // 색깔 (앞)
+      DRUG_SHAPE: { type: String }, // 모양
+      COLOR_CLASS1: { type: String }, // 색깔 (앞)
       COLOR_CLASS2: String, // 색깔 뒤
       LINE_FRONT: String, // 분할선 (앞)
       LINE_BACK: String, // 분할선 (뒤)

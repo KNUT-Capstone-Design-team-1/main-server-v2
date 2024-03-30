@@ -1,8 +1,9 @@
 import { DrugPermissionDataModel } from '../schema';
-import { TResourceMapper } from '../@types/common';
+import { TResourceSchema } from '../@types/common';
 import { TDrugPermissionData } from '../@types/drug_permission';
 import { TSearchQueryOption } from '../@types/pill_search';
-import { generateQueryFilterForPillSearch, logger } from '../util';
+import { logger } from '../util';
+import { generateQueryFilterForPillSearch } from './util';
 
 /**
  * 식별 검색을 위한 의약품 허가 정보 조회
@@ -62,33 +63,33 @@ export async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermi
 /**
  * 엑셀파일을 읽어 의약품 허가 정보 초기화
  */
-export function getDrugPermissionResourceMapper() {
-  const mapper: TResourceMapper = {
-    ITEM_SEQ: { colunmOfResource: '품목일련번호', required: true },
-    ITEM_NAME: { colunmOfResource: '품목명', required: true },
-    ENTP_NAME: { colunmOfResource: '업체명', required: true },
-    ITEM_PERMIT_DATE: { colunmOfResource: '허가일자' },
-    CNSGN_MANUF: { colunmOfResource: '위탁제조업체' },
-    ETC_OTC_CODE: { colunmOfResource: '전문일반' },
-    CHART: { colunmOfResource: '성상' },
-    BAR_CODE: { colunmOfResource: '표준코드' },
-    MATERIAL_NAME: { colunmOfResource: '원료성분' },
-    EE_DOC_ID: { colunmOfResource: '효능효과' },
-    UD_DOC_ID: { colunmOfResource: '용법용량' },
-    NB_DOC_ID: { colunmOfResource: '주의사항' },
-    INSERT_FILE: { colunmOfResource: '첨부문서' },
-    VALID_TERM: { colunmOfResource: '유효기간' },
-    STORAGE_METHOD: { colunmOfResource: '저장방법' },
-    REEXAM_TARGET: { colunmOfResource: '재심사 대상' },
-    REEXAM_DATE: { colunmOfResource: '재심사 기간' },
-    PACK_UNIT: { colunmOfResource: '포장단위' },
-    EDI_CODE: { colunmOfResource: '보험코드' },
-    PERMIT_KIND: { colunmOfResource: '신고/허가 구분' },
-    NARCOTIC_KIND: { colunmOfResource: '마약 종류 코드' },
-    NEWDRUG_CLASS_NAME: { colunmOfResource: '신약' },
-    INDUTY_TYPE: { colunmOfResource: '업종 구분' },
-    MAIN_ITEM_INGR: { colunmOfResource: '주성분명' },
-    INGR_NAME: { colunmOfResource: '첨가제명' },
+export function getDrugPermissionResourceSchema() {
+  const mapper: TResourceSchema = {
+    ITEM_SEQ: { prop: 'ITEM_SEQ', type: String, required: true },
+    ITEM_NAME: { prop: 'ITEM_NAME', type: String, required: true },
+    ENTP_NAME: { prop: 'ENTP_NAME', type: String, required: true },
+    ITEM_PERMIT_DATE: { prop: 'ITEM_PERMIT_DATE', type: String },
+    CNSGN_MANUF: { prop: 'CNSGN_MANUF', type: String },
+    ETC_OTC_CODE: { prop: 'ETC_OTC_CODE', type: String },
+    CHART: { prop: 'CHART', type: String },
+    BAR_CODE: { prop: 'BAR_CODE', type: String },
+    MATERIAL_NAME: { prop: 'MATERIAL_NAME', type: String },
+    EE_DOC_ID: { prop: 'EE_DOC_ID', type: String },
+    UD_DOC_ID: { prop: 'UD_DOC_ID', type: String },
+    NB_DOC_ID: { prop: 'NB_DOC_ID', type: String },
+    INSERT_FILE: { prop: 'INSERT_FILE', type: String },
+    VALID_TERM: { prop: 'VALID_TERM', type: String },
+    STORAGE_METHOD: { prop: 'STORAGE_METHOD', type: String },
+    REEXAM_TARGET: { prop: 'REEXAM_TARGET', type: String },
+    REEXAM_DATE: { prop: 'REEXAM_DATE', type: String },
+    PACK_UNIT: { prop: 'PACK_UNIT', type: String },
+    EDI_CODE: { prop: 'EDI_CODE', type: String },
+    PERMIT_KIND: { prop: 'PERMIT_KIND', type: String },
+    NARCOTIC_KIND: { prop: 'NARCOTIC_KIND', type: String },
+    NEWDRUG_CLASS_NAME: { prop: 'NEWDRUG_CLASS_NAME', type: String },
+    INDUTY_TYPE: { prop: 'INDUTY_TYPE', type: String },
+    MAIN_ITEM_INGR: { prop: 'MAIN_ITEM_INGR', type: String },
+    INGR_NAME: { prop: 'INGR_NAME', type: String },
   };
 
   return mapper;
