@@ -43,10 +43,6 @@ export async function convertExcelToJson(filePath: string) {
 
   switch (fileExtension) {
     case 'xlsx':
-      console.log(await convertXlsToJson(filePath));
-      jsonDatas.push(...(await convertXlsToJson(filePath)));
-      break;
-
     case 'xls':
       jsonDatas.push(...(await convertXlsToJson(filePath)));
       break;
