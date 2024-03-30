@@ -25,7 +25,7 @@ ENC_SERVICE_KEY='Drug permission search API encode key'
 DEC_SERVICE_KEY='Drug permission search API decode key'
 DL_SERVER_ADDRESSESS='Deep learning server address'
 DL_SERVER_PORT='Deep learning server port number'
-DL_SERVER_IMG_RECOGNITION_URL_PATH='Deep lear'
-PILL_RECOGNITION_RESOURCE_PATH=../resources/pill_recognition
-DRUG_PERMISSION_RESOURCE_PATH=../resources/drug_permission
+DL_SERVER_PILL_RECOGNITION_API_URL_PATH='Deep learning server image recognition path'
+PILL_RECOGNITION_RESOURCE_PATH='Pill recognition data files location'
+DRUG_PERMISSION_RESOURCE_PATH='Drug permission data files location'
 ```
