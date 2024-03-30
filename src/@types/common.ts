@@ -10,9 +10,3 @@ export type TResourceMapperAttribute = {
 };
 
 export type TResourceMapper = Record<string, TResourceMapperAttribute>;
-
-export type TResourceUpdateInfo = {
-  mapper: TResourceMapper;
-  path: string;
-  fileList: string[];
-};
