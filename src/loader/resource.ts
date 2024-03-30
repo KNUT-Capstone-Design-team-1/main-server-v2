@@ -73,7 +73,7 @@ function generateResourceMapper(path: string): TResourceMapper | null {
 /**
  * 리소스 파일로 부터 데이터베이스 업데이트
  */
-export async function updateDatabaseFromResource() {
+export async function update() {
   logger.info('[LOADER] Update pill search data resource');
 
   const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
