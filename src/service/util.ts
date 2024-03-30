@@ -18,8 +18,8 @@ export async function generateQueryFilterForPillSearch(where: TSearchQueryWhere)
     'CHARTIN',
   ];
 
-  const andCondition = [] as Record<string, RegExp>[];
-  const orCondition = [] as Record<string, RegExp>[];
+  const andCondition: Record<string, RegExp>[] = [];
+  const orCondition: Record<string, RegExp>[] = [];
 
   const queryFilter = {};
 

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { logger } from '../util';
-// import { updateDatabaseFromResource } from './loader';
+import { updateDatabaseFromResource } from './loader';
 
 mongoose.set('strictQuery', true);
 
@@ -18,6 +18,6 @@ export function connectOnDatabase() {
 
   db.once('open', () => {
     logger.info('[DATABASE] Database connection success');
-    // updateDatabaseFromResource();
+    updateDatabaseFromResource();
   });
 }

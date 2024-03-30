@@ -63,7 +63,7 @@ export async function requestUpdateDrugPermissionDatas(datas: Partial<TDrugPermi
  * 엑셀파일을 읽어 의약품 허가 정보 초기화
  */
 export function getDrugPermissionResourceMapper() {
-  const mapper = {
+  const mapper: TResourceMapper = {
     ITEM_SEQ: { colunmOfResource: '품목일련번호', required: true },
     ITEM_NAME: { colunmOfResource: '품목명', required: true },
     ENTP_NAME: { colunmOfResource: '업체명', required: true },
@@ -89,7 +89,7 @@ export function getDrugPermissionResourceMapper() {
     INDUTY_TYPE: { colunmOfResource: '업종 구분' },
     MAIN_ITEM_INGR: { colunmOfResource: '주성분명' },
     INGR_NAME: { colunmOfResource: '첨가제명' },
-  } as TResourceMapper;
+  };
 
   return mapper;
 }

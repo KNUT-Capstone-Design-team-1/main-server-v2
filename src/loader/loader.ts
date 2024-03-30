@@ -14,9 +14,12 @@ export async function updateDatabaseFromResource() {
   logger.info('[LOADER] Update pill search data resource');
 
   const { PILL_RECOGNITION_RESOURCE_PATH, DRUG_PERMISSION_RESOURCE_PATH } = process.env;
-  const paths: string[] = [PILL_RECOGNITION_RESOURCE_PATH as string, DRUG_PERMISSION_RESOURCE_PATH as string];
+  const paths: string[] = [
+    PILL_RECOGNITION_RESOURCE_PATH as string,
+    DRUG_PERMISSION_RESOURCE_PATH as string,
+  ];
 
-  const resourceUpdateInfos = [] as TResourceUpdateInfo[];
+  const resourceUpdateInfos: TResourceUpdateInfo[] = [];
 
   for (const resourcePath of paths) {
     const files = fs.readdirSync(resourcePath);
@@ -26,7 +29,7 @@ export async function updateDatabaseFromResource() {
       break;
     }
 
-    const mapper = {} as TResourceMapper;
+    const mapper: TResourceMapper = {};
     switch (resourcePath) {
       case PILL_RECOGNITION_RESOURCE_PATH:
         Object.assign(mapper, PillRecognitionService.getPillrecognitionResourceMapper());
@@ -40,11 +43,11 @@ export async function updateDatabaseFromResource() {
         logger.warn('[LOADER] Wrong resource path %s', resourcePath);
     }
 
-    const resourceUpdateInfo = {
+    const resourceUpdateInfo: TResourceUpdateInfo = {
       mapper,
       path: resourcePath,
       fileList: files,
-    } as TResourceUpdateInfo;
+    };
 
     resourceUpdateInfos.push(resourceUpdateInfo);
   }

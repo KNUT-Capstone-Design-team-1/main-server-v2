@@ -65,7 +65,7 @@ export async function requestUpdatePillRecognitionDatas(datas: Partial<TPillReco
  * 엑셀파일을 읽어 알약 식별 정보 업데이트
  */
 export function getPillrecognitionResourceMapper() {
-  const mapper = {
+  const mapper: TResourceMapper = {
     ITEM_SEQ: { colunmOfResource: 'ITEM_SEQ', required: true },
     ITEM_NAME: { colunmOfResource: 'ITEM_NAME', required: true },
     ENTP_SEQ: { colunmOfResource: 'ENTP_SEQ', required: true },
@@ -93,7 +93,7 @@ export function getPillrecognitionResourceMapper() {
     MARK_CODE_BACK_IMG: { colunmOfResource: 'MARK_CODE_BACK_IMG' },
     ITEM_ENG_NAME: { colunmOfResource: 'ITEM_ENG_NAME' },
     EDI_CODE: { colunmOfResource: 'EDI_CODE' },
-  } as TResourceMapper;
+  };
 
   return mapper;
 }

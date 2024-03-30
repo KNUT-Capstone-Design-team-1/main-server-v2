@@ -62,7 +62,7 @@ export async function searchPillRecognitionData(
     // 의약품 허가 정보
     const permissionDatas = await getPermissionDataForSearch(where);
 
-    result.data = mergePillData(recognitionDatas, permissionDatas) as TMergedPillSearchData[];
+    result.data = mergePillData(recognitionDatas, permissionDatas);
 
     result.success = true;
 
