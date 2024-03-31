@@ -1,8 +1,8 @@
 import { DrugPermissionDataModel } from '../schema';
 import { TDrugPermissionData } from '../@types/drug_permission';
-import { TSearchQueryOption } from '../@types/pill_search';
+import { TSearchQueryOption, TPillSearchQueryWhere } from '../@types/pill_search';
 import { logger } from '../util';
-import { generateQueryFilterForPillSearch } from '../util';
+import { generateQueryFilter } from '../util';
 
 /**
  * 식별 검색을 위한 의약품 허가 정보 조회
@@ -11,7 +11,7 @@ import { generateQueryFilterForPillSearch } from '../util';
  * @returns
  */
 export async function getPermissionDataForSearch(
-  where: Partial<TDrugPermissionData>,
+  where: TPillSearchQueryWhere,
   option?: Partial<TSearchQueryOption>
 ) {
   // 조회할 컬럼
@@ -28,7 +28,7 @@ export async function getPermissionDataForSearch(
 
   const { skip, limit } = option || {};
 
-  const findQuery = await generateQueryFilterForPillSearch(where);
+  const findQuery = await generateQueryFilter(where);
 
   const drugpermissionDatas = await DrugPermissionDataModel.find(findQuery, field)
     .skip(skip || 0)

@@ -7,21 +7,14 @@ export type TImageSearchParam = {
 
 export type TPillDetailSearchParam = Pick<TPillRecognitionData, 'ITEM_SEQ'>;
 
-export type TSearchQueryWhere = Partial<TPillRecognitionData | TDrugPermissionData>;
+export type TPillSearchQueryWhere = Record<
+  keyof TPillRecognitionData | keyof TDrugPermissionData,
+  string | string[]
+>;
 
 export type TSearchQueryOption = { skip: number; limit: number };
 
-export type TDlServerRecogData = {
-  PRINT_FRONT?: string;
-  PRINT_BACK?: string;
-  COLOR_CLASS1?: string;
-  COLOR_CLASS2?: string;
-  DRUG_SHAPE?: string;
-  LINE_FRONT?: string;
-  LINE_BACK?: string;
-};
-
-export type TDlServerData = { recognization: TDlServerRecogData[] };
+export type TDlServerData = { recognization: TPillSearchQueryWhere[] };
 
 export type TDlServerResponse = {
   success: boolean;
@@ -30,3 +23,7 @@ export type TDlServerResponse = {
 };
 
 export type TMergedPillSearchData = TPillRecognitionData & TDrugPermissionData;
+
+export type TPillSearchQueryFilters = Array<Record<string, any>>;
+
+export type TPillSearchInQueryFilters = Record<string, { $in: string[] }>[];

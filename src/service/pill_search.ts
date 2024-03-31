@@ -14,6 +14,7 @@ import {
   TMergedPillSearchData,
   TPillDetailSearchParam,
   TSearchQueryOption,
+  TPillSearchQueryWhere,
 } from '../@types/pill_search';
 import { TFuncReturn } from '../@types/common';
 import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pill_detail';
@@ -45,7 +46,7 @@ function mergePillData(
  * @returns
  */
 export async function searchPillRecognitionData(
-  where: Partial<TPillRecognitionData>,
+  where: TPillSearchQueryWhere,
   option?: Partial<TSearchQueryOption>
 ) {
   const result = { success: false } as TFuncReturn<TMergedPillSearchData[]>;
