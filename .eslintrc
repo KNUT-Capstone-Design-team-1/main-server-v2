@@ -9,5 +9,9 @@
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["build/", "node_modules/"],
-  "rules": { "@typescript-eslint/no-explicit-any": ["off"] }
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-console": "error",
+    "no-unused-vars": "error"
+  }
 }
