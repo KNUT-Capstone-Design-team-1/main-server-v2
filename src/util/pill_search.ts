@@ -69,7 +69,7 @@ function generateANDFilter(
   }
 
   if (inFilter.length > 0) {
-    Object.assign(filter, ...inFilter);
+    Object.assign(filter, ...inFilter); // $and 배열 내 $or이 있는 경우를 고려하여 spread 처리
   }
 
   return filter;
@@ -85,7 +85,7 @@ function generateORFilter(orFilter: TPillSearchQueryFilters, inFilter: TPillSear
   const filter = { $or: orFilter };
 
   if (inFilter.length > 0) {
-    Object.assign(filter, { $and: inFilter });
+    Object.assign(filter, { $and: inFilter }); // and 검색
   }
 
   return filter;
