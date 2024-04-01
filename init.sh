@@ -3,7 +3,7 @@ sudo apt update -y
 
 sudo apt install -y nvm
 source ~/.bashrc
-nvm install 16.20.2
+nvm install 20.12.2
 sudo ln -sf /home/ubuntu/.nvm/versions/node/v16.20.2/bin/node /usr/local/bin/node
 sudo ln -sf /home/ubuntu/.nvm/versions/node/v16.20.2/bin/npm /usr/local/bin/npm
 
