@@ -8,7 +8,7 @@ mongoose.set('strictQuery', true);
  * 데이터베이스 연결
  */
 export function connectOnDatabase() {
-  const option = { socketTimeoutMS: 30000, keepAlive: true };
+  const option = { socketTimeoutMS: 30000 };
 
   mongoose.connect(process.env.DBMS_ADDRESS as string, option);
 

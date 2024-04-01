@@ -26,8 +26,8 @@ import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@type
  * @returns
  */
 function mergePillData(
-  recognitionDatas: Partial<TPillRecognitionData>[],
-  permissionDatas: Partial<TDrugPermissionData>[]
+  recognitionDatas: Record<string, any>[],
+  permissionDatas: Record<string, any>[]
 ) {
   const mergedData = recognitionDatas.map((recognition) =>
     _.merge(
