@@ -1,4 +1,4 @@
-FROM node:16.13.2-alpine
+FROM node:20.12.0-alpine
 
 ARG MAIN_SERVER_PORT
 ARG DBMS_ADDRESS
