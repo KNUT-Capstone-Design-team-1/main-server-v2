@@ -8,11 +8,11 @@
 ```bash
 sudo apt-get install gnupg curl
 curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
-   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/7.0 multiverse" | \
-sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 sudo apt-get update
-sudo apt-get install -y mongodb-org=7.0.7 mongodb-org-database=7.0.7 mongodb-org-server=7.0.7 mongodb-org-shell=7.0.7 mongodb-org-mongos=7.0.7 mongodb-org-tools=7.0.7
+sudo apt-get install -y mongodb-org
 sudo systemctl enable mongod
 sudo systemctl daemon-reload
 sudo systemctl start mongod
