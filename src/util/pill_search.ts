@@ -1,15 +1,15 @@
 import {
   TPillSearchQueryFilters,
   TPillSearchInQueryFilters,
-  TPillSearchQueryWhere,
+  TPillSearchParam,
 } from '../@types/pill_search';
 
 /**
  * 알약 검색을 위한 쿼리 필터 생성
- * @param where 검색할 데이터
+ * @param param 검색 속성
  * @returns
  */
-async function generateQueryFilterByType(where: TPillSearchQueryWhere) {
+async function generateQueryFilterByType(param: TPillSearchParam) {
   const escapingQueryValue = (value: string) => value.replace(/[\\(\\)\\|\\^\\$]|\\[|\\]/g, (s) => `\\${s}`);
 
   const andTargetKeys = ['ITEM_SEQ', 'ITEM_NAME', 'ENTP_NAME'];
@@ -28,7 +28,7 @@ async function generateQueryFilterByType(where: TPillSearchQueryWhere) {
   const orFilter: TPillSearchQueryFilters = [];
   const inFilter: TPillSearchInQueryFilters = [];
 
-  const generateQueryFilterPromises = Object.entries(where).map(async ([key, value]) => {
+  const generateQueryFilterPromises = Object.entries(param).map(async ([key, value]) => {
     if (andTargetKeys.includes(key)) {
       andFilter.push({ [key]: new RegExp(escapingQueryValue(value as string), 'g') });
       return;
@@ -102,11 +102,11 @@ function generateINFilter(inFilter: TPillSearchInQueryFilters) {
 
 /**
  * 알약 검색을 위한 쿼리 필터 생성
- * @param where 검색할 데이터
+ * @param param 검색 속성
  * @returns
  */
-export async function generateQueryFilter(where: TPillSearchQueryWhere) {
-  const { andFilter, orFilter, inFilter } = await generateQueryFilterByType(where);
+export async function generateQueryFilter(param: TPillSearchParam) {
+  const { andFilter, orFilter, inFilter } = await generateQueryFilterByType(param);
 
   if (andFilter.length > 0) {
     return generateANDFilter(andFilter, orFilter, inFilter);

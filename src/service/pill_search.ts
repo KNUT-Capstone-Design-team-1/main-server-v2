@@ -14,7 +14,7 @@ import {
   TMergedPillSearchData,
   TPillDetailSearchParam,
   TSearchQueryOption,
-  TPillSearchQueryWhere,
+  TPillSearchParam,
 } from '../@types/pill_search';
 import { TFuncReturn } from '../@types/common';
 import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pill_detail';
@@ -41,19 +41,19 @@ function mergePillData(
 
 /**
  * 식별 검색
- * @param where 검색할 데이터
+ * @param param 검색 속성
  * @param option 쿼리 옵션
  * @returns
  */
 export async function searchPillRecognitionData(
-  where: TPillSearchQueryWhere,
+  param: TPillSearchParam,
   option?: Partial<TSearchQueryOption>
 ) {
   const result = { success: false } as TFuncReturn<TMergedPillSearchData[]>;
 
   try {
     // 낱알 식별 정보
-    const recognitionDatas = await getRecognitionDataForSearch(where, option);
+    const recognitionDatas = await getRecognitionDataForSearch(param, option);
 
     if (recognitionDatas.length === 0) {
       result.message = msg['pill-search.error.no-data'];
@@ -61,7 +61,7 @@ export async function searchPillRecognitionData(
     }
 
     // 의약품 허가 정보
-    const permissionDatas = await getPermissionDataForSearch(where);
+    const permissionDatas = await getPermissionDataForSearch(param);
 
     result.data = mergePillData(recognitionDatas, permissionDatas);
 
@@ -70,8 +70,8 @@ export async function searchPillRecognitionData(
     return result;
   } catch (e) {
     logger.error(
-      '[PILL-SEARCH-SERVICE] Fail to recognition search. where: %s. option: %s. %s',
-      JSON.stringify(where),
+      '[PILL-SEARCH-SERVICE] Fail to recognition search. param: %s. option: %s. %s',
+      JSON.stringify(param),
       JSON.stringify(option),
       e.stack || e
     );

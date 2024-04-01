@@ -1,17 +1,17 @@
 import { PillRecognitionDataModel } from '../schema';
 import { TPillRecognitionData } from '../@types/pill_recognition';
-import { TSearchQueryOption, TPillSearchQueryWhere } from '../@types/pill_search';
+import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 import { logger } from '../util';
 import { generateQueryFilter } from '../util';
 
 /**
  * 식별 검색을 위한 낱알 식별 데이터 조회
- * @param where 검색할 데이터
+ * @param param 검색 속성
  * @param option 쿼리 옵션
  * @returns
  */
 export async function getRecognitionDataForSearch(
-  where: TPillSearchQueryWhere,
+  param: TPillSearchParam,
   option?: Partial<TSearchQueryOption>
 ) {
   // 조회할 컬럼
@@ -28,7 +28,7 @@ export async function getRecognitionDataForSearch(
     LINE_BACK: 1,
   };
 
-  const findQuery = await generateQueryFilter(where);
+  const findQuery = await generateQueryFilter(param);
 
   const { skip, limit } = option || {};
 

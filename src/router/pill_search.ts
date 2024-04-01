@@ -4,7 +4,7 @@ import {
   TImageSearchParam,
   TPillDetailSearchParam,
   TSearchQueryOption,
-  TPillSearchQueryWhere,
+  TPillSearchParam,
 } from '../@types/pill_search';
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.post('/recognition', async (req, res) => {
 
   res.json(
     await PillSearchService.searchPillRecognitionData(
-      req.body as TPillSearchQueryWhere,
+      req.body as TPillSearchParam,
       req.query as Partial<TSearchQueryOption>
     )
   );
