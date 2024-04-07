@@ -17,13 +17,17 @@ export async function getPermissionDataForSearch(
   // 조회할 컬럼
   const field = {
     ITEM_SEQ: 1,
-    DRUG_SHAPE: 1,
-    MAIN_ITEM_INGR: 1,
-    INGR_NAME: 1,
+    CHART: 1,
     MATERIAL_NAME: 1,
     PACK_UNIT: 1,
+    EE_DOC_ID: 1,
+    UB_DOC_ID: 1,
+    NB_DOC_ID: 1,
     VALID_TERM: 1,
+    INSERT_FILE: 1,
     STORAGE_METHOD: 1,
+    MAIN_ITEM_INGR: 1,
+    INGR_NAME: 1,
   };
 
   const { skip, limit } = option || {};

@@ -26,6 +26,12 @@ export async function getRecognitionDataForSearch(
     COLOR_CLASS2: 1,
     LINE_FRONT: 1,
     LINE_BACK: 1,
+    LENG_LONG: 1,
+    LENG_SHORT: 1,
+    THICK: 1,
+    PRINT_FRONT: 1,
+    PRINT_BACK: 1,
+    ETC_OTC_CODE: 1,
   };
 
   const findQuery = await generateQueryFilter(param);
