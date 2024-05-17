@@ -23,7 +23,7 @@ export type TPillSearchParam = {
 
 export type TSearchQueryOption = { skip: number; limit: number };
 
-export type TDlServerData = { recognization: Array<TPillSearchParam> };
+export type TDlServerData = Array<TPillSearchParam>;
 
 export type TDlServerResponse = {
   success: boolean;

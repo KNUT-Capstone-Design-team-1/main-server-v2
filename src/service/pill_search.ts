@@ -124,7 +124,7 @@ async function requestImageRecognitionDlServer(base64: string) {
       return result;
     }
 
-    if (!data || data.recognization.length === 0) {
+    if (!data || data.length === 0) {
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
         JSON.stringify(dlServerRes)
@@ -165,10 +165,8 @@ export async function searchFromImage(
     return dlServerRes;
   }
 
-  const { recognization } = dlServerRes.data;
-
   // DL 서버로 부터 받은 데이터를 기반으로 DB의 알약 식별 데이터를 조회
-  const recogDataPromises = recognization.map((recogData) =>
+  const recogDataPromises = dlServerRes.data.map((recogData) =>
     searchPillRecognitionData(recogData, option)
   );
 
