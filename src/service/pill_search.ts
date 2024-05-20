@@ -138,8 +138,9 @@ async function requestImageRecognitionDlServer(base64: string) {
 
     return result;
   } catch (e) {
-    logger.error(`[PILL-SEARCH-SERVICE] Fail to image recognition. %s`, e.stack || e);
-    result.message = msg['pill-search.error.general'];
+    logger.error(`[PILL-SEARCH-SERVICE] Fail to receive from DLserver. %s`, e.stack || e);
+    // 임시로 이렇게 표시한다
+    result.message = `${msg['pill-search.error.general']}. ${e.stack || e}`;
     return result;
   }
 }
