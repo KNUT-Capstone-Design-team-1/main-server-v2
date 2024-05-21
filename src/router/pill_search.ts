@@ -1,11 +1,6 @@
 import express from 'express';
 import { SearchHistoryService, PillSearchService } from '../service';
-import {
-  TImageSearchParam,
-  TPillDetailSearchParam,
-  TSearchQueryOption,
-  TPillSearchParam,
-} from '../@types/pill_search';
+import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 
 const router = express.Router();
 
@@ -26,17 +21,17 @@ router.post('/image', async (req, res) => {
 
   res.json(
     await PillSearchService.searchFromImage(
-      req.body as TImageSearchParam,
+      req.body.base64 as string,
       req.query as Partial<TSearchQueryOption>
     )
   );
 });
 
 // 상세 검색
-router.get('/detail', async (req, res) => {
+router.post('/detail', async (req, res) => {
   SearchHistoryService.writeSearchHistory('detail', req.body);
 
-  res.json(await PillSearchService.searchDetail(req.body as TPillDetailSearchParam));
+  res.json(await PillSearchService.searchDetail(req.body.ITEM_SEQ as string));
 });
 
 export default router;

@@ -10,14 +10,12 @@ import { TDrugPermissionData } from '../@types/drug_permission';
 import {
   TDlServerData,
   TDlServerResponse,
-  TImageSearchParam,
   TMergedPillSearchData,
-  TPillDetailSearchParam,
   TSearchQueryOption,
   TPillSearchParam,
 } from '../@types/pill_search';
 import { TFuncReturn } from '../@types/common';
-import { TPillPermissionDetailApiRes, TPillPermissionDetailData } from '../@types/pill_detail';
+import { TPillPermissionDetailApiRes } from '../@types/pill_detail';
 
 /**
  * 알약 식별 정보 및 허가 정보의 데이터를 병합
@@ -147,20 +145,17 @@ async function requestImageRecognitionDlServer(base64: string) {
 
 /**
  * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
- * @param image base64 이미지 코드
+ * @param base64 base64 이미지 코드
  * @param option 쿼리 옵션
  * @returns
  */
-export async function searchFromImage(
-  imageData: TImageSearchParam,
-  option?: Partial<TSearchQueryOption>
-) {
+export async function searchFromImage(base64: string, option?: Partial<TSearchQueryOption>) {
   const result = { success: false } as TFuncReturn<{
     pillInfoList: TMergedPillSearchData[];
   }>;
 
   // DL 서버 API 호출
-  const dlServerRes = await requestImageRecognitionDlServer(imageData.base64);
+  const dlServerRes = await requestImageRecognitionDlServer(base64);
 
   if (!dlServerRes.success) {
     return dlServerRes;
@@ -191,27 +186,28 @@ export async function searchFromImage(
  * @param itemSeq API 호출을 위한 옵션인 알약 제품 일련 번호
  * @returns
  */
-export async function searchDetail(itemSeq: TPillDetailSearchParam) {
-  const result = { success: false } as TFuncReturn<Partial<TPillPermissionDetailData>[]>;
-
+export async function searchDetail(itemSeq: string) {
   try {
     // API URL 및 서비스키
     const detailSearchUrl =
       'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService04/getDrugPrdtPrmsnDtlInq03';
     const encServiceKey = process.env.ENC_SERVICE_KEY;
 
-    const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq.ITEM_SEQ}&pageNo=1&numOfRows=20`;
+    const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq}&pageNo=1&numOfRows=20`;
 
     const response = await axios.get<TPillPermissionDetailApiRes>(apiUrl);
 
+    if (!response?.data?.body?.items?.length) {
+      logger.info('[PILL-SEARCH-SERVICE] No data for detail search. item seq: %s', itemSeq);
+      return { success: false, data: msg['pill-search.error.no-data'] };
+    }
+
     const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } = response.data.body.items[0];
 
-    result.data = [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }];
-    result.success = true;
+    return { success: true, data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }] };
   } catch (e) {
     logger.error('[PILL-SEARCH-SERVICE] Fail to call api. itemSeq: %s. %s', itemSeq, e.stack || e);
 
-    result.message = msg['pill-search.error.general'];
+    return { success: false, message: msg['pill-search.error.general'] };
   }
-  return result;
 }

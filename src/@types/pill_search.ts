@@ -1,12 +1,6 @@
 import { TDrugPermissionData } from './drug_permission';
 import { TPillRecognitionData } from './pill_recognition';
 
-export type TImageSearchParam = {
-  base64: string;
-};
-
-export type TPillDetailSearchParam = Pick<TPillRecognitionData, 'ITEM_SEQ'>;
-
 export type TPillSearchParam = {
   ITEM_SEQ: string;
   ITEM_NAME: string;
