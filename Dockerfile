@@ -32,5 +32,7 @@ RUN yarn install && \
 RUN yarn build
 
 EXPOSE $MAIN_SERVER_PORT
+# 식약처 API 응답 수신
+EXPOSE 80
 
 ENTRYPOINT ["node", "./build/src/app.js"]
