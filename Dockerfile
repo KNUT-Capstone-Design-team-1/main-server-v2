@@ -18,13 +18,18 @@ ENV DL_SERVER_ADDRESS=$DL_SERVER_ADDRESS
 ENV DL_SERVER_PORT=$DL_SERVER_PORT
 ENV DL_SERVER_PILL_RECOGNITION_API_URL_PATH=$DL_SERVER_PILL_RECOGNITION_API_URL_PATH
 
+RUN apk add \
+  tcpdump \
+  net-tools \
+  vim
+
 COPY . /usr/local/wip-main-server-v2 
 
 WORKDIR /usr/local/wip-main-server-v2
 
-RUN npm install
-RUN npm install -g typescript
-RUN tsc --build
+RUN yarn install && \
+  yarn global add typescript
+RUN yarn build
 
 EXPOSE $MAIN_SERVER_PORT
 
