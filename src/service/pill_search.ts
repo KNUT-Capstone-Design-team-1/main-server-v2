@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import { getRecognitionDataForSearch } from './pill_recognition';
 import { getPermissionDataForSearch } from './drug_permission';
-import { logger } from '../util';
+import { logger, saftyJsonStringify } from '../util';
 import msg from '../../res/ko-KR.json';
 import { TPillRecognitionData } from '../@types/pill_recognition';
 import { TDrugPermissionData } from '../@types/drug_permission';
@@ -100,7 +100,7 @@ async function requestImageRecognitionDlServer(base64: string) {
     if (!dlServerRes?.data) {
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
-        JSON.stringify(dlServerRes)
+        saftyJsonStringify(dlServerRes)
       );
 
       result.message = msg['pill-search.error.no-response'];
@@ -112,20 +112,23 @@ async function requestImageRecognitionDlServer(base64: string) {
 
     if (!success) {
       const dlServerMessage = msg[message as keyof typeof msg];
+
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response fail. message: %s (%s), response: %s',
         dlServerMessage,
         message,
-        JSON.stringify(dlServerRes)
+        saftyJsonStringify(dlServerRes)
       );
+
       result.message = dlServerMessage;
+
       return result;
     }
 
     if (!data || data.length === 0) {
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
-        JSON.stringify(dlServerRes)
+        saftyJsonStringify(dlServerRes)
       );
       result.message = msg['pill-search.error.no-data'];
       return result;
