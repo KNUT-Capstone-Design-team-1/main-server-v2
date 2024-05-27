@@ -193,7 +193,7 @@ export async function searchDetail(itemSeq: string) {
   try {
     // API URL 및 서비스키
     const detailSearchUrl =
-      'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService04/getDrugPrdtPrmsnDtlInq03';
+      'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04';
     const encServiceKey = process.env.ENC_SERVICE_KEY;
 
     const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq}&pageNo=1&numOfRows=20`;
