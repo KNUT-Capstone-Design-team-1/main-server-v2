@@ -202,7 +202,7 @@ export async function searchDetail(itemSeq: string) {
 
     if (!response?.data?.body?.items?.length) {
       logger.info('[PILL-SEARCH-SERVICE] No data for detail search. item seq: %s', itemSeq);
-      return { success: false, data: msg['pill-search.error.no-data'] };
+      return { success: false, message: msg['pill-search.error.no-data'] };
     }
 
     const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } = response.data.body.items[0];
