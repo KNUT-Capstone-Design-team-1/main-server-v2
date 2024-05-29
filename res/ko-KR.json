@@ -5,5 +5,7 @@
   "pill-search.error.get-detection-data": "알약의 글자를 찾지 못 했습니다.",
   "pill-search.error.get-recognition-data": "알약의 글자를 인식하지 못 했습니다.",
   "pill-search.error.get-shape-data": "알약의 모양을 인식하지 못 했습니다.",
-  "pill-search.error.no-image": "전달받은 이미지가 없습니다."
+  "pill-search.error.no-image": "전달받은 이미지가 없습니다.",
+
+  "app-initial.error.read-update-date": "정보 업데이트 날짜 확인에 실패했습니다."
 }

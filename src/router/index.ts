@@ -1,6 +1,8 @@
 import bodyParser from 'body-parser';
 import { swaggerUi, specs } from '../../swagger';
-import PillSearchApi from './pill_search';
+import PillSearchAPI from './pill_search';
+import AppInitialAPI from './app_initial';
+
 import { Router } from 'express';
 
 /**
@@ -11,7 +13,12 @@ export function init(router: Router) {
   router.use(bodyParser.urlencoded({ limit: '100mb', extended: false }));
   router.use(bodyParser.json({ limit: '100mb' }));
 
+  // Swagger
   router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-  router.use('/pill-search', PillSearchApi);
+  // 알약 검색
+  router.use('/pill-search', PillSearchAPI);
+
+  // 애플리케이션 초기화 정보
+  router.use('/app-initial', AppInitialAPI);
 }
