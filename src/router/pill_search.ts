@@ -4,6 +4,9 @@ import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 
 const router = express.Router();
 
+/**
+ * 식별 검색
+ */
 router.post('/recognition', async (req, res) => {
   SearchHistoryService.writeSearchHistory('recognition', req.body);
 
@@ -15,7 +18,9 @@ router.post('/recognition', async (req, res) => {
   );
 });
 
-// 이미지 검색
+/**
+ * 알약 촬영 검색
+ */
 router.post('/image', async (req, res) => {
   SearchHistoryService.writeSearchHistory('image', req.body);
 
@@ -27,7 +32,9 @@ router.post('/image', async (req, res) => {
   );
 });
 
-// 상세 검색
+/**
+ * 상세 조회
+ */
 router.post('/detail', async (req, res) => {
   SearchHistoryService.writeSearchHistory('detail', req.body);
 
