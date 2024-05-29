@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/db-update-date', async (_req, res) => {
   const DBUpdateDateInfo = await AppInitialService.readDBUpdateDate();
 
-  res.status(200).json(DBUpdateDateInfo);
+  res.json(DBUpdateDateInfo);
 });
 
 export default router;

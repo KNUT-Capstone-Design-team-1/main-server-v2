@@ -18,7 +18,8 @@ if [ $1 = "STAND-ALONE" ]; then
   echo "---- OK ----"
 
   echo "---- Build and install library ----"
-  tsc --build --force
+  rm -rf /must_be_madness/what_is_pill/wip-main-server-v2/build
+  tsc --build
   npm install
   echo "---- OK ----"
 
