@@ -1,0 +1,4 @@
+@serverUrl=http://127.0.0.1:16261
+
+### 데이터베이스 업데이트 날짜 조회
+GET {{serverUrl}}/app-initial/db-update-date

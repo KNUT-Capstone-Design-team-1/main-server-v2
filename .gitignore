@@ -7,7 +7,5 @@ logs
 tmp
 *.lock
 config.json
-*.http
 *.env
-test*
 build
