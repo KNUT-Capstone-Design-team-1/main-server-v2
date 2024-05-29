@@ -1,4 +1,4 @@
-import { logger } from '../util';
+import { CONFIG, logger } from '../util';
 import msg from '../../res/ko-KR.json';
 import ConfigModel from '../schema/config';
 
@@ -8,9 +8,9 @@ import ConfigModel from '../schema/config';
  */
 export async function readDBUpdateDate() {
   try {
-    const updateDate = await ConfigModel.findOne({ id: 'db.update-date' });
+    const updateDateConfig = await ConfigModel.findOne({ id: CONFIG.DB_UPDATE_DATE });
 
-    return { success: true, data: { updateDate } };
+    return { success: true, data: { updateDate: updateDateConfig?.value || '0000-00-00' } };
   } catch (e) {
     logger.error('[APP-INITIAL] Fail to read DB update date. %s', e.stack || e);
 

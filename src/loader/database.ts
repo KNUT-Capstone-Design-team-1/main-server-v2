@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { logger } from '../util';
 import * as Resource from './resource';
+import { Config } from '.';
 
 mongoose.set('strictQuery', true);
 
@@ -18,8 +19,9 @@ export function connectOnDatabase() {
     throw e;
   });
 
-  db.once('open', () => {
+  db.once('open', async () => {
     logger.info('[DATABASE] Database connection success');
-    Resource.update(); // DB에 연결된 뒤 리소스 업데이트를 해야하기 때문에 이 위치에서 업데이트를 수행한다
+    await Resource.update(); // DB에 연결된 뒤 리소스 업데이트를 해야하기 때문에 이 위치에서 업데이트를 수행한다
+    await Config.upsertDBUpdateDate();
   });
 }

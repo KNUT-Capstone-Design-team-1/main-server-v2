@@ -3,6 +3,7 @@ import { logger } from './logger';
 export * from './logger';
 export * from './excel_to_json';
 export * from './pill_search';
+export * from './config';
 
 /**
  * JSON 데이터를 안전하게 stringify
