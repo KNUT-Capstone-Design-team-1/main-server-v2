@@ -21,7 +21,12 @@ export function connectOnDatabase() {
 
   db.once('open', async () => {
     logger.info('[DATABASE] Database connection success');
-    await Resource.update(); // DB에 연결된 뒤 리소스 업데이트를 해야하기 때문에 이 위치에서 업데이트를 수행한다
-    await Config.upsertDBUpdateDate();
+
+    // DB에 연결된 뒤 리소스 업데이트를 해야하기 때문에 이 위치에서 업데이트를 수행한다
+    const isUpdated = await Resource.update();
+
+    if (isUpdated) {
+      await Config.upsertDBUpdateDate();
+    }
   });
 }

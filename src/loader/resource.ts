@@ -119,6 +119,7 @@ export async function update() {
     DRUG_PERMISSION_RESOURCE_PATH as string,
   ];
 
+  let isUpdated = false;
   for await (const path of paths) {
     logger.info('[RESOURCE] try resource update for %s', path);
 
@@ -134,7 +135,10 @@ export async function update() {
 
     await updateResource(path, resourceDatas);
     logger.info('[RESOURCE] Resource update complete for %s', path);
+    isUpdated = true;
 
     deleteUpdatedResourceDirectory(path);
   }
+
+  return isUpdated;
 }
