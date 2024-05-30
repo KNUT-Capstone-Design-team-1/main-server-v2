@@ -28,5 +28,7 @@ export function connectOnDatabase() {
     if (isUpdated) {
       await Config.upsertDBUpdateDate();
     }
+
+    logger.info('[DATABASE] Resource check and update complete');
   });
 }
