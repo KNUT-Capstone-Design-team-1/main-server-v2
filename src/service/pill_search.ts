@@ -103,7 +103,7 @@ async function requestImageRecognitionDlServer(
 }
 
 /**
- * 이미지를 인식하는 딥러닝 서버로 이미지를 전달 후 개요 검색 수행
+ * 알약 촬영 검색
  * @param base64 base64 이미지 코드
  * @param option 쿼리 옵션
  * @returns
