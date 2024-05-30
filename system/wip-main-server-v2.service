@@ -10,7 +10,6 @@ WorkingDirectory=/must_be_madness/what_is_pill/wip-main-server-v2
 ExecStart=node /must_be_madness/what_is_pill/wip-main-server-v2/build/src/app.js
 Restart=always
 Requires=mongod.service
-StandardOutput=append:/must_be_madness/what_is_pill/wip-main-server-v2/logs/main_server.log
 StandardError=append:/must_be_madness/what_is_pill/wip-main-server-v2/logs/error.log
 
 [Install]
