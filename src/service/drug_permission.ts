@@ -1,6 +1,6 @@
 import { DrugPermissionDataModel } from '../schema';
-import { TDrugPermissionData } from '../@types/drug_permission';
-import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
+import type { TDrugPermissionData } from '../@types/drug_permission';
+import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 import { logger } from '../util';
 import { generateQueryFilter } from '../util';
 

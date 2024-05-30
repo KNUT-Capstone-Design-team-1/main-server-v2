@@ -1,6 +1,6 @@
 import express from 'express';
-import { SearchHistoryService, PillSearchService } from '../service';
-import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
+import { SearchHistoryService, PillSearchService, DrugPermissionDetailService } from '../service';
+import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 
 const router = express.Router();
 
@@ -38,7 +38,7 @@ router.post('/image', async (req, res) => {
 router.post('/detail', async (req, res) => {
   SearchHistoryService.writeSearchHistory('detail', req.body);
 
-  res.json(await PillSearchService.searchDetail(req.body.ITEM_SEQ as string));
+  res.json(await DrugPermissionDetailService.getDrugPermissionDetail(req.body.ITEM_SEQ as string));
 });
 
 export default router;

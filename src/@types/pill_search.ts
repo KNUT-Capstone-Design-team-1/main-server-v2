@@ -1,5 +1,5 @@
-import { TDrugPermissionData } from './drug_permission';
-import { TPillRecognitionData } from './pill_recognition';
+import type { TDrugPermissionData } from './drug_permission';
+import type { TPillRecognitionData } from './pill_recognition';
 
 export type TPillSearchParam = {
   ITEM_SEQ: string;

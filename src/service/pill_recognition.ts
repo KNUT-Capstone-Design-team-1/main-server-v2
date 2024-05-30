@@ -1,6 +1,6 @@
 import { PillRecognitionDataModel } from '../schema';
-import { TPillRecognitionData } from '../@types/pill_recognition';
-import { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
+import type { TPillRecognitionData } from '../@types/pill_recognition';
+import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 import { logger } from '../util';
 import { generateQueryFilter } from '../util';
 

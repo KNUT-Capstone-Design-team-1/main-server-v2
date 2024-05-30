@@ -1,4 +1,7 @@
-import {
+import _ from 'lodash';
+import type { TDrugPermissionData } from '../@types/drug_permission';
+import type { TPillRecognitionData } from '../@types/pill_recognition';
+import type {
   TPillSearchQueryFilters,
   TPillSearchInQueryFilters,
   TPillSearchParam,
@@ -121,4 +124,24 @@ export async function generateQueryFilter(param: TPillSearchParam) {
   }
 
   return {};
+}
+
+/**
+ * 알약 식별 정보 및 허가 정보의 데이터를 병합
+ * @param recognitionDatas
+ * @param permissionDatas
+ * @returns
+ */
+export function mergePillData(
+  recognitionDatas: Record<string, any>[],
+  permissionDatas: Record<string, any>[]
+) {
+  const mergedData = recognitionDatas.map((recognition) =>
+    _.merge(
+      recognition,
+      permissionDatas.find(({ ITEM_SEQ }) => ITEM_SEQ === recognition.ITEM_SEQ)
+    )
+  ) as (TPillRecognitionData & TDrugPermissionData)[];
+
+  return mergedData;
 }

@@ -1,5 +1,5 @@
 import { SearchHistoryModel } from '../schema';
-import { TSearchHistoryData } from '../@types/search_history';
+import type { TSearchHistoryData } from '../@types/search_history';
 import { logger } from '../util';
 
 /**

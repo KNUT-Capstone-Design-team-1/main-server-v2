@@ -1,41 +1,16 @@
 import axios from 'axios';
-import _ from 'lodash';
-
 import { getRecognitionDataForSearch } from './pill_recognition';
 import { getPermissionDataForSearch } from './drug_permission';
-import { logger, saftyJsonStringify } from '../util';
+import { logger, mergePillData, saftyJsonStringify } from '../util';
 import msg from '../../res/ko-KR.json';
-import { TPillRecognitionData } from '../@types/pill_recognition';
-import { TDrugPermissionData } from '../@types/drug_permission';
-import {
+import type {
   TDlServerData,
   TDlServerResponse,
   TMergedPillSearchData,
   TSearchQueryOption,
   TPillSearchParam,
 } from '../@types/pill_search';
-import { TFuncReturn } from '../@types/common';
-import { TPillPermissionDetailApiRes } from '../@types/pill_detail';
-
-/**
- * 알약 식별 정보 및 허가 정보의 데이터를 병합
- * @param recognitionDatas
- * @param permissionDatas
- * @returns
- */
-function mergePillData(
-  recognitionDatas: Record<string, any>[],
-  permissionDatas: Record<string, any>[]
-) {
-  const mergedData = recognitionDatas.map((recognition) =>
-    _.merge(
-      recognition,
-      permissionDatas.find(({ ITEM_SEQ }) => ITEM_SEQ === recognition.ITEM_SEQ)
-    )
-  ) as (TPillRecognitionData & TDrugPermissionData)[];
-
-  return mergedData;
-}
+import type { TFuncReturn } from '../@types/common';
 
 /**
  * 식별 검색
@@ -46,26 +21,17 @@ function mergePillData(
 export async function searchPillRecognitionData(
   param: TPillSearchParam,
   option?: Partial<TSearchQueryOption>
-) {
-  const result = { success: false } as TFuncReturn<TMergedPillSearchData[]>;
-
+): Promise<TFuncReturn<TMergedPillSearchData[]>> {
   try {
-    // 낱알 식별 정보
     const recognitionDatas = await getRecognitionDataForSearch(param, option);
 
     if (recognitionDatas.length === 0) {
-      result.message = msg['pill-search.error.no-data'];
-      return result;
+      return { success: false, message: msg['pill-search.error.no-data'] };
     }
 
-    // 의약품 허가 정보
     const permissionDatas = await getPermissionDataForSearch(param);
 
-    result.data = mergePillData(recognitionDatas, permissionDatas);
-
-    result.success = true;
-
-    return result;
+    return { success: true, data: mergePillData(recognitionDatas, permissionDatas) };
   } catch (e) {
     logger.error(
       '[PILL-SEARCH-SERVICE] Fail to recognition search. param: %s. option: %s. %s',
@@ -74,9 +40,7 @@ export async function searchPillRecognitionData(
       e.stack || e
     );
 
-    result.message = msg['pill-search.error.general'];
-
-    return result;
+    return { success: false, message: msg['pill-search.error.general'] };
   }
 }
 
@@ -85,9 +49,9 @@ export async function searchPillRecognitionData(
  * @param base64 이미지의 base64 코드
  * @returns
  */
-async function requestImageRecognitionDlServer(base64: string) {
-  const result = { success: false } as TFuncReturn<TDlServerData>;
-
+async function requestImageRecognitionDlServer(
+  base64: string
+): Promise<TFuncReturn<TDlServerData>> {
   try {
     const { DL_SERVER_ADDRESS, DL_SERVER_PORT, DL_SERVER_PILL_RECOGNITION_API_URL_PATH } =
       process.env;
@@ -103,9 +67,7 @@ async function requestImageRecognitionDlServer(base64: string) {
         saftyJsonStringify(dlServerRes)
       );
 
-      result.message = msg['pill-search.error.no-response'];
-
-      return result;
+      return { success: false, message: msg['pill-search.error.no-response'] };
     }
 
     const { success, data, message } = dlServerRes.data;
@@ -120,29 +82,23 @@ async function requestImageRecognitionDlServer(base64: string) {
         saftyJsonStringify(dlServerRes)
       );
 
-      result.message = dlServerMessage;
-
-      return result;
+      return { success: false, message: dlServerMessage };
     }
 
-    if (!data || data.length === 0) {
+    if (!data?.length) {
       logger.error(
         '[PILL-SEARCH-SERVICE] Deeplearning server response data is not exist. response: %s',
         saftyJsonStringify(dlServerRes)
       );
-      result.message = msg['pill-search.error.no-data'];
-      return result;
+
+      return { success: false, message: msg['pill-search.error.no-data'] };
     }
 
-    result.data = data;
-    result.success = true;
-
-    return result;
+    return { success: true, data };
   } catch (e) {
     logger.error(`[PILL-SEARCH-SERVICE] Fail to receive from DLserver. %s`, e.stack || e);
-    // 임시로 이렇게 표시한다
-    result.message = `${msg['pill-search.error.general']}. ${e.stack || e}`;
-    return result;
+
+    return { success: false, message: `${msg['pill-search.error.general']}. ${e.stack || e}` };
   }
 }
 
@@ -152,65 +108,30 @@ async function requestImageRecognitionDlServer(base64: string) {
  * @param option 쿼리 옵션
  * @returns
  */
-export async function searchFromImage(base64: string, option?: Partial<TSearchQueryOption>) {
-  const result = { success: false } as TFuncReturn<{
-    pillInfoList: TMergedPillSearchData[];
-  }>;
+export async function searchFromImage(
+  base64: string,
+  option?: Partial<TSearchQueryOption>
+): Promise<TFuncReturn<{ pillInfoList: TMergedPillSearchData[] }>> {
+  const { success, data, message } = await requestImageRecognitionDlServer(base64);
 
-  // DL 서버 API 호출
-  const dlServerRes = await requestImageRecognitionDlServer(base64);
-
-  if (!dlServerRes.success) {
-    return dlServerRes;
+  if (!success) {
+    return { success: false, message: message as string };
   }
 
-  // DL 서버로 부터 받은 데이터를 기반으로 DB의 알약 식별 데이터를 조회
-  const recogDataPromises = dlServerRes.data.map((recogData) =>
-    searchPillRecognitionData(recogData, option)
-  );
-
-  const queryResults = await Promise.all(recogDataPromises);
-
-  if (queryResults.some((v) => !v.success)) {
-    result.message = msg['pill-search.error.get-recognition-data'];
-    return result;
+  const recogResults: TFuncReturn<TMergedPillSearchData[]>[] = [];
+  for await (const recogData of data as TDlServerData) {
+    recogResults.push(await searchPillRecognitionData(recogData, option));
   }
 
-  result.data = {
-    pillInfoList: queryResults.map((v) => v.data).flat(),
-  };
-  result.success = true;
-
-  return result;
-}
-
-/**
- * 알약에 대한 상세 검색 (의약품 허가 정보)
- * @param itemSeq API 호출을 위한 옵션인 알약 제품 일련 번호
- * @returns
- */
-export async function searchDetail(itemSeq: string) {
-  try {
-    // API URL 및 서비스키
-    const detailSearchUrl =
-      'http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04';
-    const encServiceKey = process.env.ENC_SERVICE_KEY;
-
-    const apiUrl = `${detailSearchUrl}?serviceKey=${encServiceKey}&type=json&item_seq=${itemSeq}&pageNo=1&numOfRows=20`;
-
-    const response = await axios.get<TPillPermissionDetailApiRes>(apiUrl);
-
-    if (!response?.data?.body?.items?.length) {
-      logger.info('[PILL-SEARCH-SERVICE] No data for detail search. item seq: %s', itemSeq);
-      return { success: false, message: msg['pill-search.error.no-data'] };
-    }
-
-    const { ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA } = response.data.body.items[0];
-
-    return { success: true, data: [{ ITEM_SEQ, EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA }] };
-  } catch (e) {
-    logger.error('[PILL-SEARCH-SERVICE] Fail to call api. itemSeq: %s. %s', itemSeq, e.stack || e);
-
-    return { success: false, message: msg['pill-search.error.general'] };
+  if (recogResults.some((v) => !v.success)) {
+    return { success: false, message: msg['pill-search.error.get-recognition-data'] };
   }
+
+  const pillInfoList: TMergedPillSearchData[] = [];
+
+  recogResults.forEach((v) => {
+    pillInfoList.push(...(v.data as TMergedPillSearchData[]));
+  });
+
+  return { success: true, data: { pillInfoList } };
 }
