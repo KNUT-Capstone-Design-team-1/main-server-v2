@@ -6,9 +6,7 @@ POST {{serverUrl}}/pill-search/recognition?skip=0&limit=100
 Content-Type: application/json
 
 {
-    "PRINT_FRONT": "AMD",
-    "PRINT_BACK": "AMD",
-    "DRUG_SHAPE": ["장방형","타원형"]
+    "ITEM_SEQ": "200001451"
 }
 
 ### 알약 촬영 검색
