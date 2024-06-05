@@ -29,7 +29,7 @@ export async function searchPillRecognitionData(
       return { success: false, message: msg['pill-search.error.no-data'] };
     }
 
-    const permissionDatas = await getPermissionDataForSearch(param);
+    const permissionDatas = await getPermissionDataForSearch(param, option);
 
     return { success: true, data: mergePillData(recognitionDatas, permissionDatas) };
   } catch (e) {
