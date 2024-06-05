@@ -119,15 +119,23 @@ export async function searchFromImage(
   }
 
   const recogResults: TFuncReturn<TMergedPillSearchData[]>[] = [];
+
   for await (const recogData of data as TDlServerData) {
     recogResults.push(await searchPillRecognitionData(recogData, option));
   }
 
   const pillInfoList: TMergedPillSearchData[] = [];
 
-  recogResults.filter((v) => v.success).forEach((v) => {
-    pillInfoList.push(...(v.data as TMergedPillSearchData[]));
-  });
+  recogResults
+    .filter((v) => v.success)
+    .forEach((v) => {
+      pillInfoList.push(...(v.data as TMergedPillSearchData[]));
+    });
+
+  logger.info(
+    '[PILL-SEARCH-SERVICE] Success pill image search. recog result: %s',
+    JSON.stringify(recogResults)
+  );
 
   return { success: true, data: { pillInfoList } };
 }
