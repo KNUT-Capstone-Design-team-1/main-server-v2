@@ -36,7 +36,7 @@ export async function getPermissionDataForSearch(
 
   const drugpermissionDatas = await DrugPermissionDataModel.find(findQuery, field)
     .skip(skip || 0)
-    .limit(limit || 0);
+    .limit(limit || 20);
 
   return drugpermissionDatas;
 }

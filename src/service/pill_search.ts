@@ -119,8 +119,9 @@ export async function searchFromImage(
   }
 
   logger.info(
-    '[PILL-SEARCH-SERVICE] Pill recognition info from DL server. data: %s',
-    JSON.stringify(data)
+    '[PILL-SEARCH-SERVICE] Pill recognition info from DL server. data: %s. option: %s',
+    JSON.stringify(data),
+    JSON.stringify(option)
   );
 
   const recogResults: TFuncReturn<TMergedPillSearchData[]>[] = [];

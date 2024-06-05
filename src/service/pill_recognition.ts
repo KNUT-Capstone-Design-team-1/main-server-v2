@@ -40,7 +40,7 @@ export async function getRecognitionDataForSearch(
 
   const recognitionDatas = await PillRecognitionDataModel.find(findQuery, field)
     .skip(skip || 0)
-    .limit(limit || 0);
+    .limit(limit || 20);
 
   return recognitionDatas;
 }
