@@ -105,7 +105,6 @@ async function requestImageRecognitionDlServer(
 /**
  * 알약 촬영 검색
  * @param base64 base64 이미지 코드
- * @param option 쿼리 옵션
  * @returns
  */
 export async function searchFromImage(
