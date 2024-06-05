@@ -118,6 +118,11 @@ export async function searchFromImage(
     return { success: false, message: message as string };
   }
 
+  logger.info(
+    '[PILL-SEARCH-SERVICE] Pill recognition info from DL server. data: %s',
+    JSON.stringify(data)
+  );
+
   const recogResults: TFuncReturn<TMergedPillSearchData[]>[] = [];
 
   for await (const recogData of data as TDlServerData) {
