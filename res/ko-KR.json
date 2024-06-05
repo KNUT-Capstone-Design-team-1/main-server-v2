@@ -3,7 +3,6 @@
   "pill-search.error.general": "오류가 발생 했습니다.",
   "pill-search.error.no-response": "응답 결과가 존재하지 않습니다.",
   "pill-search.error.get-detection-data": "알약의 글자를 찾지 못 했습니다.",
-  "pill-search.error.get-recognition-data": "알약의 글자를 인식하지 못 했습니다.",
   "pill-search.error.get-shape-data": "알약의 모양을 인식하지 못 했습니다.",
   "pill-search.error.no-image": "전달받은 이미지가 없습니다.",
   "pill-search.error.no-require-environment": "필요한 환경변수가 존재하지 않습니다.",

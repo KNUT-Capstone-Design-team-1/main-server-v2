@@ -123,13 +123,9 @@ export async function searchFromImage(
     recogResults.push(await searchPillRecognitionData(recogData, option));
   }
 
-  if (recogResults.some((v) => !v.success)) {
-    return { success: false, message: msg['pill-search.error.get-recognition-data'] };
-  }
-
   const pillInfoList: TMergedPillSearchData[] = [];
 
-  recogResults.forEach((v) => {
+  recogResults.filter((v) => v.success).forEach((v) => {
     pillInfoList.push(...(v.data as TMergedPillSearchData[]));
   });
 
