@@ -109,8 +109,7 @@ async function requestImageRecognitionDlServer(
  * @returns
  */
 export async function searchFromImage(
-  base64: string,
-  option?: Partial<TSearchQueryOption>
+  base64: string
 ): Promise<TFuncReturn<{ pillInfoList: TMergedPillSearchData[] }>> {
   const { success, data, message } = await requestImageRecognitionDlServer(base64);
 
@@ -119,15 +118,14 @@ export async function searchFromImage(
   }
 
   logger.info(
-    '[PILL-SEARCH-SERVICE] Pill recognition info from DL server. data: %s. option: %s',
-    JSON.stringify(data),
-    JSON.stringify(option)
+    '[PILL-SEARCH-SERVICE] Pill recognition info from DL server. data: %s',
+    JSON.stringify(data)
   );
 
   const recogResults: TFuncReturn<TMergedPillSearchData[]>[] = [];
 
   for await (const recogData of data as TDlServerData) {
-    recogResults.push(await searchPillRecognitionData(recogData, option));
+    recogResults.push(await searchPillRecognitionData(recogData));
   }
 
   const pillInfoList: TMergedPillSearchData[] = [];

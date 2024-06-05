@@ -24,12 +24,7 @@ router.post('/recognition', async (req, res) => {
 router.post('/image', async (req, res) => {
   SearchHistoryService.writeSearchHistory('image', req.body);
 
-  res.json(
-    await PillSearchService.searchFromImage(
-      req.body.base64 as string,
-      req.query as Partial<TSearchQueryOption>
-    )
-  );
+  res.json(await PillSearchService.searchFromImage(req.body.base64 as string));
 });
 
 /**
