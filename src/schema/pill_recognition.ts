@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * 알약 식별 정보 모델
+ * 의약품 낱알식별정보 데이터 모델
  */
 const PillRecognitionDataModel = mongoose.model(
   'PillRecognitionData',

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * 의약품 허가 정보 모델
+ * 완제 의약품 허가 상세 데이터 모델
  */
 const DrugPermissionDataModel = mongoose.model(
   'DrugPermissionData',

@@ -1,5 +1,5 @@
 /**
- * 알약 식별 정보
+ * 의약품 낱알식별정보 데이터
  */
 export type TPillRecognitionData = {
   ITEM_SEQ: string; // 품목 일련 번호

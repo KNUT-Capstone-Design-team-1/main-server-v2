@@ -1,5 +1,5 @@
 /**
- * 의약품 허가 정보 상세
+ * 의약품 제품 허가 상세 정보
  */
 export type TDrugPermissionDetailData = {
   ITEM_SEQ: string; // 품목기준코드
