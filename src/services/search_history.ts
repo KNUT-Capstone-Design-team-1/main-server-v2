@@ -1,6 +1,6 @@
 import { SearchHistoryModel } from '../schema';
 import type { TSearchHistoryData } from '../@types/search_history';
-import { logger } from '../util';
+import { logger } from '../utils';
 
 /**
  * 검색 히스토리 저장

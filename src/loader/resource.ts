@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { convertExcelToJson, logger } from '../util';
+import { convertExcelToJson, logger } from '../utils';
 import { PillRecognitionService, DrugPermissionService } from '../services';
 
 /**

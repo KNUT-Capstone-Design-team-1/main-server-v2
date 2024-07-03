@@ -1,6 +1,6 @@
 import dayJs from 'dayjs';
 import ConfigModel from '../schema/config';
-import { CONFIG, CONFIG_TYPE, logger } from '../util';
+import { CONFIG, CONFIG_TYPE, logger } from '../utils';
 
 /**
  * 데이터베이스 업데이트 날짜 기록

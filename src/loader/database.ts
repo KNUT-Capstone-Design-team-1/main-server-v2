@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { logger } from '../util';
+import { logger } from '../utils';
 import * as Resource from './resource';
 import { Config } from '.';
 

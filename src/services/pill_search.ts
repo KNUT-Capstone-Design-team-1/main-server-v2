@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getRecognitionDataForSearch } from './pill_recognition';
 import { getPermissionDataForSearch } from './drug_permission';
-import { logger, mergePillData, saftyJsonStringify } from '../util';
+import { logger, mergePillData, saftyJsonStringify } from '../utils';
 import msg from '../../res/ko-KR.json';
 import type {
   TDlServerData,

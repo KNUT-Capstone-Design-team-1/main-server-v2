@@ -1,4 +1,4 @@
-import { CONFIG, logger } from '../util';
+import { CONFIG, logger } from '../utils';
 import msg from '../../res/ko-KR.json';
 import ConfigModel from '../schema/config';
 

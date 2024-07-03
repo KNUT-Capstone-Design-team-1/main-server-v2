@@ -1,8 +1,7 @@
 import { PillRecognitionDataModel } from '../schema';
 import type { TPillRecognitionData } from '../@types/pill_recognition';
 import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
-import { logger } from '../util';
-import { generateQueryFilter } from '../util';
+import { logger, generateQueryFilter } from '../utils';
 
 /**
  * 식별 검색을 위한 낱알 식별 데이터 조회

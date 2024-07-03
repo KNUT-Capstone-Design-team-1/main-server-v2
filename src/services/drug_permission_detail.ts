@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { TDrugPermissionDetailApiRes } from '../@types/drug_permission_detail';
-import { logger } from '../util';
+import { logger } from '../utils';
 import msg from '../../res/ko-KR.json';
 
 /**

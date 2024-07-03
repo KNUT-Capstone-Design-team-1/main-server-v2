@@ -1,8 +1,7 @@
 import { DrugPermissionDataModel } from '../schema';
 import type { TDrugPermissionData } from '../@types/drug_permission';
 import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
-import { logger } from '../util';
-import { generateQueryFilter } from '../util';
+import { logger, generateQueryFilter } from '../utils';
 
 /**
  * 식별 검색을 위한 의약품 허가 정보 조회
