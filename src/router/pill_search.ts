@@ -1,5 +1,5 @@
 import express from 'express';
-import { SearchHistoryService, PillSearchService, DrugPermissionDetailService } from '../service';
+import { SearchHistoryService, PillSearchService, DrugPermissionDetailService } from '../services';
 import type { TSearchQueryOption, TPillSearchParam } from '../@types/pill_search';
 
 const router = express.Router();

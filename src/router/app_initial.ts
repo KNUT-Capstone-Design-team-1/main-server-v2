@@ -1,5 +1,5 @@
 import express from 'express';
-import { AppInitialService } from '../service';
+import { AppInitialService } from '../services';
 
 const router = express.Router();
 

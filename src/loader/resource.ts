@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { convertExcelToJson, logger } from '../util';
-import { PillRecognitionService, DrugPermissionService } from '../service';
+import { PillRecognitionService, DrugPermissionService } from '../services';
 
 /**
  * 리소스 파일 목록을 조회한다
