@@ -1,4 +1,5 @@
 name: single_container_deploy
+run-name: single_container_deploy
 
 on:
   workflow_dispatch:

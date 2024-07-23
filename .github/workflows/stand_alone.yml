@@ -1,4 +1,5 @@
 name: stand_alone_deploy
+run-name: stand_alone_deploy
 
 on:
   workflow_dispatch:
