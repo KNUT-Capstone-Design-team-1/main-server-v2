@@ -2,13 +2,14 @@ name: deploy_server_init
 
 on: 
   workflow_call:
-  workflow_dispatch:
 
 jobs:
   ssh_host_regist:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - name: ssh-agent-setup
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
