@@ -1,0 +1,31 @@
+name: stand_alone_deploy
+run-name: stand_alone-${{ github.actor }}-${{ github.event.inputs.branch }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow on'
+        required: true
+        default: 'main'
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: ssh_connect
+        uses: ./.github/workflows/deploy_server_init.yml
+            
+      - name: build
+        uses: ./.github/workflows/build.yml
+
+      - name: deploy
+        run: |
+          scp -r ./build/src root@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR_MAIN }} && \
+          ssh -o ServerAliveInterval=3600 -vT ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          systemctl daemon-reload
+          systemctl stop wip-main-server-v2
+          systemctl start wip-main-server-v2
+          EOF
+

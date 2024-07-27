@@ -1,0 +1,17 @@
+name: deploy_server_init
+
+on: 
+  workflow_call:
+
+jobs:
+  ssh_host_regist:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - name: ssh-agent-setup
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts

@@ -5,12 +5,12 @@ Description=what is pill main server
 Type=simple
 User=ubuntu
 Group=ubuntu
-EnvironmentFile=/must_be_madness/what_is_pill/wip-main-server-v2/.env
-WorkingDirectory=/must_be_madness/what_is_pill/wip-main-server-v2
-ExecStart=node /must_be_madness/what_is_pill/wip-main-server-v2/build/src/app.js
+Environment=PATH=/must_be_madness/what_is_pill/wip-main-server-v2
+EnvironmentFile=${PATH}/.env
+WorkingDirectory=${PATH}
+ExecStart=node ${PATH}/src/app.js
 Restart=always
-Requires=mongod.service
-StandardError=append:/must_be_madness/what_is_pill/wip-main-server-v2/logs/error.log
+StandardError=append:${PATH}/logs/error.log
 
 [Install]
 WantedBy=multi-user.target

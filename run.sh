@@ -20,7 +20,7 @@ if [ $1 = "STAND-ALONE" ]; then
   echo "---- Build and install library ----"
   rm -rf /must_be_madness/what_is_pill/wip-main-server-v2/build
   tsc --build
-  npm install
+  yarn install
   echo "---- OK ----"
 
   echo "---- Start wip-main-server-v2 ----"

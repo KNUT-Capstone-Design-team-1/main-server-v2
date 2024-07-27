@@ -1,0 +1,14 @@
+name: build
+
+on:
+    workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - name: build_project
+        run: yarn install && tsc --build
