@@ -1,4 +1,7 @@
-# Depencies
+# wip main server v2
+이게뭐약 메인서버. 딥러닝 서버와 애플리케이션 사이를 중개하며 애플리케이션으로 부터 이미지 검색, 식별 검색 등의 요청을 받아 처리한다.
+
+# Dependencies
 * nodejs 20.12.2
 * mongodb 7.0.7
 * [의약품 낱알식별정보 데이터](https://data.mfds.go.kr/OPCAC01F05?srchSrvcKorNm=%EC%9D%98%EC%95%BD%ED%92%88%20%EB%82%B1%EC%95%8C%EC%8B%9D%EB%B3%84%EC%A0%95%EB%B3%B4%20%EB%8D%B0%EC%9D%B4%ED%84%B0)
