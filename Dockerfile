@@ -10,9 +10,13 @@ RUN apk add \
 
 COPY . /usr/local/wip-main-server-v2 
 WORKDIR /usr/local/wip-main-server-v2
-EXPOSE $MAIN_SERVER_PORT
 
-# 식약처 API 응답 수신
-EXPOSE 80
+RUN yarn install && \
+    yarn global add typescript
+RUN yarn build
+RUN rm -rf ./src
+RUN mv ./build/src ./src
+
+EXPOSE $MAIN_SERVER_PORT
 
 ENTRYPOINT ["node", "./src/app.js"]
